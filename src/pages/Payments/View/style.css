@@ -1,0 +1,16 @@
+.view-bills h2 {
+  padding-top: 41px;
+  padding-bottom: 0;
+}
+
+.view-bills .bills-table {
+  font-size: 14px
+}
+
+.bills-table td {
+  cursor: pointer
+}
+
+.bills-table td span {
+  font-size: 13px
+}

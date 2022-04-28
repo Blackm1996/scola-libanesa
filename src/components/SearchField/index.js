@@ -17,7 +17,7 @@ const SearchbarDropdown = (props) => {
   }, []);
   return (
     <div className="search-bar-dropdown col-lg-6 col-12">
-      <div class="form-group search-input">
+      <div className="form-group search-input">
         <input
           id="search-bar"
           type="text"

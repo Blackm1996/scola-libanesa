@@ -1,0 +1,26 @@
+.course-item {
+    overflow: hidden;
+    margin-bottom: 11px
+}
+
+.course-item input:first-child {
+    margin-bottom: 3px;
+}
+
+.course-score {
+    margin-top: 0px;
+}
+
+.course-score,
+.course-name {
+    position: relative;
+}
+
+.course-score .error,
+.course-name .error {
+    top: 10% !important
+}
+
+.col-12 .plus {
+  padding: 0
+}

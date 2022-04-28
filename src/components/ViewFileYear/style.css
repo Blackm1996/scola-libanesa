@@ -1,0 +1,7 @@
+pre.student-details div {
+    padding-left: 13px;
+}
+
+label[for="month"] {
+  padding-top: 6px;
+}

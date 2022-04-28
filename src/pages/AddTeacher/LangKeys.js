@@ -1,0 +1,66 @@
+export const ENGLISHWORDS = {
+  name: "Name",
+  prename: "Prename",
+  userName: "Username",
+  password: "Password",
+  passwordConfirm: "Confirm Password",
+  phoneNumber: "Phone Number",
+  add: "add",
+  registerHere: "Register Here",
+  fillMessage: "Fill the form to create an account",
+  required: "required",
+  passwordWarning1: "Must Contain at least 8 Characters",
+  passwordWarning2:
+    "Must Contain at least One uppercase, one lowercase, One number and one symbol(!?% etc...)",
+  selectTime: "select employment",
+  partTime: "part time",
+  fullTime: "full time",
+  passwordMustMatch: "Password doesn't match",
+  validNumber: "Enter valid Phone number",
+  success: "Success",
+  error: "error or some data is already exist"
+};
+export const FRENCHWORDS = {
+  name: "Nom",
+  prename: "Prénom",
+  userName: "Nom d'utilisateur",
+  password: "Mot de passe",
+  passwordConfirm: "Confirmer mot de passe",
+  phoneNumber: "Telephone",
+  add: "add",
+  registerHere: "Inscrivez-vous ici",
+  fillMessage: "Preencha o formulário para criar uma conta",
+  required: "obligatoire",
+  passwordWarning1: "Doit contenir au moins 8 caractères",
+  passwordWarning2:
+    "Doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole (!?% etc...)",
+  selectTime: "sélectionner un emploi",
+  partTime: "à temps partiel",
+  fullTime: "à plein temps",
+  passwordMustMatch: "Le mot de passe ne correspond pas",
+  validNumber: "Entrez un numéro de téléphone valide",
+  success: "Succès",
+  error: "erreur ou certaines données existent déjà"
+};
+export const PORTOWORDS = {
+  name: "Apelido",
+  prename: "Nome",
+  userName: "Nome de usuário",
+  password: "codigo",
+  passwordConfirm: "confirmar codigo",
+  phoneNumber: "Telefone",
+  add: "Verificação",
+  registerHere: "Registre-se aqui",
+  fillMessage: "Remplissez le formulaire pour créer un compte",
+  required: "obligatorio",
+  passwordWarning1: "deve conter pelo menos 8 caracteres",
+  passwordWarning2:
+    "deve conter pelo menos 8 caracteres, uma maiúscula, um minúsculo, um número e um símbolo  (!?% etc...)",
+  selectTime: "selecione o emprego",
+  partTime: "tempo total",
+  fullTime: "meio período",
+  passwordMustMatch: "codigo está incorreta ",
+  validNumber: "Insira um número de telefone válido",
+  success: "Sucesso",
+  error: "erro ou algum dado já existe"
+};

@@ -10,7 +10,8 @@
 
 # production
 /build
-
+/package-lock.json
+/backend
 # misc
 .DS_Store
 .env.local

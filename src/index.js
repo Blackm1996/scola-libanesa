@@ -12,6 +12,10 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
+/*
+Disable Scroll Wheel On Number Inputs:
+https://solidfoundationwebdev.com/blog/posts/disable-scroll-wheel-on-number-inputs
+*/
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

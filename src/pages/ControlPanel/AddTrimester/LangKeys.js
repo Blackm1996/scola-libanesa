@@ -1,0 +1,36 @@
+export const ENGLISHWORDS = {
+  pageTitle: "Add Trimester",
+  numberOfTrimesters: "Number of trimesters",
+  required: "* required",
+  number: "number",
+  trimesters: "Trimesters",
+  scoreName: "Exam name",
+  coefficent: "Coefficient",
+  add: "Add",
+  success: "success",
+  error: "There was a problem, please try again later",
+};
+export const FRENCHWORDS = {
+  pageTitle: "Ajouter les information de trimestres",
+  numberOfTrimesters: "Nombre de trimestres",
+  required: "* obligatoire",
+  number: "nombre",
+  trimesters: "Trimestres",
+  scoreName: "Nom d'examen",
+  coefficent: "coeficient",
+  add: "Ajouter",
+  success: "succès",
+  error: "Il y a eu un problème, veuillez réessayer plus tard",
+};
+export const PORTOWORDS = {
+  pageTitle: "Adicionar informações do trimestre",
+  numberOfTrimesters: "Número de trimestres",
+  required: "* obrigatório",
+  number: "número",
+  trimesters: "Quartos",
+  scoreName: "Nome do exame",
+  coefficent: "coeficiente",
+  add: "Adicionar",
+  success: "sucesso",
+  error: "Ocorreu um problema, tente novamente mais tarde",
+};

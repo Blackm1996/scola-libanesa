@@ -1,0 +1,25 @@
+.tabs {
+  background-color: #fafafa;
+  min-height: 500px
+}
+.button {
+  width: 340px
+}
+.trashAndEdit {
+  position: absolute;
+  top: -8px;
+  right: -16px;
+  color: var(--main-color-1);
+}
+.trashAndEdit i {
+  padding: 7px 10px;
+  color: var(--main-color-1);
+  cursor: pointer;
+  font-size: 23px;
+  transition: .5s all ease-in-out
+}
+.trashAndEdit i:hover {
+  color: var(--main-color-2);
+  background-color: var(--main-color-1);
+  border-radius: 50%
+}

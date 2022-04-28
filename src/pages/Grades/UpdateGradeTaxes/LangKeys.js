@@ -1,0 +1,52 @@
+export const ENGLISHWORDS = {
+  addGrade: "Add grade",
+  defInscriptionTax: "default inscription tax",
+  defMonthlyPay: "default monthly payment",
+  defUniformCost: "default uniform cost",
+  defBookCost: "books costs",
+  required: "* required",
+  success: "Grade added successfully",
+  error1: "There was a problem, please try again",
+  update: "update",
+  updateTaxes: "Update Taxes",
+  required: "* required",
+  success: "success",
+  updateMessage:
+    "Are you sure you want to update this profile, old data will be lost",
+  error1: "There was a problem, please try again",
+};
+export const FRENCHWORDS = {
+  addGrade: "Ajouter un classe",
+
+  defInscriptionTax: "taxe d'inscription par défaut",
+  defMonthlyPay: "Paiement mensuel par défaut",
+  defUniformCost: "Coût uniforme par défaut",
+  defBookCost: "Coût du livres",
+  required: "* obligatoire",
+  success: "Classe a été ajouté avec succès",
+  error1: "Il y a eu un problème, veuillez réessayer",
+  update: "modifier",
+  updateTaxes: "Modifier taxes",
+  required: "* obligatoire",
+  success: "succès",
+  updateMessage:
+    "Êtes-vous sûr de vouloir mettre à jour ce profil, les aciennes données seront perdues",
+  error1: "Il y a eu un problème, veuillez réessayer",
+};
+export const PORTOWORDS = {
+  addGrade: "Adicionar nota",
+  defInscriptionTax: "Taxa de inscrição padrão",
+  defMonthlyPay: "Pagamento mensal padrão",
+  defUniformCost: "Custo uniforme padrão",
+  defBookCost: "Custo do livros",
+  required: "* obligatorio",
+  success: "Adicionar novo turma ",
+  error1: "Existe uma problema , Verificação,recuperar",
+  update: "Atualizar",
+  updateTaxes: "Atualizar taxas",
+  required: "* obligatorio",
+  success: "sucesso",
+  updateMessage:
+    "Tem certeza de que deseja atualizar este perfil . os antigos documentos serão perdidos",
+  error1: "Existe uma problema,Verificação , recuperar",
+};

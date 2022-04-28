@@ -1,0 +1,52 @@
+.grades-distribution {
+  height: 2000px
+}
+.grades-distribution .select-container {
+    margin-top: 75px;
+}
+.grades-distribution .select input[name="section"] {
+  height: 38px !important
+}
+.grades-distribution fieldset {
+    border: 2px solid #dedede;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 15px;
+}
+.grades-distribution .generate-randomly fieldset {
+  width: 300px !important
+}
+.grades-distribution fieldset legend {
+    font-size: 28px;
+    color: tomato;
+    width: auto;
+}
+
+.grades-distribution .generate-randomly fieldset legend {
+  font-size: 19px;
+}
+
+.grades-distribution fieldset div.select:first-of-type {
+  margin-top: 20px
+}
+.grades-distribution .form-group label {
+   width: 30% !important;
+   font-size: 13px
+}
+.grades-distribution .form-group input.form-control {
+    height: 28px
+ }
+ .grades-distribution button[type="submit"] {
+    margin-top: 8px !important;
+    margin-bottom: 80px;
+    width: 103px;
+    padding: 4px 6px
+ }
+.grades-distribution table {
+    font-size: 13.3px;
+    margin: 30px auto;
+    width: 64%
+}
+.grades-distribution table tr {
+  cursor: pointer
+}

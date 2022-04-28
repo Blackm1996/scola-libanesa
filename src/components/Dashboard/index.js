@@ -20,7 +20,7 @@ const LangName = (props) => {
     );
   }
   return (
-    <a onClick={() => props.handleLangToggle(langName)}> {props.langName} |</a>
+    <a onClick={() => { props.handleLangToggle(langName)} }> {props.langName} |</a>
   );
 };
 
@@ -29,6 +29,7 @@ class Dashboard extends Component {
   handleLangToggle = (newLang) => {
     this.props.toggleLanguages(newLang);
   };
+
   render() {
     return (
         <div className="dashboard">

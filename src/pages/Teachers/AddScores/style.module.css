@@ -1,0 +1,16 @@
+table tr:nth-child(even) {
+  background-color: transparent !important
+}
+table td {
+    font-size: 13px;
+    border: 1px solid #eee;
+    background-color: transparent !important
+}
+table td input {
+    border-color: transparent;
+    outline: 0;
+    background-color: transparent
+}
+table td input:focus-visible {
+    
+}

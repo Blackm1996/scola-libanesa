@@ -1,0 +1,42 @@
+/* start select style*/
+.select-container {
+    width: 93%;
+    margin-bottom: 75px;
+}
+
+.select {
+    width: 300px;
+    margin-bottom: 20px;
+    margin: auto
+}
+
+/* placeholder style*/
+.update-books .css-e56m7-control .css-g1d714-ValueContainer {
+    font-size: 12px;
+}
+
+/* placeholder style when on click*/
+.update-books .css-e56m7-control .css-1wa3eu0-placeholder {
+    font-size: 12px;
+}
+
+/* end select style*/
+
+/* start edit books section style*/
+.book-name {
+    overflow: hidden;
+    margin-bottom: 11px;
+
+}
+.add-books .added-book {
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.add-books .col-12 {
+  padding: 0;
+}
+.submit-btn-container {
+    width: 90%
+}
+
+/* end edit books section style*/

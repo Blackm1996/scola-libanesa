@@ -1,0 +1,18 @@
+.inscription-year {
+  padding-bottom: 80px;
+}
+.inscription-year .form-group {
+  position: relative;
+}
+.inscription-year .form-group.grade,
+.inscription-year .form-group.section {
+  width: 101%
+}
+.inscription-year .form-group span.error {
+  position: absolute;
+  top: 55%;
+  right: 32px;
+}
+.inscription-year input[name="monthTotalPay"]+span.error {
+  top: 40%
+}

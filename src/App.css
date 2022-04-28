@@ -1,6 +1,11 @@
 /* Start Main Rules */
 :root {
-  --main-color-1: tomato;
+  --main-color-1: #ee664e;
+  --main-color-2: #fafafa
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 * {
@@ -8,65 +13,301 @@
 }
 
 ul {
+  list-style-type: none;
+}
+
+/* start print section */
+@media print {
+  .app {
+    /*height: 100vh;*/
+    overflow: hidden
+  }
+}
+
+@media print {
+  .marks-print {
+    page-break-before: always;
+    page-break-after : always
+  }
+}
+
+/* end print section */
+
+
+ul {
   overflow: hidden;
-  padding: 0;
-  margin: 0;
+  padding : 0;
+  margin  : 0;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance   : none;
+  appearance        : none;
+  margin            : 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 button {
-  color: #fff;
-  background-color: tomato;
-  border-color: tomato;
-  outline: none;
+  color           : #fff;
+  background-color: var(--main-color-1);
+  border-color    : var(--main-color-1);
+  outline         : none;
 }
+
+.optional {
+  color: var(--main-color-1);
+}
+
+/* Start modal alert style */
+.swal-title {
+  font-size: 15px;
+}
+
+.swal-button-container button {
+  outline: 0;
+}
+
+.swal-button:focus {
+  box-shadow: 0 0 0 1px #ff634738, 0 0 0 3px #ff63474f;
+}
+
+.swal-button--danger {
+  font-size: 13px;
+}
+
+.swal-button--confirm {
+  border          : 2px solid transparent;
+  background-color: var(--main-color-1);
+  padding         : 6px 24px;
+}
+
+.swal-button--confirm:hover {
+  border          : 2px solid var(--main-color-1);
+  background-color: #fff !important;
+  color           : var(--main-color-1);
+}
+
+.swal-button--cancel {
+  padding         : 6px 20px;
+  border          : 2px solid #efefef;
+  color           : #929191;
+  background-color: #fff !important;
+}
+
+.swal-button--cancel:focus {
+  box-shadow: none;
+}
+
+.swal-button--cancel:hover {
+  background-color: #efefef !important;
+  color           : #877f7f;
+  border          : 2px solid #877f7f26;
+}
+
+/* end modal alert style */
+/* Start left section menu style */
+.right-component {
+  border-left: 1px solid #e4e3e3
+}
+
+.left-component {
+  padding-right   : 0;
+  height          : inherit;
+  background-color: #fafafa;
+  border-right    : 1px solid #e4e3e3
+}
+
+.left-component ul a {
+  color          : #a8a8a8;
+  text-decoration: none
+    /*
+  display        : block;
+  padding        : 9px 0;
+  text-align     : center;
+  border-bottom  : 1px solid #e4e3e3;
+  color          : #a8a8a8 !important;
+  display        : block;
+  */
+}
+
+/* End left section menu style */
+
 /* Start Title Of Middle Section */
 .title-of-middle {
-  text-align: center;
-  margin-top: 30px;
-  margin-bottom: 60px;
-  position: relative;
+  text-align   : center;
+  padding-top  : 26px;
+  margin-bottom: 53px;
+  position     : relative;
+  color        : var(--main-color-1);
+  font-weight  : bold;
+  font-size    : 37px
 }
 
 .title-of-middle:after {
-  content: "";
-  position: absolute;
-  height: 1px;
-  background-color: tomato;
-  width: 100px;
-  text-align: center;
-  position: absolute;
-  bottom: -23px;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  content         : "";
+  position        : absolute;
+  height          : 1px;
+  background-color: var(--main-color-1);
+  width           : 100px;
+  text-align      : center;
+  position        : absolute;
+  bottom          : -23px;
+  left            : 50%;
+  transform       : translate(-50%, -50%);
 }
+
 /* End Title Of Middle Section */
 .error {
-  color: var(--main-color-1);
+  color    : var(--main-color-1);
   font-size: 14px;
 }
+
+/* Start global form style */
+.form-control {
+  font-size       : 13px;
+  background-color: transparent
+}
+
 .form-control:focus {
   border-color: #ff6347;
-  outline: 0;
-  box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px hsl(9deg 100% 64% / 56%);
+  outline     : 0;
+  box-shadow  : inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px hsl(9deg 100% 64% / 56%);
 }
-.btn-primary {
-  color: #fff;
-  background-color: tomato;
-  border-color: tomato;
-  outline: none;
+
+label {
+  font-family: cursive;
+  font-size  : 14px;
+  display    : block;
 }
+
+.form-group {
+  position: relative;
+}
+
+.form-group span.error {
+  position: absolute;
+  top     : 55%;
+  right   : 10px;
+}
+
+select.form-control+.error {
+  right: 19px;
+}
+
+input[type="number"]+.error {
+  right: 32px;
+}
+
+
+.form-group .upload-img {
+  width : 200px;
+  height: 152px;
+}
+
+button:focus {
+  outline: 0 !important
+}
+
+button[type="submit"],
+button.delete-btn {
+  width        : 167px;
+  margin       : auto;
+  margin-top   : 20px;
+  border-radius: 3px !important;
+}
+
+button.delete-btn {
+  margin-top: -5px;
+  ;
+}
+
+button[type="submit"] i,
+button.delete-btn i {
+  font-size: 11px;
+}
+
+button[type="submit"] span,
+button.delete-btn span {
+  font-weight : bold;
+  font-size   : 16px;
+  padding-left: 1px;
+}
+
+button.btn-primary {
+  color           : #fff;
+  background-color: var(--main-color-1);
+  border-color    : var(--main-color-1);
+  outline         : none;
+}
+
+button.btn-primary:hover {
+  background-color: #ff634766;
+  color           : var(--main-color-1);
+  border-color    : var(--main-color-1)
+}
+
 .btn-primary:focus {
-  border-color: #ff6347;
-  background-color: tomato;
-  outline: 0;
-  box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px hsl(9deg 100% 64% / 56%);
+  border-color    : #ff6347;
+  background-color: var(--main-color-1);
+  outline         : 0;
+  box-shadow      : inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px hsl(9deg 100% 64% / 56%);
 }
 
 .btn-primary:not(:disabled):not(.disabled):active {
-  color: #fff;
-  background-color: tomato;
-  border-color: tomato;
-border-color: tomato;
+  color           : #fff;
+  background-color: var(--main-color-1);
+  border-color    : var(--main-color-1);
+  border-color    : var(--main-color-1);
 }
+
+/* End global form style */
+
+/* Start Table section */
+table {
+  border-collapse: collapse;
+  border-spacing : 0;
+  width          : 100%;
+  border         : 1px solid #ddd;
+}
+
+th,
+td {
+  text-align: left;
+  padding   : 8px;
+  text-align: center
+}
+
+table tr:nth-child(even) {
+  background-color: #4d424208;
+}
+
+table .btn {
+  border-radius: 2px;
+  margin       : auto;
+  padding      : 0;
+}
+
+/* End Table section*/
+
+/* start details card */
+.details-card {
+  width   : 424px;
+  border  : 2px solid #949393;
+  height  : 167px;
+  padding : 10px 30px;
+  position: relative
+}
+
+.details-card div {
+  padding-top: 10px
+}
+
+/* end details card */
+
 
 /* End Main Rules */

@@ -1,0 +1,44 @@
+.all-students {
+  padding-bottom: 100px;
+  min-height: 720px
+}
+.all-students .students-table {
+  padding-top: 43px
+}
+.all-students table {
+  font-family: 'FontAwesome'
+}
+
+.all-students tr:hover {
+  cursor: pointer
+}
+
+.all-students table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.all-students .table-bordered td, .table-bordered th {
+  padding: 8px 11px;
+  font-size: 15px;
+}
+
+
+.all-students thead .form-control {
+  font-size: 13px;
+  padding: 5px;
+  padding-left: 32%;
+}
+
+.react-bootstrap-table-pagination .dropdown-toggle {
+  padding: 4px 8px;
+  font-size: 13px;
+  background-color: var(--main-color-1);
+  color: #fff;
+}
+
+.page-link {
+  padding: 5px 11px;
+  font-size: 14px;
+  background-color: var(--main-color-1) !important;
+  color: #fff !important
+}

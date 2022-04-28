@@ -1,0 +1,14 @@
+
+.print-payment {
+  width: 167px
+}
+#printBill .title {
+  font-size: 30px;
+  letter-spacing: 3px
+}
+#printBill .print-bill .body {
+  margin-top: 50px
+}
+#printBill .print-bill .body .titles > div {
+  line-height: 16px
+}

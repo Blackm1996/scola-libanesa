@@ -3,10 +3,40 @@
   padding: 0;
   position: sticky;
   top: 0;
-  z-index: 9999;
+  z-index: 99;
   background-color: var(--main-color-1);
   color: #fff;
+  box-shadow: 1px 1px 13px tomato;
+  border-bottom-right-radius: 5px;
+  font-family: 'Font-Awesome';
+  height: 60px
 }
+.navbar .left-section {
+  padding: 0
+}
+
+.navbar .left-section div.image {
+  background: hsla(0,0%,100%,.3686274509803922);
+  text-align: center;
+  box-shadow: 0 0 20px #fff;
+  width: 84px;
+  height: 57px;
+  padding-bottom: 8px;
+  padding-top: 3px;
+  border-radius: 66px;
+  padding-left: 7px;
+  overflow: hidden;
+}
+
+.navbar .left-section img {
+  width: 55px;
+  -webkit-transform: translate(50%,50%);
+  -moz-transform: translate(50%,50%);
+  transform: translate(50%,50%);
+  margin-top: -50%;
+  margin-left: -80%;
+}
+
 /*
    nav {
   overflow: hidden;
@@ -38,7 +68,7 @@ text-decoration: none;
   line-height: 45px;
   padding-right: 20px;
   padding-left: 20px;
-  font-size: 21px;
+  font-size: 19px;
   font-family: 'FontAwesome';
 }
 
@@ -70,3 +100,78 @@ nav a {
   text-decoration: none;
   color: #fff;
 }
+
+/* start subnavbar test */
+.navbar-2 {
+  overflow: hidden;
+  background-color: #fff8f60d;; 
+  display: flex;
+  justify-content: center
+}
+
+.navbar-2 a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+.navbar-2 a.active {
+  background-color: #ff7961;
+  color: #fff;
+}
+.subnav {
+  float: left;
+  overflow: hidden;
+}
+
+.subnav .subnavbtn {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+  cursor: pointer
+}
+
+.navbar-2 a:hover, .subnav:hover .subnavbtn {
+  background-color: #ff7961;
+  color: #fff;
+}
+
+.subnav-content {
+    display: none;
+    position: absolute;
+    left: 16.7%;
+    background-color: var(--main-color-1);
+    width: 66.6%;
+    z-index: 1;
+    height: 67px;
+    border: 1px solid #eeeeee73
+}
+.subnav-content::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.subnav:hover .subnav-content {
+  display: flex;
+  justify-content: center
+}
+.subnav-content a {
+  float: left;
+  line-height: 35px;
+  color: white;
+  text-decoration: none;
+}
+
+.subnav-content a:hover {
+  color: #e14040
+}
+
+/* end subnavbar test */

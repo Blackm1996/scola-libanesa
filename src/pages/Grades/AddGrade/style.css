@@ -1,0 +1,86 @@
+/* start global styles in this page*/
+.add-grade {
+    margin: auto;
+    padding-bottom: 80px;
+}
+
+.add-grade .title-of-middle {
+  margin-bottom: 72px
+}
+
+.add-grade label {
+    color: #747474;
+    font-size: 15px;
+    font-family: serif;
+}
+
+.add-grade fieldset {
+    border: 2px solid #dedede;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 15px;
+    width: auto !important;
+}
+
+.add-grade fieldset legend {
+    font-size: 28px;
+    color: tomato;
+    width: auto;
+}
+
+/* end global styles in this page*/
+
+/* start add books section */
+.add-grade .add-books .form-group {
+    position: relative;
+}
+
+.add-grade button.minus {
+    margin-top: 2px;
+    position: relative;
+    height: 25px;
+    width: 25px;
+    padding-right: 1px;
+}
+
+.add-grade button.minus i {
+    font-size: 11px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 25px;
+}
+
+.add-grade .add-books .form-group .error {
+
+    position: absolute;
+    top: 20%;
+    right: 22px;
+}
+
+.add-grade .form-group .plus {
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    font-size: 13px;
+}
+
+/* end add books section */
+
+
+/* start Courses section */
+.add-grade .add-courses label {
+    padding-top: 8px;
+}
+
+.add-grade .add-courses .plus {
+    margin-top: 3px;
+}
+
+.add-grade .add-courses span.error {
+    top: 16%;
+}
+
+/* end Courses section */

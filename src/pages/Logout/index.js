@@ -13,14 +13,16 @@ class Logout extends Component {
         //const history = useHistory();
         //history.push('/login')
         removeUserSession();
+        localStorage.removeItem("id");
+        localStorage.removeItem("new");
         <Redirect to='/' />     
     }
     render() {
         return (
             <>
                 <Link to="/Login" className='logout' onClick={this.handleLogout}>
-                    <i class="fa fa-sign-out" aria-hidden="true"></i>
-                    <span>Log Out</span>
+                    <span>{ this.props.logOut }</span>
+                    <i className="fa fa-sign-out" aria-hidden="true"></i>
                 </Link>
             </>
         );

@@ -1,0 +1,107 @@
+.student-details {
+  background-color: #fff;
+  border-radius: 2px
+}
+
+pre.student-details div {
+    padding-left: 13px;
+}
+
+label[for="month"] {
+  padding-top: 6px;
+}
+
+
+@media screen {
+  .printBill {
+    display: none
+  }
+  .printBill {
+    background-color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 9999
+  }
+  .printBill .logo-and-title {
+    padding-left: 100px
+  }
+  .printBill .logo-and-title img {
+    height: 100px
+  }
+  .printBill .logo-and-title div:last-child {
+    font-size: 22px;
+    font-weight: bold;
+    padding-left: 11px
+  }
+  .printBill .print-bill .header .item {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    font-weight: bold
+  }
+  .printBill .print-bill .body .row:first-child {
+    height: fit-content
+  }
+  .printBill .print-bill .body .row:not(first-child) .item {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-weight: bold
+  }
+  .printBill .signature {
+    padding-top: 81px
+  }
+}
+/* screen */
+@media print {
+  
+  .printBill {
+    display: block
+  }
+  .printBill {
+    background-color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 9999;
+    /*margin-left: 30%;*/
+  }
+  .printBill .print-bill {
+    margin-top: 0px
+  }
+  .printBill .logo-and-title {
+    padding-left: 100px
+  }
+  .printBill .logo-and-title img {
+    height: 150px
+  }
+  .printBill .logo-and-title div:last-child {
+    font-size: 22px;
+    font-weight: bold;
+    padding-left: 11px
+  }
+  
+  .printBill .print-bill .header .item {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-weight: bold
+  }
+  .printBill .print-bill .body {
+    margin-top: 50px
+  }
+  .printBill .print-bill .body .row:first-child {
+    height: fit-content
+  }
+  .printBill .print-bill .body:not(first-child) .item {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-weight: bold
+  }
+  .printBill .signature {
+    padding-top: 81px;
+    font-size: 24px
+  }
+}

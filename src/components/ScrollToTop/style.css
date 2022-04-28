@@ -1,0 +1,27 @@
+/* start scroll top section */
+.scroll-to-top {
+    position: fixed;
+    bottom: 6px;
+    right: 6px;
+    width: 41px;
+    height: 41px;
+    background-color: var(--main-color-1);
+    border-radius: 50%;
+    cursor: pointer
+  }
+  .scroll-to-top:hover {
+    background-color: var(--main-color-2);
+    border: 1px solid var(--main-color-1)
+  }
+  .scroll-to-top i {
+    font-size: 24px;
+    position: absolute;
+    left: 32%;
+    top: 16%;
+    font-weight: bold;
+    color: #eee;
+  }
+  .scroll-to-top:hover i {
+    color: var(--main-color-1)
+  }
+  /* end scroll top section */

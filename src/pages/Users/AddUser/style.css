@@ -1,0 +1,13 @@
+.add-user .username span.error {
+  right: 24px
+}
+.add-user .password span.error {
+  top: 65%
+}
+.add-user .password-message {
+  color: var(--main-color-1);
+  font-size: 12px
+}
+.add-user .user-role {
+  overflow: hidden
+}

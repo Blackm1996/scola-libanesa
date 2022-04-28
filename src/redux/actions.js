@@ -1,2 +1,3 @@
 export const TOGGLE_LANG = 'TOGGLE_LANG';
-//export const INCREASE = 'INCREASE';
+export const TOGGLE_ROLE = 'TOGGLE_ROLE';
+export const TOGGLE_ID_INSTRUCTOR = 'TOGGLE_ID_INSTRUCTOR';

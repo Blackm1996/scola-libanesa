@@ -1,11 +1,10 @@
 // Middle Component
 import React, { Component } from "react";
 import {Route, Switch, Redirect} from "react-router-dom";
-import InscriptionStudent from "../../pages/InscriptionStudent";
-import EditStudents from "../../pages/EditStudents";
-import AddGrade from '../../pages/AddGrade';
+import InscriptionStudent from "../../pages/Students/StudentsPublicFiles/Add";
+import AddGrade from '../../pages/Grades/AddGrade';
 import "./style.css";
-import Login from "../../pages/Login";
+import styles from "./style.module.css";
 
 class MiddleComponent extends Component {
   state = {
@@ -52,7 +51,7 @@ class MiddleComponent extends Component {
   };
   render() {
     return (
-      <div className="middle-component col-12 col-md-8 col-lg-8">
+      <div className={`${styles.middleComponent} col-12 col-md-8 col-lg-8`}>
           <Route exact path="/dashboard" component={InscriptionStudent} />
           <Route exact path="/dashboard/addgrade" component={AddGrade} />
           <Route exact path="/dashboard/addstudent" component={InscriptionStudent} />

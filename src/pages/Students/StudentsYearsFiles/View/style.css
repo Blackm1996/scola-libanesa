@@ -1,0 +1,18 @@
+.update-student {
+    margin: auto;
+}
+
+.update-student label {
+    color: #747474;
+    font-size: 17px;
+    font-family: serif;
+}
+
+button[type="submit"] {
+    margin-top: 44px !important;
+}
+
+button[type="submit"],
+button.delete-btn {
+    border-radius: 23px !important;
+}

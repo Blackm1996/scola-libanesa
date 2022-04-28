@@ -1,0 +1,119 @@
+.print-bill {
+    page-break-after: always;
+    margin: auto;
+} 
+
+@media print {
+  #table-of-section {
+    width: 900px;
+    margin-left: -20%
+  }
+    #table-of-section table tr {
+        font-size: 24px
+    }
+    #table-of-section .print-bill {
+        display: block;
+        width: 999px;
+        margin-left: -28%
+        /* page-break-after: always; */
+    }  
+}
+  @media screen {
+    .print {
+      display: none
+    }
+    
+    .print .logo-and-title {
+      padding-left: 100px
+    }
+    .print .logo-and-title img {
+      height: 100px
+    }
+    .print .logo-and-title div:last-child {
+      font-size: 22px;
+      font-weight: bold;
+      padding-left: 11px
+    }
+    .print .print-bill .header .item {
+      padding-top: 4px;
+      padding-bottom: 4px;
+      font-weight: bold
+    }
+    .print .print-bill .body .row:first-child {
+      height: fit-content
+    }
+    .print .print-bill .body .row:not(first-child) .item {
+      padding-top: 20px;
+      padding-bottom: 20px;
+      font-weight: bold
+    }
+    .print .signature {
+      padding-top: 81px
+    }
+  }
+  /* screen */
+  @media print {
+    .print {
+      display: block;
+      width: 1000px;
+      margin-left: -28%
+    }
+    
+    .print .print-bill {
+      margin-top: 0px
+    }
+    .print .logo-and-title {
+      padding-left: 100px
+    }
+    .print .logo-and-title img {
+      height: 150px
+    }
+    .print .logo-and-title div:last-child {
+      font-size: 22px;
+      font-weight: bold;
+      padding-left: 11px
+    }
+    
+    .print .print-bill .header .item {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      font-weight: bold
+    }
+    .print .print-bill .body {
+      margin-top: 50px
+    }
+    .print .print-bill .body .row:first-child {
+      height: fit-content
+    }
+    .print .print-bill .body:not(first-child) .item {
+      padding-top: 20px;
+      padding-bottom: 20px;
+      font-weight: bold
+    }
+    .print .signature {
+      padding-top: 81px;
+      font-size: 24px
+    }
+  }
+.students-table {
+    margin-top: 83px !important
+}
+
+.students-table .trash-and-edit {
+    position: absolute;
+    top: 14px;
+    right: 2px;
+    color: var(--main-color-1);
+}
+.students-table .trash-and-edit i {
+    padding: 7px 10px;
+    color: var(--main-color-1);
+    cursor: pointer;
+    font-size: 23px;
+    transition: .5s all ease-in-out
+}
+.students-table .trash-and-edit i:hover {
+    color: var(--main-color-2);
+    background-color: var(--main-color-1);
+    border-radius: 50%
+}

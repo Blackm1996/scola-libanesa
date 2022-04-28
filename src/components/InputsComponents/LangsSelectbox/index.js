@@ -2,14 +2,14 @@
 import './style.css';
 const LangsSelectbox = () => {
     return (
-        <div class="navbar">
+        <div className="navbar">
             <a href="#home">Home</a>
             <a href="#news">News</a>
-            <div class="dropdown">
-                <button class="dropbtn">Dropdown
-      <i class="fa fa-caret-down"></i>
+            <div className="dropdown">
+                <button className="dropbtn">Dropdown
+      <i className="fa fa-caret-down"></i>
                 </button>
-                <div class="dropdown-content">
+                <div className="dropdown-content">
                     <a href="#">Link 1</a>
                     <a href="#">Link 2</a>
                     <a href="#">Link 3</a>

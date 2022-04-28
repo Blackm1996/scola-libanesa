@@ -1,0 +1,39 @@
+.gradetaxes {
+    width: 424px;
+    border: 2px solid #949393;
+    height: fit-content;
+    padding: 10px 30px;
+    border-radius: 5px;
+    position: relative;
+    margin-bottom: 21px;
+}
+.gradetaxes div {
+    padding-bottom: 10px
+}
+.editDeleteGrade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: var(--main-color-1);
+  cursor: pointer
+}
+fieldset {
+    border: 2px solid #dedede;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 15px;
+    width: 634px !important
+}
+
+fieldset legend {
+    font-size: 28px;
+    color: tomato;
+    width: auto;
+}
+table {
+    
+}
+table thead {
+  background-color: var(--main-color-1);
+  color: #fff
+}

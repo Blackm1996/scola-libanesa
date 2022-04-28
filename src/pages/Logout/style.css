@@ -2,7 +2,8 @@ nav .logout {
   float: right;
   float: right;
   height: 100%;
-  width: 112px;
+  width: 145px;
+  text-align: center
 }
 nav .logout:hover {
   color: #fff;
@@ -21,5 +22,5 @@ nav .logout i {
   margin-left: 11px;
   margin-right: 6px;
   background: #ffffff1c;
-  border-radius: 50%;
+  border-radius: 50%
 }

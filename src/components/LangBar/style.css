@@ -1,0 +1,22 @@
+.dashboard ul.langs {
+    list-style: none;
+    overflow: hidden;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    flex-wrap: wrap;
+    width: 250px;
+    margin: auto;
+    background-color: #fafafa;
+  }
+  .dashboard ul.langs li {
+    padding-right: 0;
+    padding-left: 10px;
+  }
+  .dashboard ul.langs li a {
+    font-size: 12px;
+    color: #385898 !important;
+    cursor: pointer;
+    text-decoration: none;
+  }

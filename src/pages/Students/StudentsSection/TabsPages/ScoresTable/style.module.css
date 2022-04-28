@@ -1,0 +1,26 @@
+table.studentsScores {
+  width: 700px 
+}
+table.studentsScores td {
+    font-size: 13px 
+}
+table.studentsScores thead tr td {
+    writing-mode: vertical-lr;
+    transform: rotate(
+    180deg);
+    letter-spacing: 2px;
+    font-size: 14px
+}
+table.studentsScores thead tr td:first-child {
+  width: 300px
+}
+table.studentsScores tbody tr td:first-child {
+    background-color: var(--main-color-1) !important;
+    color: #fff;
+    font-size: 14px
+}
+table.studentsScores tbody tr td:not(first-child) {
+    border: 1px solid #eee
+}
+
+  

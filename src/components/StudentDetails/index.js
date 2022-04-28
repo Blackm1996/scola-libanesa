@@ -126,6 +126,15 @@ class StudentDetails extends Component {
           <div className="col-md-8 pl-0">
             <div className="card mb-3">
               <div className="card-body">
+              <div className="row">
+                  <div className="col-sm-4">
+                    <h6 className="mb-0">ID</h6>
+                  </div>
+                  <div className="col-sm-8 text-secondary">
+                    {student.id}
+                  </div>
+                </div>
+                <hr />
                 <div className="row">
                   <div className="col-sm-4">
                     <h6 className="mb-0">{prename}</h6>

@@ -89,7 +89,8 @@ class inscriptionStudent extends Component {
 
     //Years
     var years = [];
-    for (let i = 1980; i <= 2030; i++) {
+    let ye = new Date().getFullYear();
+    for (let i = 0; i <= 25; i++) {
       years.push(i);
     }
 

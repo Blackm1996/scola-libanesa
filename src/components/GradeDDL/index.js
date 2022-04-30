@@ -25,13 +25,11 @@ class GradeDDL extends Component {
   };
 
   componentDidMount() {
-    axios
-      .get("/section/2021-2022")
-      .then((resp) => {
-        this.setState({
-          grades: [...this.state.grades, ...resp.data],
-        });
+    axios.get(`/section/${this.props.year}`).then((resp) => {
+      this.setState({
+        grades: [...this.state.grades, ...resp.data],
       });
+    });
     //   this.setState({
     //     grades: [
     //         { name: 'Colors', sections: ['Red', 'Black', 'Orange', 'Blue'] },
@@ -78,14 +76,16 @@ class GradeDDL extends Component {
                 {grade}
               </MenuItem>
               {this.state.grades.map((x) => (
-                <MenuItem value={x.gradeId}>{x.gradeName === "All" ? all: x.gradeName}</MenuItem>
+                <MenuItem value={x.gradeId}>
+                  {x.gradeName === "All" ? all : x.gradeName}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
 
           {this.state.sections.length > 0 ? (
             <Select
-              value={ this.state.sectionSelected }
+              value={this.state.sectionSelected}
               displayEmpty
               MenuProps={{
                 style: { zIndex: 35001 },
@@ -110,6 +110,7 @@ class GradeDDL extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
+    year: state.schoolYear,
   };
 };
 export default connect(mapStateToProps)(GradeDDL);

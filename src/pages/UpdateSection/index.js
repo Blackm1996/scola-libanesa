@@ -236,7 +236,6 @@ class UpdateSection extends Component {
     }
 
     if (this.state.sectionSelected != "") {
-      console.log(".....");
       let sendedObj = {
         School_Year: this.props.schoolYear,
       };
@@ -381,7 +380,6 @@ class UpdateSection extends Component {
 
         removed = removed.filter((item) => item.idCourse != idCourse);
         removed.push(removedObj);
-        //console.log("find3", find3);
         this.setState({
           removedInstructor: [...removed],
         });
@@ -443,7 +441,6 @@ class UpdateSection extends Component {
 
         removed = removed.filter((item) => item.idCourse != idCourse);
         removed.push(removedObj);
-        //console.log("find3", find3);
         this.setState({
           removedInstructor: [...removed],
         });

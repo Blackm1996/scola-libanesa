@@ -35,7 +35,6 @@ const TeachersTable = (props) => {
           icon: "edit",
           tooltip: `${edit}`,
           onClick: (event, rowData) => {
-            console.log(rowData);
             props.chooseUser(rowData, "Edit");
           },
         },

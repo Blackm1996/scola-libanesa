@@ -19,88 +19,81 @@ const useStyles = makeStyles({
 
 function Home(props) {
   const classes = useStyles();
-  const handleClick = (event) => {
-    console.log(event.target);
-  };
+  const handleClick = (event) => {};
   return (
     <Box sx={{ width: 400, margin: "30px auto" }}>
-     
-    <Box className={classes.title}>
-      <Typography color="primary" variant="h3">
-        {" "}
-        1st Trimester
-      </Typography>
-    </Box>
+      <Box className={classes.title}>
+        <Typography color="primary" variant="h3">
+          {" "}
+          1st Trimester
+        </Typography>
+      </Box>
 
-    <Accordion>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1a-content"
-        id="panel1a-header"
-      >
-        <Typography variant="h6">Submitted: 5</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Link variant="contained">CP/1º ANO-A : Math</Link>
-        <Typography>CP/1º ANO-A : Bio</Typography>
-        <Typography>CP/1º ANO-A : Chimie</Typography>
-      </AccordionDetails>
-    </Accordion>
-    <Accordion>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel2a-content"
-        id="panel2a-header"
-      >
-        <Typography>Pending: 3</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <List
-          sx={{
-            width: "100%",
-            maxWidth: 360,
-            bgcolor: "background.paper",
-          }}
-          component="nav"
-          aria-label="mailbox folders"
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
         >
-          <ListItem button>
-            <ListItemText>
-              <Link href="/aaa">Inbox</Link>
-            </ListItemText>
-          </ListItem>
-          <Divider />
-          <ListItem button divider>
-            <ListItemText>
-            <Button color="inherit" component={Link} to="/">
-            Home
-          </Button>
-            </ListItemText>
-          </ListItem>
-          <ListItem button>
-            <Link href='/teacher/about'>
-              aaaa
-            </Link>
-          </ListItem>
-          <Divider light />
-          <ListItem button>
-            <ListItemText primary="Spam" />
-          </ListItem>
-        </List>
-      </AccordionDetails>
-    </Accordion>
-    <Accordion>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel3a-content"
-        id="panel3a-header"
-      >
-        <Typography>Unsubmitted: 6</Typography>
-      </AccordionSummary>
-    </Accordion>
-    
-  </Box>
-    
+          <Typography variant="h6">Submitted: 5</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Link variant="contained">CP/1º ANO-A : Math</Link>
+          <Typography>CP/1º ANO-A : Bio</Typography>
+          <Typography>CP/1º ANO-A : Chimie</Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>Pending: 3</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <List
+            sx={{
+              width: "100%",
+              maxWidth: 360,
+              bgcolor: "background.paper",
+            }}
+            component="nav"
+            aria-label="mailbox folders"
+          >
+            <ListItem button>
+              <ListItemText>
+                <Link href="/aaa">Inbox</Link>
+              </ListItemText>
+            </ListItem>
+            <Divider />
+            <ListItem button divider>
+              <ListItemText>
+                <Button color="inherit" component={Link} to="/">
+                  Home
+                </Button>
+              </ListItemText>
+            </ListItem>
+            <ListItem button>
+              <Link href="/teacher/about">aaaa</Link>
+            </ListItem>
+            <Divider light />
+            <ListItem button>
+              <ListItemText primary="Spam" />
+            </ListItem>
+          </List>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel3a-content"
+          id="panel3a-header"
+        >
+          <Typography>Unsubmitted: 6</Typography>
+        </AccordionSummary>
+      </Accordion>
+    </Box>
   );
 }
 

@@ -75,7 +75,6 @@ class StudentsDistribution extends Component {
         sectionName,
         students,
       });
-      console.log("json students", json);
       //send post
       distributeStudents(json)
         .then(() => {
@@ -93,7 +92,6 @@ class StudentsDistribution extends Component {
   };
   //onDropdownChane
   onDropdownChange = (value) => {
-    //console.log("grade", value);
     this.setState({
       loadingTable: false,
       gradeSelected: value.id,

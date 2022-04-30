@@ -205,7 +205,6 @@ class AddPayment extends Component {
 
   //handle amount
   handleAmount = (e) => {
-    console.log("handleAmount");
     this.setState({
       amount: e.target.value,
     });

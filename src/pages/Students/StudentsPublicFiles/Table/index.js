@@ -32,37 +32,10 @@ export default class StudentsTable extends Component {
 
   //deleteStudent
   deleteStudent = (id) => {
-    console.log("deleted id", id);
-    /*
-    //console.log(id);
-    axios.get("http://localhost/mi-backend/api/deleteStudent.php?id=" + id )
-      .then(response => {
-        console.log(response);
-        this.props.history.push("/student");
-      })
-      .catch((error) => {
-        alert("There`s problem, please tell us ..");
-      });
-    */
+    
   };
   componentDidMount = () => {
-    /*
-    //
-    //'https://jsonplaceholder.typicode.com/photos'
-    axios
-      .get("http://localhost/mi-backend/api/listStudents.php")
-      .then((response) => {
-        console.log(response.data);
-        this.setState({
-          loading: false,
-          students: response.data,
-        });
-        this.props.history.push("/student/view");
-        console.log("array", this.state.students.length);
-        //<Redirect to="/student" />
-      })
-      .catch((error) => {});
-    */
+
   };
 
   render() {

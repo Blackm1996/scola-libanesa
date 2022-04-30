@@ -36,7 +36,6 @@ class inscriptionStudent extends Component {
     // date after concat day with month with year [ex 1-1-2008]
     var appendedDate = `${values.birthDate.day}-${values.birthDate.month}-${values.birthDate.year}`;
 
-    //console.log("hello from submit", values);
     let formData = new FormData();
     formData.append("First_Name", values.firstName);
     formData.append("Last_Name", values.lastName);

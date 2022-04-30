@@ -38,7 +38,6 @@ const NavLinks = (props) => {
     links.map((link, index) =>
       index === 0 ? (activeLinks[index] = "active") : (activeLinks[index] = " ")
     );
-    //console.log(activeLinks);
   }, []);
 
   // On Click Func
@@ -51,7 +50,6 @@ const NavLinks = (props) => {
         : (newActiveLinks[i] = " ");
     }
     setActive([...newActiveLinks]);
-    console.log(activeLinks);
   };
   return (
     <div className="middle-section">

@@ -18,7 +18,6 @@ export default function CoursesTeachersSelection(props) {
       });
       if (find) {
         let x = selectedTeachers.filter((item) => item.idCourse !== idCourse);
-        console.log("x", x);
         setSelectedTeachers([...x]);
       }
     } else {
@@ -26,7 +25,6 @@ export default function CoursesTeachersSelection(props) {
       find = selected.some((item) => {
         return item.idCourse === idCourse;
       });
-      console.log(find);
       if (find) {
         let x = selectedTeachers.map((item) => {
           if (item.idCourse === idCourse)
@@ -91,11 +89,8 @@ export default function CoursesTeachersSelection(props) {
   }
   //useEffect
   useEffect(() => {
-    console.log("props", props);
     axios.get(`/gradeCourses/${props.gradeId}`).then((response) => {
       if (response.status === 200) {
-        console.log("teachers", response.data.teachers);
-        console.log("courses", response.data.courses);
         setTeachers([...response.data.teachers]);
         setCourses(response.data.courses);
       }
@@ -103,11 +98,8 @@ export default function CoursesTeachersSelection(props) {
   }, []);
   //useEffect
   useEffect(() => {
-    console.log("props", props);
     axios.get(`/gradeCourses/${props.gradeId}`).then((response) => {
       if (response.status === 200) {
-        console.log("teachers", response.data.teachers);
-        console.log("courses", response.data.courses);
         setTeachers([...response.data.teachers]);
         setCourses(response.data.courses);
       }

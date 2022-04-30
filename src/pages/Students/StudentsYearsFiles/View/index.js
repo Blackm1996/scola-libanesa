@@ -49,6 +49,7 @@ class ViewInscription extends Component {
 
   // component did mount
   componentDidMount() {
+
     const studentID = this.props.match.params.id;
 
     /* start get years select box */
@@ -309,20 +310,8 @@ class ViewInscription extends Component {
         Month_Start: values.monthStart,
         id_classroom: this.state.sectionSelected,
         Discount: this.state.discount,
-        /*
-        "Books/Uniform_total": values.booksUniformTotal,
-        Inscription_Tax: values.inscriptionTax,
-        Month_Start: values.monthStart,
-        //Monthly_Total: values.monthTotalPay,
-        Monthly_Total: monthTotalPay,
-        Discount: this.state.discount,
-        School_Year: values.year,
-        id_classroom: this.state.sectionSelected,
-        id_grade: this.state.gradeSelected,
-        id_student: studentID
-       */
       };
-
+      
       // start confirmation update
       swal({
         title: "Are you sure for updating this file",
@@ -333,7 +322,7 @@ class ViewInscription extends Component {
         if (willUpdate) {
           axios
             .put(
-              "/studentFileYear/4/2021-2022", // 4 constant
+              `/studentFileYear/4/${this.props.schoolYear}`, // 4 constant
               fileYear
             )
             .then((response) => {

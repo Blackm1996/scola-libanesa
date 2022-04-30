@@ -114,7 +114,6 @@ function TeachersList(props) {
   //on search change
   const search = (query) => {
     if (query.toString().trim() !== "") {
-      console.log(query.toString().trim());
       let students = dataAPI.filter((student) => {
         let { id, userName, role } = student;
         userName = userName.toLowerCase();
@@ -168,7 +167,6 @@ function TeachersList(props) {
   };
 
   const chooseUser = (user, caso) => {
-    console.log("user choosed", user);
     setChoosedUser(user);
     caso === "Edit" ? openCloseModalEdit() : openCloseModalDelete();
   };

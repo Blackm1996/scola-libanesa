@@ -25,6 +25,9 @@ class NotPayedStudents extends Component {
     dataAPI: [],
   };
   componentDidMount = () => {
+    this.setState({
+      year: this.props.year,
+    });
     const { month, year } = this.state;
     axios.get(`/allMonthBills/${month}/${year}`).then((resp) => {
       this.setState({
@@ -42,7 +45,6 @@ class NotPayedStudents extends Component {
 
   //update grade id
   updateMonth = (month) => {
-    console.log(this.state.year);
     this.setState({
       month,
     });
@@ -61,7 +63,6 @@ class NotPayedStudents extends Component {
   onSearchChange = (query) => {
     let bills = this.state.dataAPI.filter((bill) => {
       let { id, name, Amount: amount, date, type } = bill;
-      console.log("amount", amount);
       type = type == null && "";
       id = id.toString();
       name = name.toLowerCase();
@@ -115,7 +116,6 @@ class NotPayedStudents extends Component {
           </div>
           {/* start table */}
 
-          {/* onChangePage = { (e, pg) => {console.log(`current page is : ${e} `); this.setState({ pageNum: e })}} */}
           <div className="students-all col-10 mx-auto">
             <MaterialTable
               title={bills}
@@ -146,6 +146,7 @@ class NotPayedStudents extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
+    year: state.schoolYear,
   };
 };
 export default connect(mapStateToProps)(NotPayedStudents);

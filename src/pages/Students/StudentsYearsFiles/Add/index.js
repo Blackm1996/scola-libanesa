@@ -125,7 +125,7 @@ class AddStudentYearFile extends Component {
         ...this.state.DDL1.find((x) => x.id == e.target.value).sections,
       ],
     });
-    //console.log(',.,', this.state.DDL1.find((x) => x.id == e.target.value).sections);
+    
     axios
       .get(`/grade/${e.target.value}`)
       .then((response) => {
@@ -219,7 +219,6 @@ class AddStudentYearFile extends Component {
     // Language KEywords
     const { success, error2, error1 } = this.state.langKeywords[pageLanguage];
 
-    //console.log("discount", values );
     const studentID = this.props.match.params.id;
     var grade = this.state.gradeSelected.trim(),
       section = this.state.sectionSelected.trim();

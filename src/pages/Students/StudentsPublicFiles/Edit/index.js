@@ -171,9 +171,7 @@ class EditStudent extends Component {
     var birthDate = values.birthDate;
 
     appendedDate = `${values.birthDate.day}-${values.birthDate.month}-${values.birthDate.year}`;
-    console.log("appendedDate", appendedDate);
 
-    //console.log("hello from submit", values);
     let formData = new FormData();
     formData.append("First_Name", values.firstName);
     formData.append("Last_Name", values.lastName);
@@ -187,7 +185,6 @@ class EditStudent extends Component {
       formData.append("Vaccine_URL", values.vaccineURL);
     //formData.append("Vaccine_URL", vaccineURL);
 
-    //console.log("form data is", formData.get("Vaccine_URL"));
     swal({
       title: updateMessage,
       icon: "warning",
@@ -202,7 +199,6 @@ class EditStudent extends Component {
           )
           .then((response) => {
             if (response.status == 200) {
-              console.log(response.status);
               swal(successUpdate, {
                 icon: "success",
               }).then((response) => {

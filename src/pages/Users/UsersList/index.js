@@ -85,7 +85,6 @@ function TeachersList(props) {
     axios
       .get("/usersInfos")
       .then((response) => {
-        console.log(response.data);
         setData(response.data);
         setDataAPI(response.data);
       })
@@ -107,7 +106,6 @@ function TeachersList(props) {
   //on search change
   const search = (query) => {
     if (query.toString().trim() !== "") {
-      console.log(query.toString().trim());
       let students = dataAPI.filter((student) => {
         let { id, userName, role } = student;
         userName = userName.toLowerCase();
@@ -127,9 +125,7 @@ function TeachersList(props) {
   };
 
   // onSubmit
-  const onSubmit = (values) => {
-    console.log(values);
-  };
+  const onSubmit = (values) => {};
 
   //delete teachers from db
   const confirmDelete = async () => {

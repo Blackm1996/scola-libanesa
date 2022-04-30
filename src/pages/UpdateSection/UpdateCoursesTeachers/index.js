@@ -95,11 +95,9 @@ export default function UpdateCoursesTeachers(props) {
           idCourse: courses[foundIndex].id_course,
           idInstructor: courses[foundIndex].instructor_id,
         };
-        console.log("index", removedObj);
 
         removed = removed.filter((item) => item.idCourse != idCourse);
         removed.push(removedObj);
-        //console.log("find3", find3);
         setRemovedInstructor([...removed]);
       }
       // exist already in addedInstructor

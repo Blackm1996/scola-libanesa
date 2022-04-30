@@ -117,7 +117,6 @@ class UpdateGradeBooks extends Component {
     const { deleteMessage } = this.state.langKeywords[pageLanguage];
     var answer = window.confirm(deleteMessage);
     if (answer) {
-      //console.log("deletBook func called succes");
       var oldBooks = this.state.books;
       var deletedBooks = this.state.deletedBooks;
       var filteredBooks = oldBooks.filter(function (book, index, arr) {
@@ -128,7 +127,6 @@ class UpdateGradeBooks extends Component {
         deletedBooks: [...deletedBooks],
         books: [...filteredBooks],
       });
-      //console.log(filteredBooks);
     }
   };
 

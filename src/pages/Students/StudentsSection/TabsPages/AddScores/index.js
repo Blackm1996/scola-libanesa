@@ -154,7 +154,6 @@ const AddScores = (props) => {
     axios
       .get(
         `/sectionCourses/${params.id}`
-        //`https://management.escola-libanesa.com/test2/api/sectionCourses/59`
       )
       .then((response) => {
         const { currentSemester, semesterType } = response.data;
@@ -167,11 +166,9 @@ const AddScores = (props) => {
     setCourses([]);
     setLoading(true);
     setIdCourse("");
-    console.log("updated");
     axios
       .get(
         `/sectionCourses/${params.id}`
-        //`https://management.escola-libanesa.com/test2/api/sectionCourses/59`
       )
       .then((response) => {
         setLoading(false);
@@ -194,7 +191,6 @@ const AddScores = (props) => {
     axios
       .get(
         `/scoresStatus/${idSection}/${idCourse}`
-        //`https://management.escola-libanesa.com/test2/api/scoresStatus/59/243`
       )
       .then((response) => {
         setScores(response.data);
@@ -209,13 +205,14 @@ const AddScores = (props) => {
 
   // on blur event
   const handleInput = (e, studentId, idScoreType) => {
+    
     axios.post(`/privelegeScore`, {
       id_score_type: idScoreType,
       id_student: studentId,
       id_course: idCourse,
       //id_course: 243,
       score: e.target.value,
-      School_Year: "2021-2022",
+      School_Year: props.year,
       final: "1",
     });
   };
@@ -333,6 +330,7 @@ const AddScores = (props) => {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
+    year: state.schoolYear
   };
 };
 

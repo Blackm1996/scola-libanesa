@@ -8,7 +8,6 @@ class GradesList extends Component {
     grades: []
   }
   componentDidMount = () => {
-    console.log("paraaaams", this.props.match);
     axios
       .get(
         "/grade"

@@ -45,9 +45,7 @@ class StudentsGrade extends React.Component {
   // component did mount
   componentDidMount = () => {
     axios
-      .get(
-        `/section/${this.props.match.params.id}/2021-2022`
-      )
+      .get(`/section/${this.props.match.params.id}/${this.props.year}`)
       .then((response) => {
         let students = response.data.students;
         students = students.map((student) => {
@@ -67,9 +65,7 @@ class StudentsGrade extends React.Component {
 
     //get grade taxes and grade courses and scores
     axios
-      .get(
-        `/gradeStats/${this.props.match.params.id}`
-      )
+      .get(`/gradeStats/${this.props.match.params.id}`)
       .then((response) => {
         this.setState({
           gradeDetails: response.data,
@@ -84,9 +80,7 @@ class StudentsGrade extends React.Component {
       loading: true,
     });
     axios
-      .get(
-        `/section/${nextProps.match.params.id}/2021-2022`
-      )
+      .get(`/section/${nextProps.match.params.id}/${nextProps.year}`)
       .then((response) => {
         let students = response.data.students;
 
@@ -119,9 +113,7 @@ class StudentsGrade extends React.Component {
       ],
     });
     axios
-      .get(
-        `/gradeStats/${nextProps.match.params.id}`
-      )
+      .get(`/gradeStats/${nextProps.match.params.id}`)
       .then((response) => {
         this.setState({
           gradeDetails: response.data,
@@ -340,6 +332,7 @@ class StudentsGrade extends React.Component {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
+    year: state.schoolYear,
   };
 };
 

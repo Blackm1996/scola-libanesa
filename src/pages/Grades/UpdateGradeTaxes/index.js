@@ -25,22 +25,17 @@ class UpdateGradeTaxes extends Component {
   };
 
   componentDidMount = () => {
-    //console.log("id from url", this.props.match.params);
-    axios
-      .get(
-        `/grade/${this.props.match.params.id}`
-      )
-      .then((response) => {
-        const inscription = response.data;
-        this.setState({
-          inscriptionDetails: {
-            inscriptionTax: inscription.Default_Inscription_tax,
-            booksUniformTotal: inscription.Default_Books_Uniform_total,
-            monthTotalPay: inscription.Default_Monthly_pay,
-            name: inscription.Name,
-          },
-        });
+    axios.get(`/grade/${this.props.match.params.id}`).then((response) => {
+      const inscription = response.data;
+      this.setState({
+        inscriptionDetails: {
+          inscriptionTax: inscription.Default_Inscription_tax,
+          booksUniformTotal: inscription.Default_Books_Uniform_total,
+          monthTotalPay: inscription.Default_Monthly_pay,
+          name: inscription.Name,
+        },
       });
+    });
   };
 
   form = (props) => {
@@ -141,10 +136,7 @@ class UpdateGradeTaxes extends Component {
       if (willUpdate)
         axios
           //http://127.0.0.1:8000/api/grade
-          .put(
-            `/grade/${this.props.match.params.id}`,
-            grade
-          )
+          .put(`/grade/${this.props.match.params.id}`, grade)
           .then((response) => {
             if (response.status == 200) {
               swal(success, {

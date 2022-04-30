@@ -22,19 +22,18 @@ class AddGrade extends Component {
   };
 
   onSubmit = (values) => {
-
     const pageLanguage = this.props.language;
 
     // Language KEywords
     const {
-      success, 
-      error1,  // There was a problem, please try again
-      error2   // 'Grade already exist
+      success,
+      error1, // There was a problem, please try again
+      error2, // 'Grade already exist
     } = this.state.langKeywords[pageLanguage];
 
     //values on json format
     const grade = {
-      Name: values.gradeName, 
+      Name: values.gradeName,
       Default_Inscription_tax: values.defInscriptionTax,
       Default_Monthly_pay: values.defMonthlyPay,
       Default_Books_Uniform_total: values.defUniformCost,
@@ -42,30 +41,32 @@ class AddGrade extends Component {
       books: values.books,
       courses: values.courses,
     };
-    
+
     axios
-      //http://127.0.0.1:8000/api/grade
       .post("/grade", grade)
       .then((response) => {
-        console.log('response', response.status);
         if (response.status == 201) {
-          
           swal(success, {
-          icon: "success",
-          })
-          .then (() => window.location.reload());
+            icon: "success",
+          }).then(() => window.location.reload());
         } else {
-            swal({ error1 }, {
-              icon: "error"
-            });
+          swal(
+            { error1 },
+            {
+              icon: "error",
+            }
+          );
         }
-        })
+      })
       .catch((error) => {
-        swal({ error1 }, {
-          icon: "error",
-        });
+        swal(
+          { error1 },
+          {
+            icon: "error",
+          }
+        );
       });
-    
+
     //send post
 
     /*
@@ -84,7 +85,6 @@ class AddGrade extends Component {
     */
   };
   form = (props) => {
-    //console.log(props);
     // Page Lang
     const pageLanguage = this.props.language;
 
@@ -104,14 +104,13 @@ class AddGrade extends Component {
       name,
       score,
       add,
-      error
+      error,
     } = this.state.langKeywords[pageLanguage];
 
     return (
       <form onSubmit={props.handleSubmit}>
         <div className="row">
           <div className="add-grade col-lg-6 col-12">
-
             {/* Grade Name */}
             <div className="form-group">
               <label htmlFor="gradeName">{gradeName}</label>
@@ -127,7 +126,7 @@ class AddGrade extends Component {
                 <ErrorMessage name="gradeName" />
               </span>
             </div>
-            
+
             {/* default Inscription Tax */}
             <div className="form-group">
               <label htmlFor="defInscriptionTax">{defInscriptionTax}</label>
@@ -136,7 +135,7 @@ class AddGrade extends Component {
                 type="number"
                 className="form-control"
                 id="nameStudent"
-                placeholder = ""
+                placeholder=""
                 autoComplete="off"
                 onWheel={(e) => e.target.blur()}
               />
@@ -147,13 +146,13 @@ class AddGrade extends Component {
 
             {/* default Monthly payment */}
             <div className="form-group">
-              <label htmlFor="defMonthlyPay">{ defMonthlyPay }</label>
+              <label htmlFor="defMonthlyPay">{defMonthlyPay}</label>
               <Field
                 name="defMonthlyPay"
                 type="number"
                 className="form-control"
                 id="defMonthlyPay"
-                placeholder= ""
+                placeholder=""
                 autoComplete="off"
                 onWheel={(e) => e.target.blur()}
               />
@@ -172,7 +171,7 @@ class AddGrade extends Component {
                 type="number"
                 className="form-control"
                 id="defUniformCost"
-                placeholder = ""
+                placeholder=""
                 autoComplete="off"
                 onWheel={(e) => e.target.blur()}
               />
@@ -184,7 +183,7 @@ class AddGrade extends Component {
             {/* Books */}
             <div className="form-group">
               <fieldset>
-                <legend>{ books }</legend>
+                <legend>{books}</legend>
                 <FieldArray
                   name="books"
                   render={(arrayHelper) => (
@@ -197,7 +196,7 @@ class AddGrade extends Component {
                               id={`books.${index}.name`}
                               name={`books.${index}.name`}
                               className="form-control"
-                              placeholder= {bookName}
+                              placeholder={bookName}
                               autoComplete="off"
                             />
                             <span className="error">
@@ -235,8 +234,8 @@ class AddGrade extends Component {
 
             {/* Courses */}
             <div className="form-group">
-                <fieldset>
-                <legend>{ courses }</legend>
+              <fieldset>
+                <legend>{courses}</legend>
                 <FieldArray
                   name="courses"
                   render={(arrayHelper) => (
@@ -252,7 +251,7 @@ class AddGrade extends Component {
                               id={`courses.${index}.name`}
                               name={`courses.${index}.name`}
                               className="form-control"
-                              placeholder={ name }
+                              placeholder={name}
                               autoComplete="off"
                             />
                             <span className="error">
@@ -310,7 +309,7 @@ class AddGrade extends Component {
             <div className="form-group">
               <button type="submit" className="btn btn-primary btn-block">
                 <i className="fa fa-plus"></i>
-                <span>{ add }</span>
+                <span>{add}</span>
               </button>
             </div>
           </div>
@@ -322,26 +321,17 @@ class AddGrade extends Component {
   // Validator
   schema = () => {
     //Show required *
-     // Page Lang
+    // Page Lang
     const pageLanguage = this.props.language;
 
     // Language KEywords
-    const {
-      required,
-      number
-    } = this.state.langKeywords[pageLanguage];
-    
+    const { required, number } = this.state.langKeywords[pageLanguage];
+
     const schema = Yup.object().shape({
       gradeName: Yup.string().required(required),
-      defInscriptionTax: Yup.number()
-        .typeError(number)
-        .required(required),
-      defMonthlyPay: Yup.number()
-        .typeError(number)
-        .required(required),
-      defUniformCost: Yup.number()
-        .typeError(number)
-        .required(required),
+      defInscriptionTax: Yup.number().typeError(number).required(required),
+      defMonthlyPay: Yup.number().typeError(number).required(required),
+      defUniformCost: Yup.number().typeError(number).required(required),
       books: Yup.array().of(
         Yup.object().shape({
           name: Yup.string()
@@ -354,9 +344,7 @@ class AddGrade extends Component {
           name: Yup.string()
             .typeError("accept Characters only")
             .required(required),
-          score: Yup.number()
-            .typeError(number)
-            .required(required),
+          score: Yup.number().typeError(number).required(required),
         })
       ),
     });

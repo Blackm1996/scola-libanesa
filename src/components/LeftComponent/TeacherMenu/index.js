@@ -19,7 +19,7 @@ class TeacherMenu extends Component {
   };
   componentDidMount = () => {
     // get grades
-    axios.get(`/section/2021-2022`).then((response) => {
+    axios.get(`/section/${this.props.year}`).then((response) => {
       this.setState({
         grades: response.data,
       });
@@ -53,6 +53,7 @@ class TeacherMenu extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
+    year: state.schoolYear
   };
 };
 export default connect(mapStateToProps)(TeacherMenu);

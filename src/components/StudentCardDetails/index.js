@@ -21,14 +21,11 @@ function StudentCardDetails(props) {
   // lang keys
   // Language KEywords
   const { studentsCount, lastTrimesterAverage } = langKeywords[pageLanguage];
-  console.log(langKeywords[pageLanguage]);
 
   const params = useParams();
   useEffect(() => {
     axios
-      .get(
-        `/classAverage/${params.id}`
-      )
+      .get(`/classAverage/${params.id}`)
       .then((response) => {
         setDetails(response.data);
       })
@@ -39,9 +36,7 @@ function StudentCardDetails(props) {
   }, [props.language]);
   useEffect(() => {
     axios
-      .get(
-        `/classAverage/${params.id}`
-      )
+      .get(`/classAverage/${params.id}`)
       .then((response) => {
         setDetails(response.data);
       })

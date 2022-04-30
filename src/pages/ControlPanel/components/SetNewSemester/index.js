@@ -35,7 +35,6 @@ function SetNewSemester(props) {
       .then((response) => {
         if (response.status == 200) {
           let semester = response.data;
-          console.log(semester);
           setSelectedSemester(
             `${semester.semester_number}-${semester.semester_type}`
           );
@@ -67,7 +66,6 @@ function SetNewSemester(props) {
 
   const handleChange = (event) => {
     let newSemester = event.target.value.split("-");
-    console.log(newSemester);
     swal({
       title: ` ${progressToNewSemester}: (trimester ${newSemester[0]} - ${newSemester[1]} ) ? `,
       icon: "warning",

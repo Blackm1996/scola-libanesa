@@ -108,7 +108,6 @@ class AllStudents extends Component {
           </div>
           {/* start table */}
           
-        {/* onChangePage = { (e, pg) => {console.log(`current page is : ${e} `); this.setState({ pageNum: e })}} */}
         <div className="students-all col-12 mx-auto">
           <MaterialTable
             tableRef={this.tableRef}

@@ -40,13 +40,11 @@ class AllStudentsTable extends React.Component {
 
   // component did mount
   componentDidMount = () => {
-    axios
-      .get("/api/student")
-      .then((response) => {
-        this.setState({
-          users: response.data,
-        });
+    axios.get("/api/student").then((response) => {
+      this.setState({
+        users: response.data,
       });
+    });
   };
   //filter by Id
   filterById = (filterVal, data) => {
@@ -88,7 +86,6 @@ class AllStudentsTable extends React.Component {
     // Language KEywords
     const { titlePage, firstName, lastName } =
       this.state.langKeywords[pageLanguage];
-    console.log("first Name", lastName);
     const classOptions = this.state.classOptions;
     const sectionOptions = this.state.sectionOptions;
 

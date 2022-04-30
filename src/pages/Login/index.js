@@ -56,9 +56,6 @@ const Login = (props) => {
         localStorage.clear();
 
         setLoading(false);
-        //console.log(jwt_decode(response.data.jwt));
-        //console.log(response.data.access_token);
-        //console.log(props.history.push('/dashboard'));
         setUserSession(response.data.jwt, response.data.access_token);
 
         // mo2akatan
@@ -97,7 +94,6 @@ const Login = (props) => {
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error.message === "Invalid token specified");
         if (error === "") setError("Invalid token specified");
         else setError("Something went wrong. Please try again later.");
       });
@@ -195,7 +191,6 @@ const useFormInput = (initialValue) => {
 };
 
 const mapStateToProps = (state) => {
-  //console.log(state);
   return {
     language: state,
   };

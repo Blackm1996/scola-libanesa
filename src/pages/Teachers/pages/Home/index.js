@@ -91,11 +91,7 @@ function CustomizedAccordions(props) {
     const idTeacher = params.idTeacher;
 
     axios
-      .get(
-        `/instructor/${localStorage.getItem(
-          "id"
-        )}/${props.schoolYear}`
-      )
+      .get(`/instructor/${localStorage.getItem("id")}/${props.schoolYear}`)
       .then((response) => {
         setLoading(false);
         setSemester(response.data.name);

@@ -34,7 +34,6 @@ const customStyles = {
 };
 
 const ScoresTable = (props) => {
-  console.log(props);
   const [selectedTab, setSelectedTab] = useState(0);
   const [semester, setSemester] = React.useState("");
   const [semesters, setSemesters] = React.useState([]);

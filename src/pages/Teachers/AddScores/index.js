@@ -71,7 +71,7 @@ const AddScores = (props) => {
       id_student: studentId,
       id_course: params.idCourse,
       score: e.target.value,
-      School_Year: "2021-2022",
+      School_Year: props.year,
       final: "0",
     });
   };
@@ -182,6 +182,7 @@ const AddScores = (props) => {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
+    year: state.schoolYear
   };
 };
 

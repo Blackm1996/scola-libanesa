@@ -34,16 +34,15 @@ class View extends Component {
 
   //component did mount
   componentDidMount = () => {
-    //console.log("school year", this.props.schoolYear);
     // student id
     const studentID = this.props.match.params.id;
 
     //set id student in state
     this.setState({
       id: studentID,
-      yearSelected: this.props.schoolYear
+      yearSelected: this.props.schoolYear,
     });
-    
+
     //get years inscripted by student
     //get years select box
 
@@ -62,17 +61,16 @@ class View extends Component {
 
     // get bills for current year
     // get bills
-       getBills(studentID, this.props.schoolYear ) // e.value is year selected 
+    getBills(studentID, this.props.schoolYear) // e.value is year selected
       .then((response) => {
         if (response.status == 200) {
-          if ( response.data.startMonth != null ) {
+          if (response.data.startMonth != null) {
             this.setState({
-          ...response.data,
-          showTable: true,
-          });
+              ...response.data,
+              showTable: true,
+            });
           }
-        }
-        else swal("there is a error, please try again ..", { icon: "error" });       
+        } else swal("there is a error, please try again ..", { icon: "error" });
       })
       .catch((error) => {
         swal("there is a error, please try again ..", { icon: "error" });
@@ -81,7 +79,6 @@ class View extends Component {
 
   //show bills when we click on  month
   showBills = (month) => {
-    //console.log(month);
     this.setState({
       monthSelected: month,
       modalVis: !this.state.modalVis,
@@ -130,22 +127,20 @@ class View extends Component {
   onDropdownChange = (e) => {
     // id student getted from url
     const studentID = this.props.match.params.id;
-    //console.log(e.value);
-
     //set selected year in the state
     this.setState({
       yearSelected: e.value,
     });
-       
-       // get bills
-       getBills(studentID, e.value ) // e.value is year selected 
+
+    // get bills
+    getBills(studentID, e.value) // e.value is year selected
       .then((response) => {
         if (response.status == 200)
           this.setState({
-          ...response.data,
-          showTable: true,
-        });
-        else swal("there is a error, please try again ..", { icon: "error" });       
+            ...response.data,
+            showTable: true,
+          });
+        else swal("there is a error, please try again ..", { icon: "error" });
       })
       .catch((error) => {
         swal("there is a error, please try again ..", { icon: "error" });
@@ -162,7 +157,6 @@ class View extends Component {
       year = this.state.years[i]["School_Year"];
       years.push({ value: year, label: year });
     }
-    //console.log(years);
     // Page Lang
     const pageLanguage = this.props.language;
 
@@ -175,14 +169,14 @@ class View extends Component {
       rest,
       status,
       completed,
-      insertYear
+      insertYear,
     } = this.state.langKeywords[pageLanguage];
-   
+
     return (
       <div className="view-bills">
         <div className="container-fluid">
           <div className="col-12 text-center">
-            <h2 className="title-of-middle">{ title }</h2>
+            <h2 className="title-of-middle">{title}</h2>
 
             {/* Start Bills Modal section */}
             {this.state.modalVis ? (
@@ -202,7 +196,10 @@ class View extends Component {
                 <Select
                   style={{ fontSize: 0 }}
                   placeholder="Select class"
-                  defaultValue={{ label: `${ this.props.schoolYear }`, value: ` ${ this.props.schoolYear } ` }}
+                  defaultValue={{
+                    label: `${this.props.schoolYear}`,
+                    value: ` ${this.props.schoolYear} `,
+                  }}
                   options={years}
                   styles={this.customStyles}
                   theme={(theme) => ({
@@ -227,11 +224,11 @@ class View extends Component {
                   <table className="bills-table">
                     <thead>
                       <tr style={{ cursor: "pointer" }}>
-                        <th>{ month }</th>
-                        <th>{ total }</th>
-                        <th>{ paidAmount }</th>
-                        <th>{ rest }</th>
-                        <th>{ status }</th>
+                        <th>{month}</th>
+                        <th>{total}</th>
+                        <th>{paidAmount}</th>
+                        <th>{rest}</th>
+                        <th>{status}</th>
                       </tr>
                     </thead>
                     {this.state.bills.length === 0 ? (
@@ -251,7 +248,7 @@ class View extends Component {
                               <span
                                 style={{ color: "#0f660fbd", fontSize: "13px" }}
                               >
-                                <i className="fa fa-check"></i> { completed }
+                                <i className="fa fa-check"></i> {completed}
                               </span>
                             ) : (
                               <span
@@ -267,7 +264,7 @@ class View extends Component {
                   </table>
                 </div>
               ) : (
-                <div>{ insertYear }</div>
+                <div>{insertYear}</div>
               )}
               {/* end payments table */}
             </div>
@@ -281,7 +278,7 @@ class View extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
-    schoolYear: state.schoolYear
+    schoolYear: state.schoolYear,
   };
 };
 export default connect(mapStateToProps)(View);

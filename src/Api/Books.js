@@ -2,7 +2,6 @@ import axios from "axios";
 
 //add grade
 export async function addGrade(values) {
-  //console.log(values);
   const json = JSON.stringify({
     name: values.gradeName,
     def_inscription_tax: values.defInscriptionTax,
@@ -33,8 +32,6 @@ export async function updateBooks(values) {
 export async function getBooks(gradeId) {
   //console.log(values);
 
-  const response = axios.get(
-    "/book/" + gradeId
-  );
+  const response = axios.get("/book/" + gradeId);
   return response;
 }

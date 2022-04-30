@@ -84,13 +84,13 @@ class StudentsSection extends React.Component {
   componentDidMount = () => {
     //get marks
     axios.get(`/classScores/${this.props.match.params.id}`).then((response) => {
-      console.log("marks", response.data);
+
       this.setState({
         studentsMarks: response.data,
       });
     });
     axios
-      .get(`/sectionStudents/${this.props.match.params.id}/2021-2022`)
+      .get(`/sectionStudents/${this.props.match.params.id}/${this.props.year}`)
       .then((response) => {
         let students = response.data.students;
         students = students.map((student) => {
@@ -112,7 +112,7 @@ class StudentsSection extends React.Component {
 
     // students bills
     axios
-      .get(`/sectionBills/${this.props.match.params.id}/2021-2022`)
+      .get(`/sectionBills/${this.props.match.params.id}/${this.props.year}`)
       .then((response) => {
         var studentsBills = [];
 
@@ -150,14 +150,13 @@ class StudentsSection extends React.Component {
 
     //get marks
     axios.get(`/classScores/${nextProps.match.params.id}`).then((response) => {
-      console.log("marks", response.data);
       this.setState({
         studentsMarks: response.data,
       });
     });
 
     axios
-      .get(`/sectionStudents/${nextProps.match.params.id}/2021-2022`)
+      .get(`/sectionStudents/${nextProps.match.params.id}/${this.props.year}`)
       .then((response) => {
         let students = response.data.students;
 
@@ -178,7 +177,7 @@ class StudentsSection extends React.Component {
       });
     // students bills
     axios
-      .get(`/sectionBills/${nextProps.match.params.id}/2021-2022`)
+      .get(`/sectionBills/${nextProps.match.params.id}/${this.props.year}`)
       .then((response) => {
         var studentsBills = [];
 
@@ -278,20 +277,6 @@ class StudentsSection extends React.Component {
   // print students marks
   async printMarks() {
     //get marks
-    // axios
-    //   .get(
-    //     `https://management.escola-libanesa.com/test2/api/classScores/${this.props.match.params.id}`
-    //   )
-    //   .then((response) => {
-    //     console.log("marks", response.data);
-    //     this.setState({
-    //       studentsMarks: response.data,
-    //       printSection: false,
-    //       printBills: false,
-    //       printEmptyTable: false,
-    //       printMarks: true,
-    //     });
-    //   });
     this.setState({
       printSection: false,
       printBills: false,
@@ -678,6 +663,7 @@ class StudentsSection extends React.Component {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
+    year: state.schoolYear
   };
 };
 

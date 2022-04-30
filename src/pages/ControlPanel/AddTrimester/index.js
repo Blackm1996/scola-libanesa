@@ -25,7 +25,6 @@ class AddTrimester extends Component {
 
     // All Name
     const { success, error } = this.state.langKeywords[pageLanguage];
-    console.log("error", error);
     // send post
     addTrim(values)
       .then((response) => {
@@ -35,7 +34,6 @@ class AddTrimester extends Component {
           });
       })
       .catch((err) => {
-        console.log("error");
         swal(error, {
           icon: "error",
         });

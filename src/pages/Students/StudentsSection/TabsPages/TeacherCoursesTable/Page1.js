@@ -29,13 +29,10 @@ const Page1 = (props) => {
       .catch((error) => {});
   }, []);
 
-  console.log("teachers courses props", props);
   useEffect(() => {
-    console.log("teachersCourses", teachersCourses);
     axios
       .get(`/instructor/${params.id}`)
       .then((response) => {
-        //console.log(response.data);
         setTeachersCourses(response.data);
       })
       .catch((error) => {

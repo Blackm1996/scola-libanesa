@@ -10,7 +10,7 @@ import {
 } from "../../SchoolYear/langKeys";
 import axios from "axios";
 import swal from "sweetalert";
-import Popover from "@mui/material/Popover";
+import { TOGGLE_SCHOOL_YEAR } from "../../../../redux/actions";
 // import Menu from "@mui/material/Menu";
 // import MenuItem from "@mui/material/MenuItem";
 //
@@ -106,7 +106,7 @@ function OngoingSchoolYear(props) {
     cancel,
     confirm,
     errorRefresh,
-    success
+    success,
   } = langKeywords[pageLanguage];
 
   useEffect(() => {
@@ -118,7 +118,9 @@ function OngoingSchoolYear(props) {
     axios
       .get("/schoolYear")
       .then((response) => {
-        if (response.status == 200) setYear(response.data.value);
+        if (response.status == 200) {
+          setYear(response.data.school_year);
+        }
       })
       .catch((error) => {
         swal(errorRefresh, {
@@ -148,6 +150,7 @@ function OngoingSchoolYear(props) {
             .then((response) => {
               if (response.status == 200) {
                 setYear(newYear);
+                props.toggleSchoolYear(newYear);
                 swal(success, {
                   icon: "success",
                 });
@@ -192,6 +195,7 @@ function OngoingSchoolYear(props) {
             .then((response) => {
               if (response.status == 200) {
                 setYear(newYear);
+                props.toggleSchoolYear(newYear);
                 swal(success, {
                   icon: "success",
                 });
@@ -252,5 +256,10 @@ const mapStateToProps = (state) => {
     language: state.language,
   };
 };
-
-export default connect(mapStateToProps)(OngoingSchoolYear);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleSchoolYear: (newYear) =>
+      dispatch({ type: TOGGLE_SCHOOL_YEAR, payload: { schoolYear: newYear } }),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(OngoingSchoolYear);

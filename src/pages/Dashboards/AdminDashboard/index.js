@@ -5,32 +5,44 @@ import Grades from "../../Grades";
 import StudentProfile from "../../StudentProfile";
 import Payments from "../../Payments";
 import { Route, Switch, Redirect } from "react-router-dom";
+import axios from "axios";
 // import connect from react-redux
 import { connect } from "react-redux";
-import { TOGGLE_LANG, TOGGLE_ROLE } from "../../../redux/actions";
+import {
+  TOGGLE_LANG,
+  TOGGLE_ROLE,
+  TOGGLE_SCHOOL_YEAR,
+  TOGGLE_REGISTRATION_SCHOOL_YEAR,
+} from "../../../redux/actions";
 import Login from "../../Login";
 
 class AdminDashboard extends Component {
   componentDidMount = () => {
-    /* start Resole problem when we reload the page and the language is returned to default value in redux [ENGLISH ]*/
+    axios.get("/schoolYear").then((resp) => {
+      this.props.toggleSchoolYear(resp.data.school_year);
+      this.props.toggleRegistrationSchoolYear(resp.data.registration_year);
+      /* start Resole problem when we reload the page and the language is returned to default value in redux [ENGLISH ]*/
 
-    // get language from local storage
-    const globalLang = localStorage.getItem("language");
-    if (globalLang != null) {
-      // when we click update button we should update the update and we need to set language in redux from localstorage
-      this.props.toggleLanguages(globalLang);
-    }
-    /* end Resole problem when we reload the page and the language is returned to default value in redux [ENGLISH ]*/
+      // get language from local storage
+      const globalLang = localStorage.getItem("language");
+      if (globalLang != null) {
+        // when we click update button we should update the update and we need to set language in redux from localstorage
+        this.props.toggleLanguages(globalLang);
+      }
+      /* end Resole problem when we reload the page and the language is returned to default value in redux [ENGLISH ]*/
 
-    /* start resolve problem when we reload the page and user role should reset in redux */
-    const role = localStorage.getItem("role");
-    if (role != null) {
-      // when we click update button we should update the update and we need to set role in redux from localstorage
-      this.props.setRole(role);
-    }
-    /* end resolve problem when we reload the page and user role should reset in redux */
+      /* start resolve problem when we reload the page and user role should reset in redux */
+      const role = localStorage.getItem("role");
+      if (role != null) {
+        // when we click update button we should update the update and we need to set role in redux from localstorage
+        this.props.setRole(role);
+      }
+      /* end resolve problem when we reload the page and user role should reset in redux */
+    });
   };
-
+  componentDidUpdate = () => {
+    console.log("new props ", this.props);
+  };
   render() {
     //navbar links
     const links = [
@@ -75,6 +87,7 @@ const mapStateToProps = (state) => {
   return {
     language: state.language,
     role: state.role,
+    schoolYear: state.schoolYear,
   };
 };
 
@@ -83,6 +96,13 @@ const mapDispatchToProps = (dispatch) => {
     toggleLanguages: (newLang) =>
       dispatch({ type: TOGGLE_LANG, payload: { lang: newLang } }),
     setRole: (role) => dispatch({ type: TOGGLE_ROLE, payload: { role } }),
+    toggleSchoolYear: (newYear) =>
+      dispatch({ type: TOGGLE_SCHOOL_YEAR, payload: { schoolYear: newYear } }),
+    toggleRegistrationSchoolYear: (newYear) =>
+      dispatch({
+        type: TOGGLE_REGISTRATION_SCHOOL_YEAR,
+        payload: { registrationSchoolYear: newYear },
+      }),
   };
 };
 

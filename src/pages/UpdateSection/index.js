@@ -52,33 +52,30 @@ class UpdateSection extends Component {
     //const { addSectionFailed } = this.state.langKeywords[pageLanguage];
     // get grades array with each grade its id and name
     let grades = [];
-    axios
-      .get(
-        `/section/${this.props.schoolYear}`
-      )
-      .then((response) => {
-        grades = response.data;
-        grades = grades.map((grade) => {
-          return {
-            id: grade.gradeId,
-            value: grade.gradeName,
-          };
+    this.props.schoolYear &&
+      axios
+        .get(`/section/${this.props.schoolYear}`)
+        .then((response) => {
+          grades = response.data;
+          grades = grades.map((grade) => {
+            return {
+              id: grade.gradeId,
+              value: grade.gradeName,
+            };
+          });
+          this.setState({
+            loading: false,
+            grades,
+          });
+        })
+        .catch((error) => {
+          swal("addSectionFailed", {
+            icon: "error",
+          });
         });
-        this.setState({
-          loading: false,
-          grades,
-        });
-      })
-      .catch((error) => {
-        swal("addSectionFailed", {
-          icon: "error",
-        });
-      });
     //get distributed and not distributed students from databse
     axios
-      .get(
-        `/missingStudents/${this.props.match.params.id}`
-      )
+      .get(`/missingStudents/${this.props.match.params.id}`)
       .then((response) => {
         let stDistributedAPI =
           Object.keys(response.data).length > 0
@@ -116,6 +113,32 @@ class UpdateSection extends Component {
           stNotDistAfterSearch: [...stNotDistributedAPI],
         });
       });
+  };
+  
+  componentDidUpdate = (prevProps, prevState) => {
+    if (prevProps.schoolYear !== this.props.schoolYear) {
+      let grades = [];
+      axios
+        .get(`/section/${this.props.schoolYear}`)
+        .then((response) => {
+          grades = response.data;
+          grades = grades.map((grade) => {
+            return {
+              id: grade.gradeId,
+              value: grade.gradeName,
+            };
+          });
+          this.setState({
+            loading: false,
+            grades,
+          });
+        })
+        .catch((error) => {
+          swal("addSectionFailed", {
+            icon: "error",
+          });
+        });
+    }
   };
 
   //handle on Blur
@@ -248,10 +271,7 @@ class UpdateSection extends Component {
       sendedObj.removedInstructor = [...this.state.removedInstructor];
       sendedObj.addedInstructor = [...this.state.addedInstructor];
       axios
-        .put(
-          `/section/${this.props.match.params.id}`,
-          sendedObj
-        )
+        .put(`/section/${this.props.match.params.id}`, sendedObj)
         .then((response) => {
           if (response.status == 200) {
             swal(addSectionSuccess, {
@@ -310,9 +330,7 @@ class UpdateSection extends Component {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(
-            `/section/${this.props.match.params.id}`
-          )
+          .delete(`/section/${this.props.match.params.id}`)
           .then((response) => {
             if (response.status == 200) {
               swal(success, {

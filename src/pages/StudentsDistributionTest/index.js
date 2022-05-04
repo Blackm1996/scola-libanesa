@@ -87,28 +87,59 @@ class StudentsDistribution extends Component {
     //const { addSectionFailed } = this.state.langKeywords[pageLanguage];
     // get grades array with each grade its id and name
     let grades = [];
-    axios
-      .get(
-        `/section/${this.props.schoolYear}`
-      )
-      .then((response) => {
-        grades = response.data;
-        grades = grades.map((grade) => {
-          return {
-            id: grade.gradeId,
-            value: grade.gradeName,
-          };
+    this.props.schoolYear !== "" &&
+      axios
+        .get(`/section/${this.props.schoolYear}`)
+        .then((response) => {
+          grades = response.data;
+          grades = grades.map((grade) => {
+            return {
+              id: grade.gradeId,
+              value: grade.gradeName,
+            };
+          });
+          this.setState({
+            loading: false,
+            grades,
+          });
+        })
+        .catch((error) => {
+          swal("addSectionFailed", {
+            icon: "error",
+          });
         });
-        this.setState({
-          loading: false,
-          grades,
+  };
+  componentDidUpdate = (prevProps, prevState) => {
+    // Page Lang
+    const pageLanguage = localStorage.getItem("language");
+
+    // Language KEywords
+    //const { addSectionFailed } = this.state.langKeywords[pageLanguage];
+    // get grades array with each grade its id and name
+    if (prevProps.schoolYear != this.props.schoolYear) {
+      console.log("props mmm", this.props.schoolYear);
+      let grades = [];
+      axios
+        .get(`/section/${this.props.schoolYear}`)
+        .then((response) => {
+          grades = response.data;
+          grades = grades.map((grade) => {
+            return {
+              id: grade.gradeId,
+              value: grade.gradeName,
+            };
+          });
+          this.setState({
+            loading: false,
+            grades,
+          });
+        })
+        .catch((error) => {
+          swal("addSectionFailed", {
+            icon: "error",
+          });
         });
-      })
-      .catch((error) => {
-        swal("addSectionFailed", {
-          icon: "error",
-        });
-      });
+    }
   };
 
   //custom stlyes
@@ -180,9 +211,7 @@ class StudentsDistribution extends Component {
     // grade id selected
     const gradeId = value.id;
     axios
-      .get(
-        `/missingStudent/${gradeId}/${this.props.schoolYear}`
-      )
+      .get(`/missingStudent/${gradeId}/${this.props.schoolYear}`)
       .then((resp) => {
         let students = resp.data,
           student = {};

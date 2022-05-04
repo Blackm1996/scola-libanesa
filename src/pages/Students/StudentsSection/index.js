@@ -84,15 +84,17 @@ class StudentsSection extends React.Component {
   componentDidMount = () => {
     //get marks
     axios.get(`/classScores/${this.props.match.params.id}`).then((response) => {
-
       this.setState({
         studentsMarks: response.data,
       });
     });
+    console.log("proppppp", this.props);
     axios
-      .get(`/sectionStudents/${this.props.match.params.id}/${this.props.year}`)
+      .get(
+        `/sectionStudents/${this.props.match.params.id}/${this.props.schoolYear}`
+      )
       .then((response) => {
-        let students = response.data.students;
+        let students = response.data.students || [];
         students = students.map((student) => {
           return {
             id: student.id,
@@ -112,7 +114,9 @@ class StudentsSection extends React.Component {
 
     // students bills
     axios
-      .get(`/sectionBills/${this.props.match.params.id}/${this.props.year}`)
+      .get(
+        `/sectionBills/${this.props.match.params.id}/${this.props.schoolYear}`
+      )
       .then((response) => {
         var studentsBills = [];
 
@@ -154,9 +158,11 @@ class StudentsSection extends React.Component {
         studentsMarks: response.data,
       });
     });
-
+    console.log("next props", nextProps);
     axios
-      .get(`/sectionStudents/${nextProps.match.params.id}/${this.props.year}`)
+      .get(
+        `/sectionStudents/${nextProps.match.params.id}/${nextProps.schoolYear}`
+      )
       .then((response) => {
         let students = response.data.students;
 
@@ -177,7 +183,7 @@ class StudentsSection extends React.Component {
       });
     // students bills
     axios
-      .get(`/sectionBills/${nextProps.match.params.id}/${this.props.year}`)
+      .get(`/sectionBills/${nextProps.match.params.id}/${nextProps.schoolYear}`)
       .then((response) => {
         var studentsBills = [];
 
@@ -661,9 +667,10 @@ class StudentsSection extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log("state", state);
   return {
     language: state.language,
-    year: state.schoolYear
+    schoolYear: state.schoolYear,
   };
 };
 

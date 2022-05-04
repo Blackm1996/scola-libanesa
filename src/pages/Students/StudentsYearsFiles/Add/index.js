@@ -87,9 +87,7 @@ class AddStudentYearFile extends Component {
     // Language KEywords
     const { error1 } = this.state.langKeywords[pageLanguage];
     axios
-      .get(
-        `/studentFileYear/${this.props.schoolYear}`
-      )
+      .get(`/studentFileYear/${this.props.schoolYear}`)
       .then((response) => {
         if (response.status == 200) {
           this.setState({
@@ -125,7 +123,7 @@ class AddStudentYearFile extends Component {
         ...this.state.DDL1.find((x) => x.id == e.target.value).sections,
       ],
     });
-    
+
     axios
       .get(`/grade/${e.target.value}`)
       .then((response) => {
@@ -313,7 +311,12 @@ class AddStudentYearFile extends Component {
                 component="select"
               >
                 {years.map((item, index) => {
-                  return (
+                  console.log("item", this.props.registrationSchoolYear);
+                  return item === this.props.registrationSchoolYear ? (
+                    <option key={index} value={`${item}`} selected="selected">
+                      {item}
+                    </option>
+                  ) : (
                     <option key={index} value={`${item}`}>
                       {item}
                     </option>
@@ -539,7 +542,7 @@ class AddStudentYearFile extends Component {
           <Formik
             enableReinitialize={true}
             initialValues={{
-              year: "2021-2022",
+              year: this.props.registrationSchoolYear,
               inscriptionTax: inscription.inscriptionTax,
               booksUniformTotal: inscription.booksUniformTotal,
               monthTotalPay: inscription.monthTotalPay,
@@ -561,6 +564,7 @@ const mapStateToProps = (state) => {
   return {
     language: state.language,
     schoolYear: state.schoolYear,
+    registrationSchoolYear: state.registrationSchoolYear,
     role: state.role,
   };
 };

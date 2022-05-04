@@ -61,20 +61,22 @@ class View extends Component {
 
     // get bills for current year
     // get bills
-    getBills(studentID, this.props.schoolYear) // e.value is year selected
-      .then((response) => {
-        if (response.status == 200) {
-          if (response.data.startMonth != null) {
-            this.setState({
-              ...response.data,
-              showTable: true,
-            });
-          }
-        } else swal("there is a error, please try again ..", { icon: "error" });
-      })
-      .catch((error) => {
-        swal("there is a error, please try again ..", { icon: "error" });
-      });
+    this.props.schoolYear &&
+      getBills(studentID, this.props.schoolYear) // e.value is year selected
+        .then((response) => {
+          if (response.status == 200) {
+            if (response.data.startMonth != null) {
+              this.setState({
+                ...response.data,
+                showTable: true,
+              });
+            }
+          } else
+            swal("there is a error, please try again ..", { icon: "error" });
+        })
+        .catch((error) => {
+          swal("there is a error, please try again ..", { icon: "error" });
+        });
   };
 
   //show bills when we click on  month

@@ -73,11 +73,11 @@ function PositionedMenu(props) {
   );
 }
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     language: state,
   };
 };
+
 const mapDispatchToProps = (dispatch) => {
   return {
     toggleLanguages: (newLang) =>

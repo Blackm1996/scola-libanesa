@@ -7,6 +7,7 @@ import {
   FRENCHWORDS,
   PORTOWORDS,
 } from "../../SchoolYear/langKeys";
+import { TOGGLE_REGISTRATION_SCHOOL_YEAR } from "../../../../redux/actions";
 import axios from "axios";
 import swal from "sweetalert";
 import {
@@ -141,6 +142,7 @@ function StudentRegistrationYear(props) {
             .then((response) => {
               if (response.status == 200) {
                 setYear(newYear);
+                props.toggleRegistrationSchoolYear(newYear);
                 swal(success, {
                   icon: "success",
                 });
@@ -185,6 +187,7 @@ function StudentRegistrationYear(props) {
             .then((response) => {
               if (response.status == 200) {
                 setYear(newYear);
+                props.toggleRegistrationSchoolYear(newYear);
                 swal(success, {
                   icon: "success",
                 });
@@ -246,4 +249,16 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(StudentRegistrationYear);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleRegistrationSchoolYear: (newYear) =>
+      dispatch({
+        type: TOGGLE_REGISTRATION_SCHOOL_YEAR,
+        payload: { registrationSchoolYear: newYear },
+      }),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(StudentRegistrationYear);

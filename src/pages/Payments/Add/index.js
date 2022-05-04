@@ -67,52 +67,124 @@ class AddPayment extends Component {
       });
 
     //get student details
-    getStudent(studentID, this.props.schoolYear)
-      .then((response) => {
-        if (response.status == 200)
-          this.setState({
-            student: response.data,
-          });
-      })
-      .catch((error) => {
-        //window.location.reload();
-      });
+    this.props.schoolYear &&
+      getStudent(studentID, this.props.schoolYear)
+        .then((response) => {
+          if (response.status == 200)
+            this.setState({
+              student: response.data,
+            });
+        })
+        .catch((error) => {
+          //window.location.reload();
+        });
 
     // set inscripted months
-    axios
-      .get(
-        `/billsMonth/${studentID}/${this.state.selectedYear}`
-      )
-      .then((response) => {
-        if (response.status == 200) {
-          this.setState({
-            months: response.data,
-            selectedMonth: response.data[0],
-          });
+    this.state.selectedYear !== "" &&
+      axios
+        .get(`/billsMonth/${studentID}/${this.state.selectedYear}`)
+        .then((response) => {
+          if (response.status == 200) {
+            this.setState({
+              months: response.data,
+              selectedMonth: response.data[0],
+            });
 
-          //get the rest amount
+            //get the rest amount
+            axios
+              .get(
+                `/billsRest/${studentID}/${selectedYear}/${this.state.selectedMonth}`
+              )
+              .then((response) => {
+                if (response.status == 200) {
+                  const { Rest: rest } = response.data;
+                  this.setState({
+                    amount: rest,
+                  });
+                }
+              })
+              .catch((error) => {
+                swal(error1Add, {
+                  icon: "error",
+                });
+              });
+          }
+        })
+        .catch((error) => {
+          swal(error1Add, { icon: "error" });
+        });
+  };
+  componentDidUpdate = (prevProps, prevState) => {
+    if (prevProps.schoolYear !== this.props.schoolYear) {
+      this.setState(
+        {
+          ...this.state,
+          selectedYear: this.props.schoolYear,
+        },
+        () => {
+          // Page Lang
+          const pageLanguage = this.props.language;
+          // Language KEywords
+          const { error1Add } = this.state.langKeywords[pageLanguage];
+
+          const studentID = this.props.match.params.id;
+
+          // selected year
+          const selectedYear = this.state.selectedYear;
+
+          //selected month
+          const selectedMonth = this.state.selectedMonth;
+
+          //get student details
+          this.props.schoolYear &&
+            getStudent(studentID, this.props.schoolYear)
+              .then((response) => {
+                if (response.status == 200)
+                  this.setState({
+                    student: response.data,
+                  });
+              })
+              .catch((error) => {
+                //window.location.reload();
+              });
+
+          // set inscripted months
+
           axios
-            .get(
-              `/billsRest/${studentID}/${selectedYear}/${this.state.selectedMonth}`
-            )
+            .get(`/billsMonth/${studentID}/${this.state.selectedYear}`)
             .then((response) => {
               if (response.status == 200) {
-                const { Rest: rest } = response.data;
                 this.setState({
-                  amount: rest,
+                  months: response.data,
+                  selectedMonth: response.data[0],
                 });
+
+                //get the rest amount
+                axios
+                  .get(
+                    `/billsRest/${studentID}/${selectedYear}/${this.state.selectedMonth}`
+                  )
+                  .then((response) => {
+                    if (response.status == 200) {
+                      const { Rest: rest } = response.data;
+                      this.setState({
+                        amount: rest,
+                      });
+                    }
+                  })
+                  .catch((error) => {
+                    swal(error1Add, {
+                      icon: "error",
+                    });
+                  });
               }
             })
             .catch((error) => {
-              swal(error1Add, {
-                icon: "error",
-              });
+              swal(error1Add, { icon: "error" });
             });
         }
-      })
-      .catch((error) => {
-        swal(error1Add, { icon: "error" });
-      });
+      );
+    }
   };
 
   //custom stlyes
@@ -187,9 +259,7 @@ class AddPayment extends Component {
 
     //get months inscripteded in selected year
     axios
-      .get(
-        `/billsMonth/${studentID}/${yearSelected}`
-      )
+      .get(`/billsMonth/${studentID}/${yearSelected}`)
       .then((response) => {
         if (response.status == 200) {
           this.setState({
@@ -230,9 +300,7 @@ class AddPayment extends Component {
 
     //get the rest amount
     axios
-      .get(
-        `/billsRest/${studentID}/${selectedYear}/${selectedMonth}`
-      )
+      .get(`/billsRest/${studentID}/${selectedYear}/${selectedMonth}`)
       .then((response) => {
         if (response.status == 200) {
           const { Rest: rest } = response.data;
@@ -304,7 +372,7 @@ class AddPayment extends Component {
           id_student: studentID,
           School_Year: this.state.selectedYear,
           Amount: values.amount,
-          paymentType: values.paymentType
+          paymentType: values.paymentType,
         })
           .then((response) => {
             if (response.status == 201) {

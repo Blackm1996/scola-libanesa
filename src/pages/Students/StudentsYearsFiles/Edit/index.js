@@ -84,9 +84,7 @@ class EditInscription extends Component {
         });
         // get inscription tax
         axios
-          .get(
-            `/studentFileYear/${studentID}/${this.props.schoolYear}`
-          ) // global select year
+          .get(`/studentFileYear/${studentID}/${this.props.schoolYear}`) // global select year
           .then((response) => {
             //get student inscription details
             const inscription = response.data;
@@ -150,32 +148,27 @@ class EditInscription extends Component {
 
     // get inscription tax
     const studentID = this.state.inscriptionDetails.idStudent;
-    axios
-      .get(
-        `/studentFileYear/${studentID}/${e.value}`
-      )
-      .then((response) => {
-        //get student inscription details
-        const inscription = response.data;
-        this.setState({
-          inscriptionDetails: {
-            ...this.state.inscriptionDetails,
-            inscriptionTax: inscription.Inscription_Tax,
-            booksUniformTotal: inscription["Books/Uniform_total"],
-            monthTotalPay: inscription.Monthly_Total,
-            monthStart: inscription.Month_Start,
-            gradeId: inscription.gradeId,
-            sectionId:
-              inscription.sectionId == null ? "" : inscription.sectionId,
-            discount: inscription.Discount,
-          },
-          gradeSelected: inscription.gradeId,
+    axios.get(`/studentFileYear/${studentID}/${e.value}`).then((response) => {
+      //get student inscription details
+      const inscription = response.data;
+      this.setState({
+        inscriptionDetails: {
+          ...this.state.inscriptionDetails,
+          inscriptionTax: inscription.Inscription_Tax,
+          booksUniformTotal: inscription["Books/Uniform_total"],
+          monthTotalPay: inscription.Monthly_Total,
+          monthStart: inscription.Month_Start,
+          gradeId: inscription.gradeId,
+          sectionId: inscription.sectionId == null ? "" : inscription.sectionId,
           discount: inscription.Discount,
-          newMonthTotal: inscription.Monthly_Total,
-          sectionSelected:
-            inscription.sectionId == null ? "" : inscription.sectionId,
-        });
+        },
+        gradeSelected: inscription.gradeId,
+        discount: inscription.Discount,
+        newMonthTotal: inscription.Monthly_Total,
+        sectionSelected:
+          inscription.sectionId == null ? "" : inscription.sectionId,
       });
+    });
   };
   // select DDl1
   selectGradeChange(e) {
@@ -261,9 +254,7 @@ class EditInscription extends Component {
     }).then((willDelete) => {
       if (willDelete) {
         axios
-          .delete(
-            `/studentFileYear/${studentID}/${yearSelected}`
-          )
+          .delete(`/studentFileYear/${studentID}/${yearSelected}`)
           .then((response) => {
             if (response.status == 200) {
               const items = this.state.inscriptionYears.filter(
@@ -351,12 +342,8 @@ class EditInscription extends Component {
       }).then((willUpdate) => {
         if (willUpdate) {
           axios
-            .put(
-              `/studentFileYear/${studentID}/${values.year}`,
-              fileYear
-            )
+            .put(`/studentFileYear/${studentID}/${values.year}`, fileYear)
             .then((response) => {
-              
               if (response.status == 200) {
                 swal(success, {
                   icon: "success",
@@ -577,7 +564,10 @@ class EditInscription extends Component {
                 <Select
                   style={{ fontSize: 0 }}
                   placeholder="Select class"
-                  defaultValue={{ label: "2021-2022", value: "2021-2022" }}
+                  defaultValue={{
+                    label: `${this.props.registrationSchoolYear}`,
+                    value: `${this.props.registrationSchoolYear}`,
+                  }}
                   options={years}
                   styles={this.customStyles}
                   theme={(theme) => ({
@@ -686,6 +676,7 @@ const mapStateToProps = (state) => {
   return {
     language: state.language,
     schoolYear: state.schoolYear,
+    registrationSchoolYear: state.registrationSchoolYear,
     role: state.role,
   };
 };

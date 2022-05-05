@@ -441,6 +441,7 @@ class AddPayment extends Component {
       enterType,
       cash,
       bank,
+      check,
     } = this.state.langKeywords[pageLanguage];
 
     return (
@@ -518,11 +519,12 @@ class AddPayment extends Component {
                     className="form-control"
                     component="select"
                   >
-                    {["", "cash", "bank"].map((item, index) => {
+                    {["", "cash", "bank","check"].map((item, index) => {
                       return (
                         <option value={item} key={index} disabled={item === ""}>
                           {item === "cash" && cash}
                           {item === "bank" && bank}
+                          {item === "check" && check}
                           {item === "" && `${enterType}`}
                         </option>
                       );

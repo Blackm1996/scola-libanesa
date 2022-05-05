@@ -23,6 +23,7 @@ export const ENGLISHWORDS = {
   type: "type",
   cash: "cash",
   bank: "bank",
+  check: "check",
   enterType: "enter type",
 };
 export const FRENCHWORDS = {
@@ -50,6 +51,7 @@ export const FRENCHWORDS = {
   type: "type",
   cash: "cash",
   bank: "bank",
+  check: "chèque",
   enterType: "enter type",
 };
 export const PORTOWORDS = {
@@ -76,5 +78,6 @@ export const PORTOWORDS = {
   type: "type",
   cash: "cash",
   bank: "bank",
+  check:"Cheque",
   enterType: "enter type",
 };

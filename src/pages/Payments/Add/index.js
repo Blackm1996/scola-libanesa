@@ -567,7 +567,7 @@ class AddPayment extends Component {
         .min(1, largerThanZero)
         .max(this.state.amount, `${smallerThan} or equal ${this.state.amount}`)
         .required(required),
-      paymentType: Yup.mixed().oneOf(["cash", "bank"]).required(required),
+      paymentType: Yup.mixed().oneOf(["cash", "bank","cash"]).required(required),
     });
     return schema;
   };

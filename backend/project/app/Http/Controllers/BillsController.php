@@ -309,17 +309,27 @@ public function months()
                     'status'=>'false'
                 ); }
                }else{
+                   if($table['Monthly_total'] == 0)
+                   {
+                        $response['bills'][]=array(
+                        'month'=>$tempMonth,
+                        'payed'=>'0',
+                        'totalCost'=>$table['Monthly_total'],
+                        'theRest' =>$table['Monthly_total'],
+                        'status'=>'true'
+                   }
+                   else
+                   {
+                        $response['bills'][]=array(
+                        'month'=>$tempMonth,
+                        'payed'=>'0',
+                        'totalCost'=>$table['Monthly_total'],
+                        'theRest' =>$table['Monthly_total'],
+                        'status'=>'false'
+                   }
               //   echo $bill->Month.'    '.$table['Month_Start'].PHP_EOL.$currentMonth;
            
           //   echo $a. PHP_EOL;
-           
-                
-                    $response['bills'][]=array(
-                    'month'=>$tempMonth,
-                    'payed'=>'0',
-                    'totalCost'=>$table['Monthly_total'],
-                    'theRest' =>$table['Monthly_total'],
-                    'status'=>'false'
                 );
           }
           $mybills=$mybills->where('Month','!=',$tempMonth);

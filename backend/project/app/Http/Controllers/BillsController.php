@@ -154,6 +154,7 @@ $student=Student_Profile::select('student_profiles.id','student_profiles.Tel','s
                  ->where('bills.Month',$month)->where('bills.School_Year',$School_Year);
         })->leftjoin('student_inscriptions','student_inscriptions.id_student','student_profiles.id')->whereNull('bills.id')
         ->where('student_inscriptions.School_Year',$School_Year)
+        ->where('student_inscriptions.Monthly_Total',"!=",0)
         ->where(
                 function($q) use($search) { 
                     if($search!='^'){
@@ -309,28 +310,25 @@ public function months()
                     'status'=>'false'
                 ); }
                }else{
-                   if($table['Monthly_total'] == 0)
-                   {
-                        $response['bills'][]=array(
-                        'month'=>$tempMonth,
-                        'payed'=>'0',
-                        'totalCost'=>$table['Monthly_total'],
-                        'theRest' =>$table['Monthly_total'],
-                        'status'=>'true'
-                   }
-                   else
-                   {
-                        $response['bills'][]=array(
-                        'month'=>$tempMonth,
-                        'payed'=>'0',
-                        'totalCost'=>$table['Monthly_total'],
-                        'theRest' =>$table['Monthly_total'],
-                        'status'=>'false'
-                   }
-              //   echo $bill->Month.'    '.$table['Month_Start'].PHP_EOL.$currentMonth;
-           
-          //   echo $a. PHP_EOL;
-                );
+                   
+                if($table['Monthly_total'] == 0)
+                {
+                     $response['bills'][]=array(
+                     'month'=>$tempMonth,
+                     'payed'=>'0',
+                     'totalCost'=>$table['Monthly_total'],
+                     'theRest' =>$table['Monthly_total'],
+                     'status'=>'true');
+                }
+                else
+                {
+                     $response['bills'][]=array(
+                     'month'=>$tempMonth,
+                     'payed'=>'0',
+                     'totalCost'=>$table['Monthly_total'],
+                     'theRest' =>$table['Monthly_total'],
+                     'status'=>'false');
+                }
           }
           $mybills=$mybills->where('Month','!=',$tempMonth);
           //echo json_encode($mybills->count().'     ');

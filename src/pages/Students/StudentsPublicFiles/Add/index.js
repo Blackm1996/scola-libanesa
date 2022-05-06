@@ -91,7 +91,7 @@ class inscriptionStudent extends Component {
     var years = [];
     let ye = new Date().getFullYear();
     for (let i = 0; i <= 25; i++) {
-      years.push(i);
+      years.push(ye-i);
     }
 
     // Page Lang

@@ -40,9 +40,9 @@ class StudentController extends Controller
             where(
                 function($q) use($search) {
                     if($search!='^'){
-          $q->where('student_profiles.id','LIKE', $search .'%')
-            ->orWhere('student_profiles.First_Name','LIKE',$search .'%')
-            ->orWhere('student_profiles.Last_Name','LIKE',$search .'%');}
+          $q->where('student_profiles.id','LIKE', '%' . $search .'%')
+            ->orWhere('student_profiles.First_Name','LIKE','%' .$search .'%')
+            ->orWhere('student_profiles.Last_Name','LIKE','%' .$search .'%');}
             else{
              $q->where('student_profiles.id','>',0);    
             }

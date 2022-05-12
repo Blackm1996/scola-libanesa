@@ -92,9 +92,9 @@ $count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($st
    ->where(
                 function($q) use($search) { 
                     if($search!='^'){
-          $q->where('sub.id','LIKE',$search .'%')
-            ->orWhere('student_profiles.First_Name','LIKE',$search .'%')
-            ->orWhere('student_profiles.Last_Name','LIKE',$search .'%');}
+          $q->where('sub.id','LIKE','%' .$search .'%')
+            ->orWhere('student_profiles.First_Name','LIKE','%' .$search .'%')
+            ->orWhere('student_profiles.Last_Name','LIKE','%' .$search .'%');}
       })
    ->where('sub.rest','!=',0)
    ->orWhere(      function($q) use($School_Year,$month) {
@@ -138,10 +138,10 @@ $PayedStduents= Student_Profile::select('student_profiles.id','student_profiles.
 ->where(
                 function($q) use($search) { 
                     if($search!='^'){
-          $q->where('student_profiles.id','LIKE',$search .'%')
-            ->orWhere('student_profiles.First_Name','LIKE',$search .'%')
-            ->orWhere('student_profiles.Tel','LIKE',$search .'%')
-            ->orWhere('student_profiles.Last_Name','LIKE',$search .'%');}
+          $q->where('student_profiles.id','LIKE','%' .$search .'%')
+            ->orWhere('student_profiles.First_Name','LIKE','%' .$search .'%')
+            ->orWhere('student_profiles.Tel','LIKE','%' .$search .'%')
+            ->orWhere('student_profiles.Last_Name','LIKE','%' .$search .'%');}
       })
              ->groupBy('student_profiles.id','student_profiles.Tel','student_inscriptions.id_grade','student_inscriptions.Monthly_Total','student_inscriptions.id_classroom');
 
@@ -158,10 +158,10 @@ $student=Student_Profile::select('student_profiles.id','student_profiles.Tel','s
         ->where(
                 function($q) use($search) { 
                     if($search!='^'){
-          $q->where('student_profiles.id','LIKE',$search .'%')
-            ->orWhere('student_profiles.First_Name','LIKE',$search .'%')
-            ->orWhere('student_profiles.Tel','LIKE',$search .'%')
-            ->orWhere('student_profiles.Last_Name','LIKE',$search .'%');}
+          $q->where('student_profiles.id','LIKE','%' .$search .'%')
+            ->orWhere('student_profiles.First_Name','LIKE','%' .$search .'%')
+            ->orWhere('student_profiles.Tel','LIKE','%' .$search .'%')
+            ->orWhere('student_profiles.Last_Name','LIKE','%' .$search .'%');}
       })
         ->where( function($q) use($month) {
 

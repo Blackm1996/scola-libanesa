@@ -86,27 +86,62 @@ class AddStudentYearFile extends Component {
 
     // Language KEywords
     const { error1 } = this.state.langKeywords[pageLanguage];
-    axios
-      .get(`/studentFileYear/${this.props.schoolYear}`)
-      .then((response) => {
-        if (response.status == 200) {
-          this.setState({
-            DDL1: [{ id: "", name: "", sections: [] }, ...response.data.grades],
-            loadingPage: false,
-          });
-        } else {
+    this.props.schoolYear &&
+      axios
+        .get(`/studentFileYear/${this.props.schoolYear}`)
+        .then((response) => {
+          if (response.status == 200) {
+            this.setState({
+              DDL1: [
+                { id: "", name: "", sections: [] },
+                ...response.data.grades,
+              ],
+              loadingPage: false,
+            });
+          } else {
+            swal(error1, {
+              icon: "error",
+            });
+          }
+        })
+        .catch((error) => {
           swal(error1, {
             icon: "error",
           });
-        }
-      })
-      .catch((error) => {
-        swal(error1, {
-          icon: "error",
         });
-      });
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.schoolYear !== this.props.schoolYear) {
+      // Page Lang
+      const pageLanguage = this.props.language;
 
+      // Language KEywords
+      const { error1 } = this.state.langKeywords[pageLanguage];
+      this.props.schoolYear &&
+        axios
+          .get(`/studentFileYear/${this.props.schoolYear}`)
+          .then((response) => {
+            if (response.status == 200) {
+              this.setState({
+                DDL1: [
+                  { id: "", name: "", sections: [] },
+                  ...response.data.grades,
+                ],
+                loadingPage: false,
+              });
+            } else {
+              swal(error1, {
+                icon: "error",
+              });
+            }
+          })
+          .catch((error) => {
+            swal(error1, {
+              icon: "error",
+            });
+          });
+    }
+  }
   // select DDl1
   selectGradeChange(e) {
     // Page Lang

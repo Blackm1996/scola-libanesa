@@ -90,25 +90,50 @@ function CustomizedAccordions(props) {
     //get idTeacher from url
     const idTeacher = params.idTeacher;
 
-    axios
-      .get(`/instructor/${localStorage.getItem("id")}/${props.schoolYear}`)
-      .then((response) => {
-        setLoading(false);
-        setSemester(response.data.name);
-        setSubmitted({
-          coures: response.data.subbmitted,
-          count: response.data.subbmitted.coures.length,
+    props.schoolYear &&
+      axios
+        .get(`/instructor/${localStorage.getItem("id")}/${props.schoolYear}`)
+        .then((response) => {
+          setLoading(false);
+          setSemester(response.data.name);
+          setSubmitted({
+            coures: response.data.subbmitted,
+            count: response.data.subbmitted.coures.length,
+          });
+          setPending({
+            coures: response.data.pending.coures,
+            count: response.data.pending.coures.length,
+          });
+          setUnsubmitted({
+            coures: response.data.unsubbmitted.coures,
+            count: response.data.unsubbmitted.coures.length,
+          });
         });
-        setPending({
-          coures: response.data.pending.coures,
-          count: response.data.pending.coures.length,
-        });
-        setUnsubmitted({
-          coures: response.data.unsubbmitted.coures,
-          count: response.data.unsubbmitted.coures.length,
-        });
-      });
   }, []);
+  React.useEffect(() => {
+    //get idTeacher from url
+    const idTeacher = params.idTeacher;
+
+    props.schoolYear &&
+      axios
+        .get(`/instructor/${localStorage.getItem("id")}/${props.schoolYear}`)
+        .then((response) => {
+          setLoading(false);
+          setSemester(response.data.name);
+          setSubmitted({
+            coures: response.data.subbmitted,
+            count: response.data.subbmitted.coures.length,
+          });
+          setPending({
+            coures: response.data.pending.coures,
+            count: response.data.pending.coures.length,
+          });
+          setUnsubmitted({
+            coures: response.data.unsubbmitted.coures,
+            count: response.data.unsubbmitted.coures.length,
+          });
+        });
+  }, [props.schoolYear]);
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);

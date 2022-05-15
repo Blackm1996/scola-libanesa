@@ -71,46 +71,116 @@ class ViewInscription extends Component {
       });
     /* end get years select box */
 
-    axios
-      .get(
-        `/studentFileYear/${this.props.schoolYear}` // global select year
-      )
-      .then((response) => {
-        this.setState({
-          DDL1: [{ id: "", name: "", sections: [] }, ...response.data.grades],
-          loadingPage: false,
-        });
-        // get inscription tax
-        axios
-          .get(`/studentFileYear/${studentID}/${this.props.schoolYear}`) // global select year
-          .then((response) => {
-            //get student inscription details
-            const inscription = response.data;
-            this.setState({
-              inscriptionDetails: {
-                ...this.state.inscriptionDetails,
-                inscriptionTax: inscription.Inscription_Tax,
-                booksUniformTotal: inscription["Books/Uniform_total"],
-                monthTotalPay: inscription.Monthly_Total,
-                monthStart: inscription.Month_Start,
-                gradeId: inscription.gradeId,
-                sectionId:
-                  inscription.sectionId == null ? "" : inscription.sectionId,
-                discount: inscription.Discount,
-              },
-              gradeSelected: inscription.gradeId,
-              discount: inscription.Discount,
-              newMonthTotal: inscription.Monthly_Total,
-            });
-            this.setState({
-              sections: this.state.DDL1.find(
-                (item) => item.id == inscription.gradeId
-              ).sections,
-            });
+    this.props.schoolYear &&
+      axios
+        .get(
+          `/studentFileYear/${this.props.schoolYear}` // global select year
+        )
+        .then((response) => {
+          this.setState({
+            DDL1: [{ id: "", name: "", sections: [] }, ...response.data.grades],
+            loadingPage: false,
           });
-      });
+          // get inscription tax
+          axios
+            .get(`/studentFileYear/${studentID}/${this.props.schoolYear}`) // global select year
+            .then((response) => {
+              //get student inscription details
+              const inscription = response.data;
+              this.setState({
+                inscriptionDetails: {
+                  ...this.state.inscriptionDetails,
+                  inscriptionTax: inscription.Inscription_Tax,
+                  booksUniformTotal: inscription["Books/Uniform_total"],
+                  monthTotalPay: inscription.Monthly_Total,
+                  monthStart: inscription.Month_Start,
+                  gradeId: inscription.gradeId,
+                  sectionId:
+                    inscription.sectionId == null ? "" : inscription.sectionId,
+                  discount: inscription.Discount,
+                },
+                gradeSelected: inscription.gradeId,
+                discount: inscription.Discount,
+                newMonthTotal: inscription.Monthly_Total,
+              });
+              this.setState({
+                sections: this.state.DDL1.find(
+                  (item) => item.id == inscription.gradeId
+                ).sections,
+              });
+            });
+        });
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.schoolYear !== this.props.schoolYear) {
+      const studentID = this.props.match.params.id;
 
+      /* start get years select box */
+      getYears(studentID)
+        .then((response) => {
+          if (response.status == 200)
+            this.setState({
+              inscriptionYears: response.data,
+              loading: false,
+            });
+
+          // if (response.status == 200)
+          //   this.setState({
+          //     inscriptionYears: response.data,
+          //     loading: false,
+          //   });
+        })
+        .catch((error) => {
+          //window.location.reload();
+        });
+      /* end get years select box */
+
+      this.props.schoolYear &&
+        axios
+          .get(
+            `/studentFileYear/${this.props.schoolYear}` // global select year
+          )
+          .then((response) => {
+            this.setState({
+              DDL1: [
+                { id: "", name: "", sections: [] },
+                ...response.data.grades,
+              ],
+              loadingPage: false,
+            });
+            // get inscription tax
+            axios
+              .get(`/studentFileYear/${studentID}/${this.props.schoolYear}`) // global select year
+              .then((response) => {
+                //get student inscription details
+                const inscription = response.data;
+                this.setState({
+                  inscriptionDetails: {
+                    ...this.state.inscriptionDetails,
+                    inscriptionTax: inscription.Inscription_Tax,
+                    booksUniformTotal: inscription["Books/Uniform_total"],
+                    monthTotalPay: inscription.Monthly_Total,
+                    monthStart: inscription.Month_Start,
+                    gradeId: inscription.gradeId,
+                    sectionId:
+                      inscription.sectionId == null
+                        ? ""
+                        : inscription.sectionId,
+                    discount: inscription.Discount,
+                  },
+                  gradeSelected: inscription.gradeId,
+                  discount: inscription.Discount,
+                  newMonthTotal: inscription.Monthly_Total,
+                });
+                this.setState({
+                  sections: this.state.DDL1.find(
+                    (item) => item.id == inscription.gradeId
+                  ).sections,
+                });
+              });
+          });
+    }
+  }
   //custom stlyes
   customStyles = {
     option: (provided, state) => ({

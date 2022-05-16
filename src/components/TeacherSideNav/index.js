@@ -95,16 +95,25 @@ function TeacherSideNav(props) {
 
   // Use Effect
   useEffect(() => {
-    axios
-      .get(
-        `/instructorCourses/${localStorage.getItem(
-          "id"
-        )}/${props.schoolYear}`
-      )
-      .then((res) => {
-        setCourses(res.data);
-      });
+  props.schoolYear &&
+      axios
+        .get(
+          `/instructorCourses/${localStorage.getItem("id")}/${props.schoolYear}`
+        )
+        .then((res) => {
+          setCourses(res.data);
+        });
   }, []);
+  useEffect(() => {
+    props.schoolYear &&
+      axios
+        .get(
+          `/instructorCourses/${localStorage.getItem("id")}/${props.schoolYear}`
+        )
+        .then((res) => {
+          setCourses(res.data);
+        });
+  }, [props.schoolYear]);
 
   const classes = useStyles();
   return (

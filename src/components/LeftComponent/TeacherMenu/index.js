@@ -10,14 +10,18 @@ import axios from "axios";
 const TeacherMenu = (props) => {
   const [grades, setGrades] = useState([]);
   useEffect(() => {
-    props.year != "" &&
-      axios.get(`/section/${props.year}`).then((response) => {
+    const { year } = props;
+    year !== "" &&
+      year !== undefined &&
+      axios.get(`/section/${year}`).then((response) => {
         setGrades([...response.data]);
       });
   }, []);
   useEffect(() => {
-    props.year != "" &&
-      axios.get(`/section/${props.year}`).then((response) => {
+    const { year } = props;
+    year !== "" &&
+      year !== undefined &&
+      axios.get(`/section/${year}`).then((response) => {
         setGrades([...response.data]);
       });
   }, [props.year]);

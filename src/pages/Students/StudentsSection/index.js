@@ -88,51 +88,52 @@ class StudentsSection extends React.Component {
         studentsMarks: response.data,
       });
     });
-    console.log("proppppp", this.props);
-    axios
-      .get(
-        `/sectionStudents/${this.props.match.params.id}/${this.props.schoolYear}`
-      )
-      .then((response) => {
-        let students = response.data.students || [];
-        students = students.map((student) => {
-          return {
-            id: student.id,
-            firstName: student.First_Name,
-            lastName: student.Last_Name,
-            telephone: student.Tel === null ? "" : student.Tel,
-          };
+    this.props.schoolYear &&
+      axios
+        .get(
+          `/sectionStudents/${this.props.match.params.id}/${this.props.schoolYear}`
+        )
+        .then((response) => {
+          let students = response.data.students || [];
+          students = students.map((student) => {
+            return {
+              id: student.id,
+              firstName: student.First_Name,
+              lastName: student.Last_Name,
+              telephone: student.Tel === null ? "" : student.Tel,
+            };
+          });
+          this.setState({
+            sectionName: response.data.sectionName,
+            gradeName: response.data.gradeName,
+            dataAPI: students,
+            data: students,
+            loading: false,
+          });
         });
-        this.setState({
-          sectionName: response.data.sectionName,
-          gradeName: response.data.gradeName,
-          dataAPI: students,
-          data: students,
-          loading: false,
-        });
-      });
 
     // students bills
-    axios
-      .get(
-        `/sectionBills/${this.props.match.params.id}/${this.props.schoolYear}`
-      )
-      .then((response) => {
-        var studentsBills = [];
+    this.props.schoolYear &&
+      axios
+        .get(
+          `/sectionBills/${this.props.match.params.id}/${this.props.schoolYear}`
+        )
+        .then((response) => {
+          var studentsBills = [];
 
-        response.data.map((student) => {
-          let bill = {};
-          bill.name = `${student.First_Name} ${student.Last_Name} `;
-          bill.grade = student.grade === null ? "" : student.grade;
-          bill.telephone = student.Tel === null ? "" : student.Tel;
-          bill.inscriptionTax = student.Inscription_Tax;
-          bill.booksUniform = student["Books/Uniform_total"];
-          studentsBills.push(bill);
+          response.data.map((student) => {
+            let bill = {};
+            bill.name = `${student.First_Name} ${student.Last_Name} `;
+            bill.grade = student.grade === null ? "" : student.grade;
+            bill.telephone = student.Tel === null ? "" : student.Tel;
+            bill.inscriptionTax = student.Inscription_Tax;
+            bill.booksUniform = student["Books/Uniform_total"];
+            studentsBills.push(bill);
+          });
+          this.setState({
+            studentsBills: [...studentsBills],
+          });
         });
-        this.setState({
-          studentsBills: [...studentsBills],
-        });
-      });
   };
 
   //handle tabs change

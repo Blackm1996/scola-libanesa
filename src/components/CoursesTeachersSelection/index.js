@@ -89,7 +89,8 @@ export default function CoursesTeachersSelection(props) {
   }
   //useEffect
   useEffect(() => {
-    axios.get(`/gradeCourses/${props.gradeId}`).then((response) => {
+    const {gradeId} = props;
+    gradeId && axios.get(`/gradeCourses/${gradeId}`).then((response) => {
       if (response.status === 200) {
         setTeachers([...response.data.teachers]);
         setCourses(response.data.courses);
@@ -98,7 +99,8 @@ export default function CoursesTeachersSelection(props) {
   }, []);
   //useEffect
   useEffect(() => {
-    axios.get(`/gradeCourses/${props.gradeId}`).then((response) => {
+    const {gradeId} = props;
+    gradeId && axios.get(`/gradeCourses/${gradeId}`).then((response) => {
       if (response.status === 200) {
         setTeachers([...response.data.teachers]);
         setCourses(response.data.courses);

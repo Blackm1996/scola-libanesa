@@ -145,7 +145,7 @@ $PayedStduents= Student_Profile::select('student_profiles.id','student_profiles.
       })
              ->groupBy('student_profiles.id','student_profiles.Tel','student_inscriptions.id_grade','student_inscriptions.Monthly_Total','student_inscriptions.id_classroom');
 
-$s= DB::table( DB::raw("({$PayedStduents->toSql()}) as sub") )->mergeBindings($PayedStduents->getQuery())->where('rest','!=',0);
+$s= DB::table( DB::raw("({$PayedStduents->toSql()}) as sub") )->mergeBindings($PayedStduents->getQuery())->where('rest','>',0);
 
 
 
@@ -293,7 +293,7 @@ public function months()
             $totalPayed = $mybills->where('Month',$tempMonth)->sum('Amount');
              //  echo $bill->sum('Amount');}//shila d8re 
             $rest = $table['Monthly_total'] - $totalPayed;
-            if($rest==0){
+            if($rest<=0){
              $response['bills'][]=array(
                 'month'=>$tempMonth,
                 'payed'=>$totalPayed,

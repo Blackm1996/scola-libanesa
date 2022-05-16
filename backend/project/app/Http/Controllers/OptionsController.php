@@ -44,8 +44,12 @@ public function endMonth()
 public function schoolYear()
 {
  try{
-  $response = Options::where("option_name","School_Year")->first();
-  return json_encode(["value"=>$response->option_value]);
+  $school_year = Options::where("option_name","School_Year")->first();
+  $registration_year = Options::where("option_name","registration_year")->first();
+  $response['school_year']=$school_year->option_value;
+  $response['registration_year']=$registration_year->option_value;
+  
+  return json_encode($response);
     }
  catch(\Exception $e)
  {

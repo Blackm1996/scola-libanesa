@@ -13,7 +13,7 @@ import axios from "axios";
 import store from "./redux/store";
 
 axios.defaults.baseURL = "https://management.escola-libanesa.com/test2/api/";
-//axios.defaults.baseURL = "./test2/api/";
+//axios.defaults.baseURL = "./backend/api/";
 
 class App extends React.Component {
   render() {

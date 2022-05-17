@@ -114,8 +114,8 @@ class AllStudents extends Component {
             title=""
             columns={columns}
             options={{
-              pageSize: 5,
-              pageSizeOptions:[5, 10, 20, 30, 50],
+              pageSize: 50,
+              pageSizeOptions:[50, 100, 200],
               debounceInterval: 700,
               padding: "dense"
             }} 

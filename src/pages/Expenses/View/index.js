@@ -99,8 +99,8 @@ class NotPayedStudents extends Component {
               options={{
                 debounceInterval: 700,
                 padding: "dense",
-                pageSize: 5,
-                pageSizeOptions: [5, 10, 20, 30],
+                pageSize: 20,
+                pageSizeOptions: [20, 30, 50, 100],
               }}
               data={this.state.data}
               onRowClick={this.onRowClick}

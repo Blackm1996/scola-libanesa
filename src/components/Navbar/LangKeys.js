@@ -18,7 +18,7 @@ export const ENGLISHWORDS = {
   viewExpenses: "View expenses",
   viewBills: "View bills",
   addTrimester: "Trimesters",
-  settingsOfYear: "Genara settings",
+  settingsOfYear: "Genaral settings",
   controlePanel: "Control Panel",
   allUsers: "View Users",
   allTeachers: "View Teachers",

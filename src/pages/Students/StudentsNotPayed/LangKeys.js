@@ -7,6 +7,7 @@ export const ENGLISHWORDS = {  //done
   search: 'Search',
   noRecords: 'No records to display', 
   section: "Section",
+  rest: "Remainder",
   grade: 'Grade',
   phoneNumber: "Phone Number"
 };
@@ -18,6 +19,7 @@ export const FRENCHWORDS = { //done
   search: 'chercher',
   noRecords: 'Aucune page trouvée',
   section: "Section",
+  rest: "Reste",
   grade: 'Classe',
   phoneNumber: "Telephone"
 };
@@ -30,6 +32,7 @@ export const PORTOWORDS = {
   search: 'procurar',
   noRecords: 'nenhuma página encontrada',
   section: 'Seção',
+  rest: "Resto",
   grade: 'Nota',
   phoneNumber: "Telefone"
 };

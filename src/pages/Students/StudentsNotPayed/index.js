@@ -73,6 +73,7 @@ class NotPayedStudents extends Component {
       search,
       noRecords,
       section,
+      rest,
       grade,
       phoneNumber,
     } = this.state.langKeywords[pageLanguage];
@@ -83,6 +84,7 @@ class NotPayedStudents extends Component {
       { title: lastName, field: "Last_Name" },
       { title: grade, field: "gradeName" },
       { title: section, field: "className" },
+      { title: rest, field: "rest" },
       { title: phoneNumber, field: "Tel" },
     ];
     return (
@@ -110,8 +112,8 @@ class NotPayedStudents extends Component {
               options={{
                 debounceInterval: 700,
                 padding: "dense",
-                pageSize: 5,
-                pageSizeOptions: [5, 10, 20, 30, 50],
+                pageSize: 30,
+                pageSizeOptions: [30, 50, 100],
               }}
               onRowClick={this.onRowClick}
               localization={{

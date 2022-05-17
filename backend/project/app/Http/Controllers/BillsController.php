@@ -134,7 +134,10 @@ public function studentNotpayed($month,$School_Year,$search,$limit,$orderBy,$sor
 
 
 
-$PayedStduents= Student_Profile::select('student_profiles.id','student_profiles.Tel','student_inscriptions.id_grade',DB::raw('(student_inscriptions.Monthly_Total -'.\DB::raw("SUM(Amount)").') AS rest'),'student_inscriptions.id_classroom')->leftjoin('bills','bills.id_student','student_profiles.id')->join('student_inscriptions','student_inscriptions.id_student','student_profiles.id')->where('student_inscriptions.School_Year',$School_Year)->where('bills.School_Year',$School_Year)->where('bills.Month',$month)
+$PayedStduents= Student_Profile::select('student_profiles.id','student_profiles.Tel','student_inscriptions.id_grade',DB::raw('(student_inscriptions.Monthly_Total -'.\DB::raw("SUM(Amount)").') AS rest'),'student_inscriptions.id_classroom')
+->leftjoin('bills','bills.id_student','student_profiles.id')->join('student_inscriptions','student_inscriptions.id_student','student_profiles.id')
+->where('student_inscriptions.School_Year',$School_Year)->where('bills.School_Year',$School_Year)
+->where('bills.Month',$month)
 ->where(
                 function($q) use($search) { 
                     if($search!='^'){
@@ -174,7 +177,10 @@ $student=Student_Profile::select('student_profiles.id','student_profiles.Tel','s
          }
              )->union($s);
 
-$count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($student->getQuery())->select('sub.id','student_profiles.First_Name','student_profiles.Last_Name','sub.Tel','classrooms.Name as className','grades.Name as gradeName')->leftjoin('classrooms','classrooms.id','sub.id_classroom')->leftjoin('grades','grades.id','sub.id_grade')->join('student_profiles','student_profiles.id','sub.id')
+$count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($student->getQuery())
+->select('sub.id','student_profiles.First_Name','student_profiles.Last_Name','sub.Tel','classrooms.Name as className','grades.Name as gradeName','sub.rest')
+->leftjoin('classrooms','classrooms.id','sub.id_classroom')->leftjoin('grades','grades.id','sub.id_grade')
+->join('student_profiles','student_profiles.id','sub.id')
    
    ->orWhere(      function($q) use($School_Year,$month) {/*
              $tempMonths= array();

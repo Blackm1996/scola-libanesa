@@ -119,7 +119,7 @@ $count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($st
  /*  return json_encode($student->get());
 }*/
 
-public function studentNotpayed($month,$School_Year,$search,$limit,$orderBy,$sort){
+public function studentNotpayed($month,$School_Year,$search,$orderBy,$sort){
 
 
     try{
@@ -196,7 +196,14 @@ $count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($st
            }
           $q->where('sub.School_Year',$School_Year)
             ->whereBetween($month,[9,10,11,12,1,2,3,4,5,6]);*/ 
-      })->orderBy($orderBy,$sort)->paginate($limit); }
+      })->orderBy($orderBy,$sort)->get();
+      $tot=0;
+      foreach($count as $item)
+      {
+          $tot+=$item->rest;
+      }
+      $count=$count->concat([array("tot"=>$tot)]);
+     }
       catch(\Exception $e)
       {
           return json_encode($e);

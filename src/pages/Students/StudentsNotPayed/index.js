@@ -21,6 +21,8 @@ class NotPayedStudents extends Component {
     },
     year: "2021-2022",
     month: "9",
+    tot: "0",
+    totst: "0",
   };
 
   //update year
@@ -29,6 +31,14 @@ class NotPayedStudents extends Component {
       year,
     });
     this.tableRef.current.onQueryChange();
+  };
+
+  updateTot = (totv) => {
+    this.setState({tot : totv,});
+  };
+
+  updateTotst = (totstv) => {
+    this.setState({totst : totstv,});
   };
 
   //update grade id
@@ -45,20 +55,20 @@ class NotPayedStudents extends Component {
   };
 
   //onChangeRowsPerPage
-  onChangeRowsPerPage = (value) => {
+  /*onChangeRowsPerPage = (value) => {
     this.setState({
       limit: value,
     });
-  };
+  };*/
   //add Pages
-  pagesNumber = (total, limit) => {
+  /*pagesNumber = (total, limit) => {
     let totalStudents = total / limit;
     let numberOfPages;
     if (!(totalStudents % 1 == 0))
       // number of pages contains decimal that means we should add 1
       return (numberOfPages = parseInt(totalStudents + 1));
     else return (numberOfPages = parseInt(totalStudents));
-  };
+  };*/
   //render
   render() {
     // Page Lang
@@ -76,6 +86,8 @@ class NotPayedStudents extends Component {
       rest,
       grade,
       phoneNumber,
+      totalPay,
+      totalstnb,
     } = this.state.langKeywords[pageLanguage];
 
     const columns = [
@@ -103,7 +115,9 @@ class NotPayedStudents extends Component {
             {/* End Month Selection */}
           </div>
           {/* start table */}
-
+          <br/>
+          <div className="d-flex col-12 mx-auto"><b>{totalPay}: {this.state.tot}</b></div><br/>
+          <div className="d-flex col-12 mx-auto"><b>{totalstnb}: {this.state.totst}</b></div><br/>
           <div className="students-all col-12 mx-auto">
             <MaterialTable
               tableRef={this.tableRef}
@@ -112,8 +126,7 @@ class NotPayedStudents extends Component {
               options={{
                 debounceInterval: 700,
                 padding: "dense",
-                pageSize: 30,
-                pageSizeOptions: [30, 50, 100],
+                paging: false,
               }}
               onRowClick={this.onRowClick}
               localization={{
@@ -145,23 +158,27 @@ class NotPayedStudents extends Component {
                     });
                   }
                   //pagination
-                  const pageNum = query.page + 1;
-                  const limit = query.pageSize;
+                  /*const pageNum = query.page + 1;
+                  const limit = query.pageSize;*/
 
                   fetch(
-                    `https://management.escola-libanesa.com/test2/api/notPayedstudent/${this.state.month}/${this.state.year}/${search}/${limit}/${orderBy}/${orderDirection}?page=${pageNum}`
+                    `https://management.escola-libanesa.com/test2/api/notPayedstudent/${this.state.month}/${this.state.year}/${search}/${orderBy}/${orderDirection}`
                   )
                     .then((resp) => resp.json())
                     .then((resp) => {
-                      const numberOfPages = this.pagesNumber(
+                      /*const numberOfPages = this.pagesNumber(
                         resp.total,
                         query.pageSize
-                      );
-
+                      );*/
+                      //console.log(resp);
+                      
+                      this.updateTot(resp[resp.length-1].tot)
+                      resp.splice(resp.length-1,1);
+                      this.updateTotst(resp.length)
                       resolve({
-                        data: resp.data, // your data array
-                        page: query.page, // current page number
-                        totalCount: resp.total, // total row number
+                        data: resp, // your data array
+                        //age: query.page, // current page number
+                        totalCount: resp.length, // total row number
                       });
                     });
                 })

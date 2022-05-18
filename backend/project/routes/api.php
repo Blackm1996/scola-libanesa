@@ -93,7 +93,7 @@ Route::get('getTotalExpenses/{month}','App\Http\Controllers\ExpensesController@g
 // Bills
 
 Route::get('sectionBills/{id_classroom}/{School_Year}','App\Http\Controllers\BillsController@sectionBills');
-Route::get('/notPayedstudent/{month}/{School_Year}/{search}/{limit}/{orderBy}/{sort}','App\Http\Controllers\BillsController@studentNotpayed');
+Route::get('/notPayedstudent/{month}/{School_Year}/{search}/{orderBy}/{sort}','App\Http\Controllers\BillsController@studentNotpayed');
 Route::get('/billsMonth/{id}/{School_Year}','App\Http\Controllers\BillsController@allMonths');
 Route::get('/bills/{id}/{School_Year}','App\Http\Controllers\BillsController@allBills');
 Route::get('/billsRest/{id}/{School_Year}/{month}','App\Http\Controllers\BillsController@Rest');

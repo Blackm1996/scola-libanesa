@@ -9,7 +9,9 @@ export const ENGLISHWORDS = {  //done
   section: "Section",
   rest: "Remainder",
   grade: 'Grade',
-  phoneNumber: "Phone Number"
+  phoneNumber: "Phone Number",
+  totalPay : "Total Payement",
+  totalstnb : "Number of Students"
 };
 export const FRENCHWORDS = { //done
   titlePage: "Étudiants",
@@ -21,7 +23,9 @@ export const FRENCHWORDS = { //done
   section: "Section",
   rest: "Reste",
   grade: 'Classe',
-  phoneNumber: "Telephone"
+  phoneNumber: "Telephone",
+  totalPay : "Paiement Total",
+  totalstnb : "Nombre d'Étudiants"
 };
 export const PORTOWORDS = {
   titlePage: "Alunos",
@@ -34,5 +38,7 @@ export const PORTOWORDS = {
   section: 'Seção',
   rest: "Resto",
   grade: 'Nota',
-  phoneNumber: "Telefone"
+  phoneNumber: "Telefone",
+  totalPay : "Pagamento Total",
+  totalstnb : "Número de Alunos"
 };

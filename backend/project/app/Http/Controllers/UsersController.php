@@ -121,7 +121,7 @@ class UsersController extends Controller
   {
       try{
         
-           $user = User::findOrFail($id);
+         $user = User::findOrFail($id);
          $user->update(['password'=>hash::make($request->input('newPassword'))]);
          Auth::logoutOtherDevices($request->input('oldPass'));
          return response()->json(['status'=>'password has changed'],200);

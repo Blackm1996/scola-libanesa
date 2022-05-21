@@ -12,11 +12,13 @@ import axios from "axios";
 // import store
 import store from "./redux/store";
 
-axios.defaults.baseURL = "https://management.escola-libanesa.com/test2/api/";
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+//axios.defaults.baseURL = "https://mmm.escola-libanesa.com/test2/api/";
 //axios.defaults.baseURL = "./backend/api/";
 
 class App extends React.Component {
   render() {
+    console.log(process.env.REACT_APP_BASE_URL);
     return (
       <div className="app">
         <BrowserRouter>

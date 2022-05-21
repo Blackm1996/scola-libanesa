@@ -160,7 +160,7 @@ class AllStudents extends Component {
                 const limit = query.pageSize;
 
                 fetch(
-                  `https://management.escola-libanesa.com/test2/api/student/${limit}/${search}/${orderBy}/${orderDirection}/${ this.state.year }/${gradeId}/${sectionId}?page=${pageNum}`
+                        process.env.REACT_APP_BASE_URL+`student/${limit}/${search}/${orderBy}/${orderDirection}/${ this.state.year }/${gradeId}/${sectionId}?page=${pageNum}`
                 )
                   .then((resp) => resp.json())
                   .then((resp) => {

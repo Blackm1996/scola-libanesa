@@ -162,7 +162,7 @@ class NotPayedStudents extends Component {
                   const limit = query.pageSize;*/
 
                   fetch(
-                    `https://management.escola-libanesa.com/test2/api/notPayedstudent/${this.state.month}/${this.state.year}/${search}/${orderBy}/${orderDirection}`
+                    process.env.REACT_APP_BASE_URL+`notPayedstudent/${this.state.month}/${this.state.year}/${search}/${orderBy}/${orderDirection}`
                   )
                     .then((resp) => resp.json())
                     .then((resp) => {

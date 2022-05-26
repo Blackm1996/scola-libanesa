@@ -52,7 +52,8 @@ class AllStudents extends Component {
 
   // on Row click
   onRowClick = (event, rowData) => {
-    this.props.history.push("/admin/profile/" + rowData.id);
+    window.open("/admin/profile/" + rowData.id,'_blank');
+    //this.props.history.push("/admin/profile/" + rowData.id);
   };
 
   //onChangeRowsPerPage

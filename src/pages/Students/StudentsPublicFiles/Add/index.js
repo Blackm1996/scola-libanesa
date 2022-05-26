@@ -22,7 +22,7 @@ class inscriptionStudent extends Component {
     },
     idURL: null,
     vaccineURL: null,
-    months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    //months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   };
 
   // Submit Form
@@ -193,10 +193,10 @@ class inscriptionStudent extends Component {
                   defaultValue=""
                 >
                   <option value=""></option>
-                  {this.state.months.map((item, index) => {
+                  {this.state.langKeywords[pageLanguage].months.map(item => {
                     return (
-                      <option key={index} value={item}>
-                        {item}
+                      <option key={item.value} value={item.name}>
+                        {item.name}
                       </option>
                     );
                   })}

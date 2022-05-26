@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Student_Inscription;
+use App\Models\Student_inscription;
 use App\Models\Grades;
 use App\Models\Bills;
 use App\Models\Classroom;

@@ -15,7 +15,7 @@ use App\Models\Student_Inscription;
 
 class scoresController extends Controller
 {
- 
+
 public function classScores($idSection)
 {
     $response =array();
@@ -32,6 +32,11 @@ public function classScores($idSection)
        }
       array_push($response,$array);
     }
+    usort($response,function ($a,$b){
+            if ( $a['Totalmoyen'] == $b['Totalmoyen'])
+              return 0;
+            return ($a['Totalmoyen'] < $b['Totalmoyen']) ? 1 : -1;
+          });
     return $response; 
 }
 

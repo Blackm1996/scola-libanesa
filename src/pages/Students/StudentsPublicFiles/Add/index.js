@@ -11,6 +11,9 @@ import { Formik, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import { addPublicStudentFile } from "../../../../Api/StudentsPublicFile";
 import swal from "sweetalert";
+import { List, ListItem, ListItemText, IconButton, TextField } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 class inscriptionStudent extends Component {
   state = {
@@ -23,6 +26,8 @@ class inscriptionStudent extends Component {
     idURL: null,
     vaccineURL: null,
     //months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    medicalList :[],
+    medicalNew :"",
   };
 
   // Submit Form
@@ -108,10 +113,7 @@ class inscriptionStudent extends Component {
       classLevel,
       placeOfBirth,
       guardian,
-      uniformBooks,
-      registerFees,
-      monthlyPayment,
-      beginMonthPay,
+      nationality,
       studentId,
       vaccination,
       add,
@@ -140,22 +142,7 @@ class inscriptionStudent extends Component {
               </span>
             </div>
 
-            {/* Student Name */}
-            <div className="form-group">
-              <label htmlFor="lastName">{name}</label>
-              <Field
-                name="lastName"
-                type="text"
-                className="form-control"
-                id="lastName"
-                placeholder=""
-                autoComplete="off"
-              />
-              <span className="error">
-                <ErrorMessage name="lastName" />
-              </span>
-            </div>
-
+           
             {/* Date of birthday  */}
             <div className="form-group birth-date">
               <label htmlFor="firstName">{birthDate}</label>
@@ -230,79 +217,19 @@ class inscriptionStudent extends Component {
               </div>
             </div>
 
-            {/* Student sex */}
+            {/*Nationality*/}
             <div className="form-group">
-              <label htmlFor="sex">{sexLabel}</label>
+              <label htmlFor="nationality">{nationality}</label>
               <Field
-                name="sex"
-                id="sex"
-                className="form-control"
-                component="select"
-              >
-                <option value=""></option>
-                {sex.map((item, index) => {
-                  return (
-                    <option key={index} value={item.value}>
-                      {" "}
-                      {item.name}
-                    </option>
-                  );
-                })}
-              </Field>
-              <span className="error">
-                <ErrorMessage name="sex" />
-              </span>
-            </div>
-
-            {/* Student phone number */}
-            <div className="form-group">
-              <label htmlFor="phoneNum">{phoneNumber}</label>
-              <Field
-                name="phoneNum"
+                name="nationality"
                 type="text"
                 className="form-control"
-                id="phoneNum"
-                placeholder="ex: 77777-55555"
-                autoComplete="off"
-                onWheel={(e) => e.target.blur()}
-                pattern="^[0-9-]*[0-9]$"
-              />
-              <span className="error">
-                <ErrorMessage name="phoneNum" />
-              </span>
-            </div>
-          </div>
-
-          <div className="first-section col-lg-6 col-12">
-            {/* Place of birthday */}
-            <div className="form-group">
-              <label htmlFor="birthPlace">{placeOfBirth}</label>
-              <Field
-                name="birthPlace"
-                type="text"
-                className="form-control"
-                id="birthPlace"
+                id="nationality"
                 placeholder=""
                 autoComplete="off"
               />
               <span className="error">
-                <ErrorMessage name="birthPlace" />
-              </span>
-            </div>
-
-            {/* Turteur */}
-            <div className="form-group">
-              <label htmlFor="tuteur">{guardian}</label>
-              <Field
-                name="tuteur"
-                type="text"
-                className="form-control"
-                id="tuteur"
-                placeholder=""
-                autoComplete="off"
-              />
-              <span className="error">
-                <ErrorMessage name="tuteur" />
+                <ErrorMessage name="nationality" />
               </span>
             </div>
 
@@ -329,6 +256,118 @@ class inscriptionStudent extends Component {
               </span>
 
               <img className="upload-img" src={this.state.idURL} />
+            </div>
+            
+            {/*Family ID*/}
+          <div className="form-group">
+              <label htmlFor="family_id">Family ID</label>
+              <Field
+                name="family_id"
+                type="text"
+                //className="form-control"
+                id="family_id"
+                placeholder=""
+                autoComplete="off"
+              />
+              <a href='' style={{marginLeft:14}}>New Family</a>
+              <span className="error">
+                <ErrorMessage name="family_id" />
+              </span>
+            </div>
+
+
+            <div className="form-group">
+              <label htmlFor="guardian_id">Medical</label>
+              <TextField
+                className="form-control"
+                value={this.state.medicalNew}
+                onChange={e=>{this.setState({medicalNew:e.target.value});}}
+                InputProps={{endAdornment: <IconButton style={{position : "relative"}} onClick={()=>{
+                  if(this.state.medicalNew !=="")
+                  {
+                    
+                  this.setState({medicalList : [...this.state.medicalList,this.state.medicalNew]});
+                  this.setState({medicalNew:''});
+                  }
+                }} 
+                  ><ArrowForwardIcon /></IconButton>}}/>
+                </div>
+
+              <List sx={{ border: 1 }}>
+                {
+                    this.state.medicalList.map(item =>
+                    {
+                        return(<ListItem
+                          secondaryAction={
+                          <IconButton edge="end" aria-label="delete">
+                            <DeleteIcon />
+                          </IconButton>
+                        }>
+                          <ListItemText
+                                primary={item}
+                            />
+                        </ListItem>);
+                    })
+                }
+              </List>
+            
+          </div>
+{/*_________________________________________________________________________________________________________________*/}
+          <div className="first-section col-lg-6 col-12">
+             {/* Student Name */}
+             <div className="form-group">
+              <label htmlFor="lastName">{name}</label>
+              <Field
+                name="lastName"
+                type="text"
+                className="form-control"
+                id="lastName"
+                placeholder=""
+                autoComplete="off"
+              />
+              <span className="error">
+                <ErrorMessage name="lastName" />
+              </span>
+            </div>
+
+            {/* Student sex */}
+            <div className="form-group">
+              <label htmlFor="sex">{sexLabel}</label>
+              <Field
+                name="sex"
+                id="sex"
+                className="form-control"
+                component="select"
+              >
+                <option value=""></option>
+                {sex.map((item, index) => {
+                  return (
+                    <option key={index} value={item.value}>
+                      {" "}
+                      {item.name}
+                    </option>
+                  );
+                })}
+              </Field>
+              <span className="error">
+                <ErrorMessage name="sex" />
+              </span>
+            </div>
+
+            {/* Place of birthday */}
+            <div className="form-group">
+              <label htmlFor="birthPlace">{placeOfBirth}</label>
+              <Field
+                name="birthPlace"
+                type="text"
+                className="form-control"
+                id="birthPlace"
+                placeholder=""
+                autoComplete="off"
+              />
+              <span className="error">
+                <ErrorMessage name="birthPlace" />
+              </span>
             </div>
 
             {/* Vaccination */}
@@ -358,7 +397,27 @@ class inscriptionStudent extends Component {
 
               <img className="upload-img" src={this.state.vaccineURL} />
             </div>
+
+            {/*Guardian ID*/}
+          <div className="form-group">
+              <label htmlFor="guardian_id">Guardian ID</label>
+              <Field
+                name="guardian_id"
+                type="text"
+                //className="form-control"
+                id="guardian_id"
+                placeholder=""
+                autoComplete="off"
+              />
+              <a href='' style={{marginLeft:14}}>New Guardian Profile</a>
+              <span className="error">
+                <ErrorMessage name="guardian_id" />
+              </span>
+            </div>
+
+          
           </div>
+{/*_____________________________________________________________________________________________________*/}
 
           {/* Submit Input*/}
           <div className="form-group col-12">

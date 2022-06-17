@@ -26,6 +26,7 @@ import TeachersList from "../Teachers/TeachersList";
 import AddExpense from "../Expenses/Add";
 import ViewExpenses from "../Expenses/View";
 import ViewBillsPerMonth from "../Payments/ViewPerMonth";
+import SpecialPage from "../SpecialPage";
 class Students extends Component {
   render() {
     //navbar links
@@ -156,6 +157,11 @@ class Students extends Component {
             exact
             path="/admin/students/viewbills"
             component={ViewBillsPerMonth}
+          />
+          <Route
+            exact
+            path="/admin/students/specialComponent"
+            component={SpecialPage}
           />
         </div>
 

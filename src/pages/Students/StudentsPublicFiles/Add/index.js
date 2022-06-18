@@ -1,12 +1,14 @@
 /* Readable Scalable Secure */
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import "./style.css";
+import FamilyAddModal from "../../../../components/Family/Add";
 // import languages
 import { ENGLISH, FRENCH, PORTO } from "../../../../languages";
 // import language words
 import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "./LangKeys";
 // import connect from react-redux
 import { connect } from "react-redux";
+import AsyncCreatableSelect from 'react-select/async-creatable';
 import { Formik, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import { addPublicStudentFile } from "../../../../Api/StudentsPublicFile";
@@ -14,54 +16,124 @@ import swal from "sweetalert";
 import { List, ListItem, ListItemText, IconButton, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import GuardianAddModal from "../../../../components/Guardian/Add";
+import axios from "axios";
+import MaterialTable from "material-table";
 
-class inscriptionStudent extends Component {
-  state = {
-    pageLang: this.props.language,
-    langKeywords: {
-      [ENGLISH]: ENGLISHWORDS,
-      [PORTO]: PORTOWORDS,
-      [FRENCH]: FRENCHWORDS,
-    },
-    idURL: null,
-    vaccineURL: null,
-    //months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    medicalList :[],
-    medicalNew :"",
+const  InscriptionStudent=(props)=>{
+  const[pageLang,setPageLang]=useState(props.language);
+  const[langKeywords,setLangKeywords]=useState({
+    [ENGLISH]: ENGLISHWORDS,
+    [PORTO]: PORTOWORDS,
+    [FRENCH]: FRENCHWORDS,
+  });
+  const[idURL,setIdURL]=useState(null);
+  const[vaccineURL,setVaccineURL]=useState(null);
+  const[medicalList,setMedicalList]=useState([]);
+  const[medicalNew,setMedicalNew]=useState("");
+  const[medicineList,setMedicineList]=useState([]);
+  const[medicineNew,setMedicineNew]=useState("");
+  const[familyID,setFamilyID]=useState("");
+  const[famModal,setFamModal]=useState(false);
+  const[famIsValid,setFamIsValid]=useState(false);
+  const[familyMembers,setFamilyMembers]=useState([]);
+  const[guardModal,setGuardModal]=useState(false);
+  const[guardiansIsLoading,setGuardiansIsLoading]=useState(false);
+  const[guardianData,setGuardianData]=useState({});
+  
+  useEffect(()=>{
+    
+    var famid=familyID.split("_");
+    if(famid.length>1){
+      axios
+      .get("getMembers/"+famid[1])
+      .then((response)=>{
+        console.log(response);
+        if(response.status==200)
+        {
+          setFamIsValid(true);
+          setFamilyMembers(response.data);
+          console.log(familyMembers);
+        }
+        else
+        {
+          setFamIsValid(false);
+          setFamilyMembers([]);
+        }
+      });
+    }
+    else{
+      setFamIsValid(false);
+      setFamilyMembers([]);
+    }
+  },[familyID]);
+
+  const setFamily = (value)=>{setFamilyID(value)};
+  const openFamModal = ()=>{setFamModal(true)};
+  const closeFamModal = ()=>{setFamModal(false)};
+  const openGuardModal = ()=>{setGuardModal(true)};
+  const closeGuardModal = ()=>{setGuardModal(false)};
+  const toogleLoading=()=>{setGuardiansIsLoading(!guardiansIsLoading)}
+
+  const fetchGuardians=(InputValue,callback)=>{
+    toogleLoading();
+    axios
+      .get("/guardians")
+      .then((response)=>{
+        if(response.status==200)
+        {
+          toogleLoading();
+          callback(response.data);
+        }
+      })
   };
 
+
+  
   // Submit Form
-  onSubmit = (values) => {
+  const onSubmit = (values,actions) => {
+    
     // Page Lang
-    const pageLanguage = this.props.language;
+
 
     // Language KEywords
     const { successAdd, error1Add, error2Add } =
-      this.state.langKeywords[pageLanguage];
+      langKeywords[pageLang];
     // date after concat day with month with year [ex 1-1-2008]
     var appendedDate = `${values.birthDate.day}-${values.birthDate.month}-${values.birthDate.year}`;
 
-    let formData = new FormData();
-    formData.append("First_Name", values.firstName);
-    formData.append("Last_Name", values.lastName);
-    // birthdate
-    formData.append("Birthday", appendedDate); //appendedDate
-    formData.append("Sex", values.sex);
-    formData.append("Tel", values.phoneNum);
-    formData.append("Birthplace", values.birthPlace);
-    formData.append("Teuteur", values.tuteur);
-    if (values.idURL != "") formData.append("ID_URL", values.idURL);
-    if (values.vaccineURL != "")
-      formData.append("Vaccine_URL", values.vaccineURL);
+    var medl=[];
+    medicalList.map((item)=>{
+      var tiw=item.split(":");
+      var des=tiw.length==2?tiw[1]:"";
+      medl.push({"Name":tiw[0],"Description":des});
+    })
+    const student ={
+      First_Name  : values.firstName,
+      Last_Name : values.lastName,
+      Birthday : appendedDate,
+      Sex : values.sex,
+      Birthplace : values.birthPlace,
+      Nationality : values.nationality,
+      id_family : familyID.split("_")[1],
+      id_guardian : guardian.id,
+      medical : medl,
+      medicine : medicineList
+    }
 
-    addPublicStudentFile(formData)
+    if (values.idURL != "") student["ID_URL"]=values.idURL;
+    if (values.vaccineURL != "")
+      student["Vaccine_URL"]=values.vaccineURL;
+    axios
+      .post("student",student)
       .then((response) => {
+        actions.setSubmitting(false);
         //student added
         if (response.status == 201) {
           swal(successAdd, {
             icon: "success",
           });
-          this.props.history.push(
+          props.history.push(
             `/admin/profile/${response.data.id}/inscription`
           );
         } else {
@@ -77,15 +149,33 @@ class inscriptionStudent extends Component {
         }
       })
       .catch((error) => {
+        actions.setSubmitting(false);
         swal(error1Add, {
           icon: "error",
         });
       });
   };
 
-  // Inscription Form
+  const deleteMedical = (index) => () =>
+  {
+    setMedicalList(medicalList.filter((_, i) => i !== index));
+  };
 
-  form = (props) => {
+  const deleteMedicine = (index) => () =>
+  {
+    setMedicineList(medicineList.filter((_, i) => i !== index));
+  };
+
+  const formatOptionLabel=(option)=>{
+      return(
+        <div>
+        <div>{option.Name}</div>
+        <div>{option.Comm_Phone}</div>
+      </div>
+      );
+  };
+  // Inscription Form
+  const form = (props) => {
     //days array
     var days = [];
     for (let i = 1; i <= 31; i++) {
@@ -98,9 +188,6 @@ class inscriptionStudent extends Component {
     for (let i = 0; i <= 25; i++) {
       years.push(ye-i);
     }
-
-    // Page Lang
-    const pageLanguage = this.props.language;
 
     // Language KEywords
     const {
@@ -119,7 +206,7 @@ class inscriptionStudent extends Component {
       add,
       months,
       sex,
-    } = this.state.langKeywords[pageLanguage];
+    } = langKeywords[pageLang];
 
     return (
       <form onSubmit={props.handleSubmit}>
@@ -180,7 +267,7 @@ class inscriptionStudent extends Component {
                   defaultValue=""
                 >
                   <option value=""></option>
-                  {this.state.langKeywords[pageLanguage].months.map(item => {
+                  {langKeywords[pageLang].months.map(item => {
                     return (
                       <option key={item.value} value={item.name}>
                         {item.name}
@@ -246,60 +333,80 @@ class inscriptionStudent extends Component {
                 onChange={(event) => {
                   let img = event.target.files[0];
                   props.setFieldValue("idURL", event.currentTarget.files[0]);
-                  this.setState({
-                    idURL: URL.createObjectURL(img),
-                  });
+                  setIdURL(URL.createObjectURL(img));
                 }}
               />
               <span className="error">
                 <ErrorMessage name="idURL" />
               </span>
 
-              <img className="upload-img" src={this.state.idURL} />
+              <img className="upload-img" src={idURL} />
             </div>
             
             {/*Family ID*/}
           <div className="form-group">
-              <label htmlFor="family_id">Family ID</label>
+              <label htmlFor="famId">Family ID</label>
               <Field
-                name="family_id"
+                name="famId"
                 type="text"
-                //className="form-control"
-                id="family_id"
+                className="form-control"
+                id="famId"
                 placeholder=""
                 autoComplete="off"
+                value={familyID}
+                onChange={e=>{setFamilyID(e.target.value)}}
               />
-              <a href='' style={{marginLeft:14}}>New Family</a>
               <span className="error">
-                <ErrorMessage name="family_id" />
+                <ErrorMessage name="famId" />
               </span>
-            </div>
+                <button className="btn btn-primary" onClick={openFamModal} style={{marginTop:14}}>New Family</button>
+                <FamilyAddModal
+                  isOpen={famModal}
+                  onClose={closeFamModal}
+                  setFamily={setFamily}
+                />
+                {famIsValid && <MaterialTable
+                  options={{search : false,
+                              paging : false,
+                              }}
+                  columns={[
+                    { title: studentId, field: "id" },
+                    { title: prename, field: "First_Name" },
+                    { title: name, field: "Last_Name" },
+                    { title: classLevel, field: "Grade_Name" },
+                  ]}
+                  data={familyMembers}
+                />}
+          </div>
 
-
+            {/* Medical */}
             <div className="form-group">
-              <label htmlFor="guardian_id">Medical</label>
-              <TextField
-                className="form-control"
-                value={this.state.medicalNew}
-                onChange={e=>{this.setState({medicalNew:e.target.value});}}
-                InputProps={{endAdornment: <IconButton style={{position : "relative"}} onClick={()=>{
-                  if(this.state.medicalNew !=="")
+              <label htmlFor="medical">Medical</label>
+              <Field
+                className="list_m"
+                //component={TextField}
+                //style={{width : 300}}
+                onBlur={props.handleBlur}
+                value={medicalNew}
+                onChange={e=>{setMedicalNew(e.target.value)}}/>
+                <IconButton style={{position : "relative"}} onClick={()=>{
+                  if(medicalNew !=="")
                   {
                     
-                  this.setState({medicalList : [...this.state.medicalList,this.state.medicalNew]});
-                  this.setState({medicalNew:''});
+                  setMedicalList([...medicalList,medicalNew]);
+                  setMedicalNew('');
                   }
                 }} 
-                  ><ArrowForwardIcon /></IconButton>}}/>
-                </div>
-
-              <List sx={{ border: 1 }}>
+                  ><ArrowForwardIcon /></IconButton>
+              <List sx={{ border: 1 }} style={{minHeight : 90}}>
                 {
-                    this.state.medicalList.map(item =>
+                    medicalList.map((item,key) =>
                     {
+                      let keye=key;
                         return(<ListItem
+                        key={keye}
                           secondaryAction={
-                          <IconButton edge="end" aria-label="delete">
+                          <IconButton edge="end" aria-label="delete" onClick={deleteMedical(keye)}>
                             <DeleteIcon />
                           </IconButton>
                         }>
@@ -310,7 +417,7 @@ class inscriptionStudent extends Component {
                     })
                 }
               </List>
-            
+              </div>   
           </div>
 {/*_________________________________________________________________________________________________________________*/}
           <div className="first-section col-lg-6 col-12">
@@ -386,38 +493,85 @@ class inscriptionStudent extends Component {
                     "vaccineURL",
                     event.currentTarget.files[0]
                   );
-                  this.setState({
-                    vaccineURL: URL.createObjectURL(img),
-                  });
+                 setVaccineURL(URL.createObjectURL(img));
                 }}
               />
               <span className="error">
                 <ErrorMessage name="vaccineURL" />
               </span>
 
-              <img className="upload-img" src={this.state.vaccineURL} />
+              <img className="upload-img" src={vaccineURL} />
             </div>
 
             {/*Guardian ID*/}
           <div className="form-group">
               <label htmlFor="guardian_id">Guardian ID</label>
-              <Field
+              <AsyncCreatableSelect
                 name="guardian_id"
-                type="text"
-                //className="form-control"
                 id="guardian_id"
-                placeholder=""
-                autoComplete="off"
+                value={guardian}
+                isLoading={guardiansIsLoading}
+                isSearchable
+                isClearable
+                defaultOptions
+                loadOptions={fetchGuardians}
+                formatOptionLabel={e => e.Name + '-' + e.Comm_Phone}
+                onChange={(value)=>{setGuardianData(value)}}
+                getOptionValue={e => e.id}
               />
-              <a href='' style={{marginLeft:14}}>New Guardian Profile</a>
+              <button className="btn btn-primary" onClick={openGuardModal} style={{marginTop:14}}>New Guardian</button>
+                <GuardianAddModal
+                  isOpen={guardModal}
+                  onClose={closeGuardModal}
+                  setGuardian={setGuardianData}
+                />
               <span className="error">
                 <ErrorMessage name="guardian_id" />
               </span>
-            </div>
+            </div>     
 
-          
+             {/* Medicien */}
+            <div className="form-group">
+              <label htmlFor="medine">Medicine</label>
+              <Field
+                className="list_m"
+                //component={TextField}
+                //style={{width : 300}}
+                onBlur={props.handleBlur}
+                value={medicineNew}
+                onChange={e=>{setMedicineNew(e.target.value)}}/>
+                <IconButton style={{position : "relative"}} onClick={()=>{
+                  if(medicineNew !=="")
+                  {
+                    
+                  setMedicineList([...medicineList,medicineNew]);
+                  setMedicineNew('');
+                  }
+                }} 
+                  ><ArrowForwardIcon /></IconButton>
+              <List sx={{ border: 1 }} style={{minHeight : 90}}>
+                {
+                    medicineList.map((item,key) =>
+                    {
+                      let keye=key;
+                        return(<ListItem
+                        key={keye}
+                          secondaryAction={
+                          <IconButton edge="end" aria-label="delete" onClick={deleteMedicine(keye)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        }>
+                          <ListItemText
+                                primary={item}
+                            />
+                        </ListItem>);
+                    })
+                }
+              </List>
+              </div>     
           </div>
 {/*_____________________________________________________________________________________________________*/}
+
 
           {/* Submit Input*/}
           <div className="form-group col-12">
@@ -436,12 +590,10 @@ class inscriptionStudent extends Component {
   };
 
   // Schema Of Yup
-  schema = () => {
-    // Page Lang
-    const pageLanguage = this.props.language;
+  const schema = () => {
 
     // Language KEywords
-    const { required, number } = this.state.langKeywords[pageLanguage];
+    const { required, number } = langKeywords[pageLang];
 
     const schema = Yup.object().shape({
       firstName: Yup.string().required(required),
@@ -452,6 +604,9 @@ class inscriptionStudent extends Component {
         month: Yup.string().required(required),
         year: Yup.string().required(required),
       }),
+      //famId: Yup.string().min(12,"tiw").required(required),
+      nationality: Yup.string().required(required),
+      //guardian_id : Yup.mixed().required(required),
       // sex: Yup.string().required(required),
       // phoneNum: Yup.number()
       //   .typeError(number)
@@ -463,10 +618,7 @@ class inscriptionStudent extends Component {
     return schema;
   };
 
-  render() {
-    // Page Lang
-    const pageLanguage = this.props.language;
-
+  
     // All Name
 
     const {
@@ -485,7 +637,8 @@ class inscriptionStudent extends Component {
       registerFees,
       monthlyPayment,
       beginMonthPay,
-    } = this.state.langKeywords[pageLanguage];
+    } = langKeywords[pageLang];
+
     return (
       <div className="inscription-student">
         <div className="container-fluid">
@@ -507,20 +660,19 @@ class inscriptionStudent extends Component {
               },
               birthPlace: "",
               sex: "",
-              phoneNum: "",
-              tuteur: "",
+              nationality:"",
+              guardian_id:"",
+              famId:"",
               vaccineURL: "",
               idURL: "",
             }}
-            onSubmit={this.onSubmit}
-            render={this.form}
-            validationSchema={this.schema()}
-          />
+            onSubmit={onSubmit}
+            validationSchema={schema}
+          >{form}</Formik>
           {/* End Formik */}
         </div>
       </div>
     );
-  }
 }
 
 const mapStateToProps = (state) => {
@@ -529,4 +681,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(inscriptionStudent);
+export default connect(mapStateToProps)(InscriptionStudent);

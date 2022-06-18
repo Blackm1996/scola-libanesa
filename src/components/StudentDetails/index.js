@@ -101,7 +101,7 @@ class StudentDetails extends Component {
                   <span className="d-block">{studentId} : </span>
                   <img
                     //https://picsum.photos/200/200
-                    src={`https://management.escola-libanesa.com/test2/project/storage/app/${student.ID_URL}`}
+                    src={process.env.REACT_APP_BACKEND+`project/storage/app/${student.ID_URL}`}
                     alt="ID URL"
                     className="img-thumbnail"
                     onClick={this.props.toggleModalVis}
@@ -112,7 +112,7 @@ class StudentDetails extends Component {
                 <div>
                   <span className="d-block">{vaccination} : </span>
                   <img
-                    src={`https://management.escola-libanesa.com/test2/project/storage/app/${student.Vaccine_URL}`}
+                    src={process.env.REACT_APP_BACKEND+`project/storage/app/${student.Vaccine_URL}`}
                     alt="Vaccine URL"
                     className="img-thumbnail"
                     onClick={this.props.toggleModalVis}
@@ -171,13 +171,6 @@ class StudentDetails extends Component {
                 <hr />
                 <div className="row">
                   <div className="col-sm-4">
-                    <h6 className="mb-0">{phoneNumber}</h6>
-                  </div>
-                  <div className="col-sm-8 text-secondary">{student.Tel}</div>
-                </div>
-                <hr />
-                <div className="row">
-                  <div className="col-sm-4">
                     <h6 className="mb-0">{placeOfBirth}</h6>
                   </div>
                   <div className="col-sm-8 text-secondary">
@@ -185,14 +178,6 @@ class StudentDetails extends Component {
                   </div>
                 </div>
                 <hr />
-                <div className="row">
-                  <div className="col-sm-4">
-                    <h6 className="mb-0">{guardian}</h6>
-                  </div>
-                  <div className="col-sm-8 text-secondary">
-                    {student.Teuteur}
-                  </div>
-                </div>
               </div>
 
               {/* start trash edit icons sectio*/}

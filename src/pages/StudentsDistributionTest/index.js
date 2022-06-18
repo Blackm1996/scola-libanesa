@@ -521,7 +521,6 @@ class StudentsDistribution extends Component {
                   <legend>{optional}</legend>
                   <div className="input-group mb-3 mt-3">
                     <input
-                      type="text"
                       className="form-control"
                       placeholder={`${generateRandom}`}
                       value={this.state.randomNum}

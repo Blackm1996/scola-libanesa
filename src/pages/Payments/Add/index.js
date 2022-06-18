@@ -26,7 +26,6 @@ class AddPayment extends Component {
       id: "",
       First_Name: "",
       Last_Name: "",
-      Tuteur: "",
       Monthly_Total: "", //Amount to be paid monthly from this student
     },
     loading: true,
@@ -224,7 +223,7 @@ class AddPayment extends Component {
     this.setState({
       selectedYear: yearSelected,
     });
-    const link = `https://management.escola-libanesa.com/test2/api/student/${studentID}/${yearSelected}`;
+    const link = process.env.REACT_APP_API_URL+`student/${studentID}/${yearSelected}`;
 
     //get student details
     getStudent(studentID, yearSelected)

@@ -276,7 +276,7 @@ class AddStudentYearFile extends Component {
         //Monthly_Total: values.monthTotalPay,
         Monthly_Total: monthTotalPay,
         Discount: this.state.discount,
-        School_Year: values.year,
+        School_Year: this.props.registrationSchoolYear,
         id_classroom: this.state.sectionSelected,
         id_grade: this.state.gradeSelected,
         id_student: studentID,
@@ -310,12 +310,7 @@ class AddStudentYearFile extends Component {
   // Inscription Form
   form = (props) => {
     //years array
-    var years = [];
-
-    for (let i = 2021; i <= 2022; i++) {
-      let year = `${i}-${i + 1}`;
-      years.push(year);
-    }
+    
 
     // Page Lang
     const pageLanguage = this.props.language;
@@ -336,33 +331,7 @@ class AddStudentYearFile extends Component {
       <form onSubmit={props.handleSubmit}>
         <div className="row">
           <div className="mx-auto col-lg-6 col-12">
-            {/* Year */}
-            <div className="form-group">
-              <label htmlFor="year">{year}</label>
-              <Field
-                name="year"
-                id="year"
-                className="form-control"
-                component="select"
-              >
-                {years.map((item, index) => {
-                  console.log("item", this.props.registrationSchoolYear);
-                  return item === this.props.registrationSchoolYear ? (
-                    <option key={index} value={`${item}`} selected="selected">
-                      {item}
-                    </option>
-                  ) : (
-                    <option key={index} value={`${item}`}>
-                      {item}
-                    </option>
-                  );
-                })}
-              </Field>
-              <span className="error">
-                <ErrorMessage name="year" />
-              </span>
-            </div>
-
+            
             {/* Inscription tax  */}
             <div className="form-group">
               <label htmlFor="inscriptionTax">{inscriptionTax}</label>
@@ -517,6 +486,7 @@ class AddStudentYearFile extends Component {
           <div className="col-12 text-center">
             <div className="title-of-middle">
               <h2>{inscriptionTitle}</h2>
+              <h3>{this.props.registrationSchoolYear}</h3>
             </div>
           </div>
 
@@ -577,7 +547,6 @@ class AddStudentYearFile extends Component {
           <Formik
             enableReinitialize={true}
             initialValues={{
-              year: this.props.registrationSchoolYear,
               inscriptionTax: inscription.inscriptionTax,
               booksUniformTotal: inscription.booksUniformTotal,
               monthTotalPay: inscription.monthTotalPay,

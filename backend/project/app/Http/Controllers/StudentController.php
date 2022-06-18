@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Student_Profile;
 use App\Models\Options;
 use App\Models\Student_Inscription;
+use App\Models\Medical;
+use App\Models\Medicine;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Arr;
 use App\Models\Grades;
@@ -90,20 +92,19 @@ class StudentController extends Controller
                 'Vaccine_URL' => 'file|image|mimes:jpeg,png,gif,jpg|max:2048',
                 'First_Name' => 'required',
                 'Last_Name' => 'required',
+                'id_family' => 'required',
+                'id_guardian' => 'required',
             ]);
             // check if the data was inserted before
             $data = Student_Profile::where([
                 ['First_Name', '=', $request->input('First_Name')],
                 ['Last_Name', '=', $request->input('Last_Name')],
-                ['Birthday', '=', $request->input('Birthday')],
-                ['Birthplace', '=', $request->input('Birthplace')],
-                ['Tel', '=', $request->input('Tel')],
-                ['Sex', '=', $request->input('Sex')],
-                ['Teuteur', '=', $request->input('Teuteur')],
+                ['id_family', '=', $request->input('id_family')],
+                ['id_guardian', '=', $request->input('id_guardian')],
             ])->get();
     
             if (!$data->isEmpty()) {
-                return response()->json("data is alreay exist", 200);
+                return response()->json("data alreay exist", 200);
             }
             // if not inserted then save it
             else {
@@ -112,16 +113,33 @@ class StudentController extends Controller
                 $temp->Last_Name =  $request->input('Last_Name');
                 $temp->Birthday =  $request->input('Birthday');
                 $temp->Birthplace = $request->input('Birthplace');
-                $temp->Tel = $request->input('Tel');
+                $temp->Nationality = $request->input('Nationality');
+                $temp->id_family = $request->input('id_family');
                 $temp->Sex = $request->input('Sex');
-                $temp->Teuteur = $request->input('Teuteur');
+                $temp->id_guardian = $request->input('id_guardian');
                 if(isset($_FILES['ID_URL'])){
                 $temp->ID_URL = Storage::put('public/ID_URL', $request->file('ID_URL'));}
                 
                 if(isset($_FILES['Vaccine_URL'])){
                 $temp->Vaccine_URL = Storage::put('public/Vaccine_URL', $request->file('Vaccine_URL'));}
-
                 $student = Student_Profile::create($temp->toArray());
+                if(isset($request->medical)){
+                    foreach ($request->medical as $casem){
+                        $ttm=new Medical;
+                        $ttm->Name=$casem['Name'];
+                        $ttm->Description=$casem['Description'];
+                        $ttm->id_student=$student->id;
+                        $med=Medical::Create($ttm->toArray());
+                    }
+                }
+                if(isset($request->medicine)){
+                    foreach ($request->medicine as $casec){
+                        $ttc=new Medicine;
+                        $ttc->Name=$casec;
+                        $ttc->id_student=$student->id;
+                        $medc=Medicine::Create($ttc->toArray());
+                    }
+                }
             }
         } catch (\Exception $e) {
             return response()->json($e, 404);
@@ -140,7 +158,7 @@ class StudentController extends Controller
     {
       //  try {
             $student = Student_Profile::join('student_inscriptions','id','id_student')->where('student_inscriptions.School_Year',$School_Year)->where('id',$id)->get([
-                'student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name','student_profiles.Teuteur','student_inscriptions.Monthly_Total','student_inscriptions.id_grade']);
+                'student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name','student_inscriptions.Monthly_Total','student_inscriptions.id_grade']);
            //     $student = $student->toArray();
           //$price = Arr::pull($student,'student_inscriptions.id_grade');
           //echo $student[0]['id_grade'];
@@ -158,7 +176,6 @@ class StudentController extends Controller
              'First_Name'=>$student[0]['First_Name'],
              'Monthly_Total'=>$student[0]['Monthly_Total'],
              'Last_Name'=>$student[0]['Last_Name'],
-             'Teuteur'=>$student[0]['Teuteur'],
              'gradeName'=>$gradeName,
              'sectionName'=>$sectionName
              ],200);
@@ -200,9 +217,7 @@ class StudentController extends Controller
             $temp->Last_Name =  $request->input('Last_Name');
             $temp->Birthday =  $request->input('Birthday');
             $temp->Birthplace = $request->input('Birthplace');
-            $temp->Tel = $request->input('Tel');
             $temp->Sex = $request->input('Sex');
-            $temp->Teuteur = $request->input('Teuteur');
             $ID_URL=$request->input('ID_URL');
             if(isset($_FILES["ID_URL"])){
 

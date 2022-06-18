@@ -13,13 +13,15 @@ class CreateExpensesTable extends Migration
      */
     public function up()
     {
-        Schema::create('expenses', function (Blueprint $table) {
-            $table->id();
-            $table->timestamp('Date')->useCurrent();
-            $table->int('Amount');
-            $table->string('Description');
-            $table->string('transaction_type');
-        });
+        if (!Schema::hasTable('expenses')) {
+            Schema::create('expenses', function (Blueprint $table) {
+                $table->id();
+                $table->timestamp('Date')->useCurrent();
+                $table->integer('Amount');
+                $table->string('Description');
+                $table->string('transaction_type');
+            });
+        }
     }
 
     /**

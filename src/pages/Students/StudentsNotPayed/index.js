@@ -85,7 +85,6 @@ class NotPayedStudents extends Component {
       section,
       rest,
       grade,
-      phoneNumber,
       totalPay,
       totalstnb,
     } = this.state.langKeywords[pageLanguage];
@@ -97,7 +96,6 @@ class NotPayedStudents extends Component {
       { title: grade, field: "gradeName" },
       { title: section, field: "className" },
       { title: rest, field: "rest" },
-      { title: phoneNumber, field: "Tel" },
     ];
     return (
       <div className="main-table">
@@ -162,7 +160,7 @@ class NotPayedStudents extends Component {
                   const limit = query.pageSize;*/
 
                   fetch(
-                    process.env.REACT_APP_BASE_URL+`notPayedstudent/${this.state.month}/${this.state.year}/${search}/${orderBy}/${orderDirection}`
+                    process.env.REACT_APP_API_URL+`notPayedstudent/${this.state.month}/${this.state.year}/${search}/${orderBy}/${orderDirection}`
                   )
                     .then((resp) => resp.json())
                     .then((resp) => {

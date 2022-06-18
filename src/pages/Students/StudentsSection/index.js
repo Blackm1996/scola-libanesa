@@ -100,7 +100,6 @@ class StudentsSection extends React.Component {
               id: student.id,
               firstName: student.First_Name,
               lastName: student.Last_Name,
-              telephone: student.Tel === null ? "" : student.Tel,
             };
           });
           this.setState({
@@ -125,7 +124,6 @@ class StudentsSection extends React.Component {
             let bill = {};
             bill.name = `${student.First_Name} ${student.Last_Name} `;
             bill.grade = student.grade === null ? "" : student.grade;
-            bill.telephone = student.Tel === null ? "" : student.Tel;
             bill.inscriptionTax = student.Inscription_Tax;
             bill.booksUniform = student["Books/Uniform_total"];
             studentsBills.push(bill);
@@ -192,7 +190,6 @@ class StudentsSection extends React.Component {
           let bill = {};
           bill.name = `${student.Last_Name} ${student.First_Name} `;
           bill.grade = student.grade === null ? "" : student.grade;
-          bill.telephone = student.Tel === null ? "" : student.Tel;
           bill.inscriptionTax = student.Inscription_Tax;
           bill.booksUniform = student["Books/Uniform_total"];
           studentsBills.push(bill);
@@ -431,7 +428,6 @@ class StudentsSection extends React.Component {
                   <tr>
                     <td>Nome-Apelido</td>
                     <td>Turma-Seção</td>
-                    <td>Telefone</td>
                   </tr>
                 </thead>
                 <tbody>
@@ -440,7 +436,6 @@ class StudentsSection extends React.Component {
                       <tr key={index}>
                         <td>{`${student.firstName}  ${student.lastName} `}</td>
                         <td>{gradeAndSection}</td>
-                        <td>{student.telephone}</td>
                       </tr>
                     );
                   })}

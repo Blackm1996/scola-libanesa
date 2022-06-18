@@ -614,10 +614,10 @@ class EditInscription extends Component {
               <div className="select">
                 <Select
                   style={{ fontSize: 0 }}
-                  placeholder="Select class"
+                  placeholder="Select year"
                   defaultValue={{
-                    label: `${this.props.registrationSchoolYear}`,
-                    value: `${this.props.registrationSchoolYear}`,
+                    label: `${this.props.schoolYear}`,
+                    value: `${this.props.schoolYear}`,
                   }}
                   options={years}
                   styles={this.customStyles}

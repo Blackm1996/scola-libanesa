@@ -117,6 +117,11 @@ class UsersController extends Controller
         }
     }
 
+    public function greet()
+    {
+        return response()->json(['message'=>'Hello'], 200);
+    }
+
    public function updateUser(Request $request,$id)
   {
       try{

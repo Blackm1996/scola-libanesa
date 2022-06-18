@@ -27,7 +27,7 @@ class BillsController extends Controller
          try{
        $response = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
        ->join('grades','grades.id','=','student_inscriptions.id_grade')->where('student_inscriptions.School_Year',$School_Year)
-       ->where('student_inscriptions.id_classroom',$id_classroom)->get(['First_Name','Last_Name','grades.Name as grade','Tel','Inscription_Tax','Books/Uniform_total']);
+       ->where('student_inscriptions.id_classroom',$id_classroom)->get(['First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
        return json_encode($response);
          }
          catch(\Exception $e)
@@ -120,21 +120,9 @@ $count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($st
 }*/
 
 public function studentNotpayed($month,$School_Year,$search,$orderBy,$sort){
-
-
     try{
-  // $sub = Bills::select('id_student',\DB::raw("SUM(Amount) as total"))->where('School_Year',$School_Year)->where('Month',$month)->groupBy('id_student')->get();
-   /*DB::table(DB::raw("({$sub->toSql()}) as t1"))
-    ->mergeBindings($sub)
-    ->join('student_inscriptions','t1.id_student','student_inscriptions.id_student')->join('student_profiles','t1.id_student','student_profiles.id')->where('student_inscriptions.School_Year',$School_Year)->where('t1.total','<','student_inscriptions.Monthly_Total');*/
- /*  $student= Student_Profile::select('student_profiles.id','SUM(bills.Amount)')->join('bills','bills.id_student','student_profiles.id')->join('student_inscriptions','student_inscriptions.id_student','student_profiles.id')->where('bills.School_Year',$School_Year)->where('bills.Month',$month)
-->where('student_inscriptions.Monthly_Total','!=','sum(\'Amount\')')->groupBy('student_profiles.id')->simplePaginate(15);*/
-/*$student= Student_Profile::select('student_profiles.id')->join('bills','bills.id_student','student_profiles.id')->join('student_inscriptions','student_inscriptions.id_student','student_profiles.id')->where('bills.School_Year',$School_Year)->where('bills.Month',$month)
-->whereHas('student_inscriptions.Monthly_Total','>',\DB::raw("SUM(Amount) as total"))->groupBy('student_profiles.id')->simplePaginate(15);*/
 
-
-
-$PayedStduents= Student_Profile::select('student_profiles.id','student_profiles.Tel','student_inscriptions.id_grade',DB::raw('(student_inscriptions.Monthly_Total -'.\DB::raw("SUM(Amount)").') AS rest'),'student_inscriptions.id_classroom')
+$PayedStduents= Student_Profile::select('student_profiles.id','student_inscriptions.id_grade',DB::raw('(student_inscriptions.Monthly_Total -'.\DB::raw("SUM(Amount)").') AS rest'),'student_inscriptions.id_classroom')
 ->leftjoin('bills','bills.id_student','student_profiles.id')->join('student_inscriptions','student_inscriptions.id_student','student_profiles.id')
 ->where('student_inscriptions.School_Year',$School_Year)->where('bills.School_Year',$School_Year)
 ->where('bills.Month',$month)
@@ -143,16 +131,15 @@ $PayedStduents= Student_Profile::select('student_profiles.id','student_profiles.
                     if($search!='^'){
           $q->where('student_profiles.id','LIKE','%' .$search .'%')
             ->orWhere('student_profiles.First_Name','LIKE','%' .$search .'%')
-            ->orWhere('student_profiles.Tel','LIKE','%' .$search .'%')
             ->orWhere('student_profiles.Last_Name','LIKE','%' .$search .'%');}
       })
-             ->groupBy('student_profiles.id','student_profiles.Tel','student_inscriptions.id_grade','student_inscriptions.Monthly_Total','student_inscriptions.id_classroom');
+             ->groupBy('student_profiles.id','student_inscriptions.id_grade','student_inscriptions.Monthly_Total','student_inscriptions.id_classroom');
 
 $s= DB::table( DB::raw("({$PayedStduents->toSql()}) as sub") )->mergeBindings($PayedStduents->getQuery())->where('rest','>',0);
 
 
 
-$student=Student_Profile::select('student_profiles.id','student_profiles.Tel','student_inscriptions.id_grade','student_inscriptions.Monthly_Total AS rest','student_inscriptions.id_classroom')->leftjoin('bills',function ($join) use($month,$School_Year) {
+$student=Student_Profile::select('student_profiles.id','student_inscriptions.id_grade','student_inscriptions.Monthly_Total AS rest','student_inscriptions.id_classroom')->leftjoin('bills',function ($join) use($month,$School_Year) {
             $join->on('bills.id_student', '=', 'student_profiles.id')
                  ->where('bills.Month',$month)->where('bills.School_Year',$School_Year);
         })->leftjoin('student_inscriptions','student_inscriptions.id_student','student_profiles.id')->whereNull('bills.id')
@@ -163,7 +150,6 @@ $student=Student_Profile::select('student_profiles.id','student_profiles.Tel','s
                     if($search!='^'){
           $q->where('student_profiles.id','LIKE','%' .$search .'%')
             ->orWhere('student_profiles.First_Name','LIKE','%' .$search .'%')
-            ->orWhere('student_profiles.Tel','LIKE','%' .$search .'%')
             ->orWhere('student_profiles.Last_Name','LIKE','%' .$search .'%');}
       })
         ->where( function($q) use($month) {
@@ -178,7 +164,7 @@ $student=Student_Profile::select('student_profiles.id','student_profiles.Tel','s
              )->union($s);
 
 $count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($student->getQuery())
-->select('sub.id','student_profiles.First_Name','student_profiles.Last_Name','sub.Tel','classrooms.Name as className','grades.Name as gradeName','sub.rest')
+->select('sub.id','student_profiles.First_Name','student_profiles.Last_Name','classrooms.Name as className','grades.Name as gradeName','sub.rest')
 ->leftjoin('classrooms','classrooms.id','sub.id_classroom')->leftjoin('grades','grades.id','sub.id_grade')
 ->join('student_profiles','student_profiles.id','sub.id')
    
@@ -226,7 +212,7 @@ public function months()
          try{
        $response = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
        ->join('grades','grades.id','=','student_inscriptions.id_grade')->where('student_inscriptions.School_Year',$School_Year)
-       ->where('student_profiles.id',$id)->get(['First_Name','Last_Name','grades.Name as grade','Tel','Inscription_Tax','Books/Uniform_total']);
+       ->where('student_profiles.id',$id)->get(['First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
        return json_encode($response->first());
          }
          catch(\Exception $e)

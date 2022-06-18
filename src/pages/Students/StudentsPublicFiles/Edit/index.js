@@ -96,12 +96,12 @@ class EditStudent extends Component {
         const idURL =
           student.ID_URL == null
             ? ""
-            : `https://management.escola-libanesa.com/test2/project/storage/app/${student.ID_URL}`;
+            : process.env.REACT_APP_BACKEND+`project/storage/app/${student.ID_URL}`;
         //vaccineURL
         const vaccineURL =
           student.ID_URL == null
             ? ""
-            : `https://management.escola-libanesa.com/test2/project/storage/app/${student.Vaccine_URL}`;
+            : process.env.REACT_APP_BACKEND+`project/storage/app/${student.Vaccine_URL}`;
         // getted birthday
         const birth = response.data.Birthday;
 

@@ -588,8 +588,8 @@ class ViewInscription extends Component {
                   style={{ fontSize: 0 }}
                   placeholder="Select class"
                   defaultValue={{
-                    label: `${this.props.registrationSchoolYear}`,
-                    value: `${this.props.registrationSchoolYear}`,
+                    label: `${this.props.schoolYear}`,
+                    value: `${this.props.schoolYear}`,
                   }}
                   options={years}
                   styles={this.customStyles}

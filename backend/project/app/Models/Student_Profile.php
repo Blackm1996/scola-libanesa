@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Student_Profile extends Model
 {
     use HasFactory;
-    protected $fillable=["First_Name","Last_Name","Birthday","Birthplace","Tel","Sex","Teuteur","ID_URL","Vaccine_URL"];
+    protected $fillable=["First_Name","Last_Name","Birthday","Birthplace","Nationality","id_family","Sex","id_guardian","ID_URL","Vaccine_URL"];
     protected $table ="student_profiles";
     public $timestamps = false;
     protected $connection ='mysql';

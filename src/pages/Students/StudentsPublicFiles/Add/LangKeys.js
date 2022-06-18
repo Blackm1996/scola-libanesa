@@ -1,9 +1,9 @@
 export const ENGLISHWORDS = {
   //done
   titlePage: "Profile",
-  name: "Name",
-  classLevel: "Class",
-  prename: "Prename",
+  name: "Last Name",
+  classLevel: "Grade",
+  prename: "First Name",
   birthDate: "Birthday",
   sexLabel: "Sex",
   vaccination: "Vaccination",

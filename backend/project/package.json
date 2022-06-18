@@ -1,4 +1,7 @@
 {
+    "name":"eli_management",
+    "version": "1.0",
+    "homepage": "http://www.management-eli.com/",
     "private": true,
     "scripts": {
         "dev": "npm run development",

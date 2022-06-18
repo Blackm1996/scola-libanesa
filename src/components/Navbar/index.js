@@ -118,7 +118,7 @@ class Navbar extends Component {
           <div className="left-section col-2">
             <div className="image">
               <Link to="/admin">
-                <img src={logoImg} alt="elissa school logo" />
+                <img src={logoImg} alt="Escola Libanesa Intenacional school logo" />
               </Link>
             </div>
           </div>

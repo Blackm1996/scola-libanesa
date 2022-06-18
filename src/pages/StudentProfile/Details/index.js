@@ -35,16 +35,13 @@ class Details extends Component {
       Last_Name: "",
       Birthday: "",
       Birthplace: "",
-      Tel: "",
       Sex: "",
-      Teuteur: "",
       ID_URL: "",
       Vaccine_URL: "",
     },
     printDetails: {
       name: "",
       grade: "",
-      telephone: "",
       inscriptionTax: "",
       booksUniform: "",
     },
@@ -85,14 +82,12 @@ class Details extends Component {
           const name = `${resp.data.First_Name} ${resp.data.Last_Name}`;
           const {
             grade,
-            Tel: telephone,
             Inscription_Tax: inscriptionTax,
           } = studentData;
           const booksUniform = studentData["Books/Uniform_total"];
           const printDetails = {
             name: name === null ? "" : name,
             grade: grade === null ? "" : grade,
-            telephone: telephone === null ? "" : telephone,
             inscriptionTax: inscriptionTax === null ? "" : inscriptionTax,
             booksUniform: booksUniform === null ? "" : booksUniform,
           };

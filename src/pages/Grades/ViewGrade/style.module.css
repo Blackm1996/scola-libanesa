@@ -17,22 +17,20 @@
   color: var(--main-color-1);
   cursor: pointer
 }
-fieldset {
+/*fieldset {
     border: 2px solid #dedede;
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 15px;
     width: 634px !important
-}
+}*/
 
 fieldset legend {
     font-size: 28px;
     color: tomato;
     width: auto;
 }
-table {
-    
-}
+
 table thead {
   background-color: var(--main-color-1);
   color: #fff

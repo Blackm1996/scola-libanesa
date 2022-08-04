@@ -23,7 +23,7 @@ import {
   Select,
   Menu,
   MenuItem,
-} from "@material-ui/core";
+} from "@mui/material";
 
 function BasicMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);

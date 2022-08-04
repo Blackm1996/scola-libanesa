@@ -42,7 +42,9 @@ class ViewInscription extends Component {
       monthStart: "",
       gradeId: "",
       sectionId: "",
+      
     },
+    attending: 1,
     discount: 0,
     newMonthTotal: "",
   };
@@ -87,6 +89,7 @@ class ViewInscription extends Component {
             .then((response) => {
               //get student inscription details
               const inscription = response.data;
+              console.log(inscription);
               this.setState({
                 inscriptionDetails: {
                   ...this.state.inscriptionDetails,
@@ -99,6 +102,7 @@ class ViewInscription extends Component {
                     inscription.sectionId == null ? "" : inscription.sectionId,
                   discount: inscription.Discount,
                 },
+                attending: inscription.attending,
                 gradeSelected: inscription.gradeId,
                 discount: inscription.Discount,
                 newMonthTotal: inscription.Monthly_Total,
@@ -154,6 +158,7 @@ class ViewInscription extends Component {
               .then((response) => {
                 //get student inscription details
                 const inscription = response.data;
+                console.log(inscription);
                 this.setState({
                   inscriptionDetails: {
                     ...this.state.inscriptionDetails,
@@ -161,6 +166,7 @@ class ViewInscription extends Component {
                     booksUniformTotal: inscription["Books/Uniform_total"],
                     monthTotalPay: inscription.Monthly_Total,
                     monthStart: inscription.Month_Start,
+                    
                     gradeId: inscription.gradeId,
                     sectionId:
                       inscription.sectionId == null
@@ -168,6 +174,7 @@ class ViewInscription extends Component {
                         : inscription.sectionId,
                     discount: inscription.Discount,
                   },
+                  attending: inscription.attending,
                   gradeSelected: inscription.gradeId,
                   discount: inscription.Discount,
                   newMonthTotal: inscription.Monthly_Total,
@@ -223,10 +230,12 @@ class ViewInscription extends Component {
           booksUniformTotal: inscription["Books/Uniform_total"],
           monthTotalPay: inscription.Monthly_Total,
           monthStart: inscription.Month_Start,
+          
           gradeId: inscription.gradeId,
           sectionId: inscription.sectionId == null ? "" : inscription.sectionId,
           discount: inscription.Discount,
         },
+        attending: inscription.attending,
         gradeSelected: inscription.gradeId,
         discount: inscription.Discount,
         newMonthTotal: inscription.Monthly_Total,
@@ -552,8 +561,41 @@ class ViewInscription extends Component {
     });
     return schema;
   };
-
+  kikckout_resume = () =>{
+    swal({
+      title: this.state.attending == 1 ?"Are you sure you want to kick this student out?":"Are you sure you want to bring this student back?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if(willDelete)
+      {
+        const data={
+          id_student: this.props.match.params.id,
+          attendance:this.state.attending== 1 ? 0:1,
+        };
+        console.log(data);
+        axios
+        .post('/attendanceChange',data)
+        .then((response) => {
+          if (response.status == 200) {
+            this.setState({attending : this.state.attending == 1 ? 0:1});
+            swal(this.state.attending == 1? "Student Rejoined class":"Student kicked out of class", {
+              icon: "success",
+            });
+          }
+        })
+        .catch((error) => {
+          swal("ERROR", {
+            icon: "error",
+          });
+        });
+      }
+    });
+    
+  };
   render() {
+    console.log(this.state.attending);
     //inscription
     const inscription = this.state.inscriptionDetails;
 
@@ -604,15 +646,24 @@ class ViewInscription extends Component {
                   })}
                   onChange={this.onDropdownChange}
                 />
+                
               </div>
+              
             </div>
             {/* end select search */}
+            
           </div>
-
+                        
           {/* start add grade and section */}
-
+          <div className="form-group text-center mx-auto col-lg-6 col-12 pl-2 m-b-20">
+          <div className={this.state.attending==1?"p-2 bg-success text-white":
+                                "p-2 bg-danger text-white"}>
+                                  {this.state.attending==1? "Attending":"OUT"}
+                                </div>
+          </div>
           {/* end add grade and section */}
           <div className="mx-auto col-lg-6 col-12 pl-2">
+          
             {/* start grade section */}
             <div className="form-group">
               <label htmlFor="grade">{grade}</label>
@@ -677,7 +728,13 @@ class ViewInscription extends Component {
             validationSchema={this.schema()}
           />
           {/* End Formik */}
+          
+          
         </div>
+        <div className="mx-auto col-lg-6 col-12 pl-2">
+            <button style={this.state.attending==1? {backgroundColor:'#F93154',color:'#FBFBFB'}:{backgroundColor:'#00B74A',color:'#FBFBFB'}}
+                  onClick={this.kikckout_resume}>{this.state.attending==1? 'Kick out':'Attend Again'} </button>
+          </div>
       </div>
     );
   }

@@ -1,5 +1,6 @@
 import React, { useState, Component } from "react";
 import MaterialTable from "material-table";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import SelectMonth from "../../../components/SelectMonth";
 import SelectYear from "../../../components/SelectYear";
 // import languages
@@ -97,6 +98,7 @@ class NotPayedStudents extends Component {
       { title: section, field: "className" },
       { title: rest, field: "rest" },
     ];
+    const thema=createTheme();
     return (
       <div className="main-table">
         <div className="container-fluid">
@@ -117,6 +119,7 @@ class NotPayedStudents extends Component {
           <div className="d-flex col-12 mx-auto"><b>{totalPay}: {this.state.tot}</b></div><br/>
           <div className="d-flex col-12 mx-auto"><b>{totalstnb}: {this.state.totst}</b></div><br/>
           <div className="students-all col-12 mx-auto">
+            <ThemeProvider theme={thema}>
             <MaterialTable
               tableRef={this.tableRef}
               title=""
@@ -182,6 +185,7 @@ class NotPayedStudents extends Component {
                 })
               }
             />
+            </ThemeProvider>
           </div>
           {/* end table */}
         </div>

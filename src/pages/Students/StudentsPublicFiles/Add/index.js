@@ -19,6 +19,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import GuardianAddModal from "../../../../components/Guardian/Add";
 import axios from "axios";
 import MaterialTable from "material-table";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const  InscriptionStudent=(props)=>{
   const[pageLang,setPageLang]=useState(props.language);
@@ -39,21 +40,23 @@ const  InscriptionStudent=(props)=>{
   const[familyMembers,setFamilyMembers]=useState([]);
   const[guardModal,setGuardModal]=useState(false);
   const[guardiansIsLoading,setGuardiansIsLoading]=useState(false);
-  const[guardianData,setGuardianData]=useState({});
+  const[guardianData,setGuardianData]=useState({"id":"","Name":"","Comm_Phone":""});
+  const [submitting,setSubmitting]=useState(false);
   
   useEffect(()=>{
     
     var famid=familyID.split("_");
     if(famid.length>1){
+      //console.log(famid);
       axios
       .get("getMembers/"+famid[1])
       .then((response)=>{
-        console.log(response);
-        if(response.status==200)
+        //console.log(response);
+        if(response.status===200)
         {
           setFamIsValid(true);
           setFamilyMembers(response.data);
-          console.log(familyMembers);
+          //console.log(familyMembers);
         }
         else
         {
@@ -80,9 +83,10 @@ const  InscriptionStudent=(props)=>{
     axios
       .get("/guardians")
       .then((response)=>{
-        if(response.status==200)
+        if(response.status===200)
         {
           toogleLoading();
+          response.data.filter((guard)=>{})
           callback(response.data);
         }
       })
@@ -92,68 +96,71 @@ const  InscriptionStudent=(props)=>{
   
   // Submit Form
   const onSubmit = (values,actions) => {
-    
+    setSubmitting(true);
     // Page Lang
-
-
-    // Language KEywords
+      // Language KEywords
     const { successAdd, error1Add, error2Add } =
-      langKeywords[pageLang];
-    // date after concat day with month with year [ex 1-1-2008]
-    var appendedDate = `${values.birthDate.day}-${values.birthDate.month}-${values.birthDate.year}`;
+    langKeywords[pageLang];
+  // date after concat day with month with year [ex 1-1-2008]
+  var appendedDate = `${values.birthDate.day}-${values.birthDate.month}-${values.birthDate.year}`;
 
-    var medl=[];
-    medicalList.map((item)=>{
-      var tiw=item.split(":");
-      var des=tiw.length==2?tiw[1]:"";
-      medl.push({"Name":tiw[0],"Description":des});
-    })
-    const student ={
-      First_Name  : values.firstName,
-      Last_Name : values.lastName,
-      Birthday : appendedDate,
-      Sex : values.sex,
-      Birthplace : values.birthPlace,
-      Nationality : values.nationality,
-      id_family : familyID.split("_")[1],
-      id_guardian : guardian.id,
-      medical : medl,
-      medicine : medicineList
-    }
+  var medl=[];
+  medicalList.map((item)=>{
+    var tiw=item.split(":");
+    var des=tiw.length===2?tiw[1]:"";
+    medl.push({"Name":tiw[0],"Description":des});
+  })
+  const famidfi=familyID===""?"":familyID.split("_")[1];
+  const student ={
+    First_Name  : values.firstName,
+    Last_Name : values.lastName,
+    Birthday : appendedDate,
+    Sex : values.sex,
+    Birthplace : values.birthPlace,
+    Nationality : values.nationality,
+    id_family : famidfi,
+    id_guardian : guardianData.id,
+    medical : medl,
+    medicine : medicineList
+  }
 
-    if (values.idURL != "") student["ID_URL"]=values.idURL;
-    if (values.vaccineURL != "")
-      student["Vaccine_URL"]=values.vaccineURL;
-    axios
-      .post("student",student)
-      .then((response) => {
-        actions.setSubmitting(false);
-        //student added
-        if (response.status == 201) {
-          swal(successAdd, {
-            icon: "success",
-          });
-          props.history.push(
-            `/admin/profile/${response.data.id}/inscription`
-          );
-        } else {
-          // student exist
-          if (response.status == 200)
-            swal(error2Add, {
-              icon: "error",
-            });
-          else
-            swal(error1Add, {
-              icon: "error",
-            });
-        }
-      })
-      .catch((error) => {
-        actions.setSubmitting(false);
-        swal(error1Add, {
-          icon: "error",
+  if (values.idURL != "") student["ID_URL"]=values.idURL;
+  if (values.vaccineURL != "")
+    student["Vaccine_URL"]=values.vaccineURL;
+  console.log(student);
+  axios
+    .post("student",student)
+    .then((response) => {
+      setSubmitting(false);
+      actions.setSubmitting(false);
+      //student added
+      if (response.status === 201) {
+        swal(successAdd, {
+          icon: "success",
         });
+        props.history.push(
+          `/admin/profile/${response.data.id}/inscription`
+        );
+      } else {
+        // student exist
+        setSubmitting(false);
+        if (response.status === 200)
+          swal(error2Add, {
+            icon: "error",
+          });
+        else
+          swal(error1Add, {
+            icon: "error",
+          });
+      }
+    })
+    .catch((error) => {
+      setSubmitting(false);
+      actions.setSubmitting(false);
+      swal(error1Add, {
+        icon: "error",
       });
+    });
   };
 
   const deleteMedical = (index) => () =>
@@ -208,6 +215,7 @@ const  InscriptionStudent=(props)=>{
       sex,
     } = langKeywords[pageLang];
 
+    const thema=createTheme();
     return (
       <form onSubmit={props.handleSubmit}>
         <div className="row">
@@ -359,13 +367,13 @@ const  InscriptionStudent=(props)=>{
               <span className="error">
                 <ErrorMessage name="famId" />
               </span>
-                <button className="btn btn-primary" onClick={openFamModal} style={{marginTop:14}}>New Family</button>
+                <button className="btn btn-primary" onClick={(e)=>{e.preventDefault();openFamModal();}} style={{marginTop:14}}>New Family</button>
                 <FamilyAddModal
                   isOpen={famModal}
                   onClose={closeFamModal}
                   setFamily={setFamily}
                 />
-                {famIsValid && <MaterialTable
+                {famIsValid && <ThemeProvider theme={thema}><MaterialTable
                   options={{search : false,
                               paging : false,
                               }}
@@ -376,7 +384,7 @@ const  InscriptionStudent=(props)=>{
                     { title: classLevel, field: "Grade_Name" },
                   ]}
                   data={familyMembers}
-                />}
+                /></ThemeProvider>}
           </div>
 
             {/* Medical */}
@@ -509,7 +517,8 @@ const  InscriptionStudent=(props)=>{
               <AsyncCreatableSelect
                 name="guardian_id"
                 id="guardian_id"
-                value={guardian}
+                key={guardianData.id}
+                value={guardianData}
                 isLoading={guardiansIsLoading}
                 isSearchable
                 isClearable
@@ -519,7 +528,7 @@ const  InscriptionStudent=(props)=>{
                 onChange={(value)=>{setGuardianData(value)}}
                 getOptionValue={e => e.id}
               />
-              <button className="btn btn-primary" onClick={openGuardModal} style={{marginTop:14}}>New Guardian</button>
+              <button className="btn btn-primary" onClick={(e)=>{e.preventDefault();openGuardModal();}} style={{marginTop:14}}>New Guardian</button>
                 <GuardianAddModal
                   isOpen={guardModal}
                   onClose={closeGuardModal}
@@ -579,6 +588,7 @@ const  InscriptionStudent=(props)=>{
               type="submit"
               className="btn btn-primary btn-block"
               id="test"
+              disabled={submitting}
             >
               <i className="fa fa-user-plus "></i>
               <span>{add}</span>

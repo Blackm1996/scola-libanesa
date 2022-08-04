@@ -6,9 +6,9 @@ import { ENGLISH, FRENCH, PORTO } from "../../languages";
 import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "./LangKeys";
 // import connect from react-redux
 import { connect } from "react-redux";
-import { Select, MenuItem, FormControl } from "@material-ui/core";
+import { Select, MenuItem, FormControl } from "@mui/material";
 import "./style.css";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/material/styles";
 
 class GradeDDL extends Component {
   state = {

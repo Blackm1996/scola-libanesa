@@ -27,6 +27,9 @@ import AddExpense from "../Expenses/Add";
 import ViewExpenses from "../Expenses/View";
 import ViewBillsPerMonth from "../Payments/ViewPerMonth";
 import SpecialPage from "../SpecialPage";
+import addFamilyBills from "../Payments/AddFamily";
+import viewFamily from "../Students/Family/View";
+import ViewAllFamilies from "../Students/Family/ViewAll";
 class Students extends Component {
   render() {
     //navbar links
@@ -162,6 +165,21 @@ class Students extends Component {
             exact
             path="/admin/students/specialComponent"
             component={SpecialPage}
+          />
+          <Route
+            exact
+            path="/admin/students/addFamilyBills"
+            component={addFamilyBills}
+          />
+          <Route
+           exact
+           path="/admin/students/viewFamily/:id"
+           component={viewFamily}
+          />
+          <Route
+           exact
+           path="/admin/students/viewFamilies"
+           component={ViewAllFamilies}
           />
         </div>
 

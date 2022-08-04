@@ -9,7 +9,7 @@ import {
 } from "../../SchoolYear/langKeys";
 import swal from "sweetalert";
 import axios from "axios";
-import { FormControl, MenuItem, Select, Box } from "@material-ui/core";
+import { FormControl, MenuItem, Select, Box } from "@mui/material";
 
 function EndMonth(props) {
   const [pageLanguage, setPageLanguage] = useState(props.language);

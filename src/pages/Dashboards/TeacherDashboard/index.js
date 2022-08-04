@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {  Grid } from "@material-ui/core";
+import {  Grid } from "@mui/material";
 import TeacherAppBar from "../../../components/TeacherAppBar";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from "../../Teachers/pages/Home/index";
 import About from "../../Teachers/pages/Home/index";

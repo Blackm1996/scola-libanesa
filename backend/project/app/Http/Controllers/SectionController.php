@@ -284,7 +284,7 @@ public function sectionStudents($idSection,$School_Year)
 
     $sectionStudent=Student_Inscription::join('student_profiles','student_profiles.id','=','student_inscriptions.id_student')
    ->where('student_inscriptions.id_classroom',$idSection)->where('student_inscriptions.School_Year',$School_Year)->get([
-       'student_profiles.id as id','student_profiles.First_Name as First_Name','student_profiles.Last_Name as Last_Name','student_profiles.Tel'
+       'student_profiles.id as id','student_profiles.First_Name as First_Name','student_profiles.Last_Name as Last_Name'
    ]);
      $sectionName=Classroom::select('classrooms.Name as className','grades.Name as gradeName')->join('grades','grades.id','classrooms.id_grade')->where('classrooms.id',$idSection)->where('classrooms.School_Year',$School_Year)->first();
    $a=array();

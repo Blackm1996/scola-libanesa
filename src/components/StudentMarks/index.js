@@ -75,7 +75,6 @@ const StudentDetails = ({ details }) => {
 };
 
 const Body = (props) => {
-  console.log("scoreslang", props.langScores);
   const { langName, coefficient, scores } = props.langScores;
   return (
     <div
@@ -214,7 +213,14 @@ const Moyenne = ({ moyenne, totalMoyenne }) => {
     </div>
   );
 };
-const Observation = () => {
+const Observation = ({totalMoyenne}) => {
+  var sucFR="";
+  var sucPr="";
+  if(totalMoyenne>=10)
+  {
+    sucFR="Passe en classe supérieure.";
+    sucPr="Aprovado pelo nível a seguir.";
+  }
   return (
     <div>
       <div className="d-flex border-bottom border-dark">
@@ -235,16 +241,21 @@ const Observation = () => {
               style={{ width: 40 }}
             ></div>
 
-            <div
+            {/*<div
               className="border-right border-dark"
               style={{ width: "179px" }}
             ></div>
             <div
               className="border-right border-dark"
               style={{ flexGrow: 1 }}
-            ></div>
+            ></div>*/}
 
-            <div style={{ flexGrow: 1 }}></div>
+            <div
+            className="border-right border-dark text-left pl-3 d-flex align-items-center font-weight-bolder font-italic " 
+            style={{ flexGrow: 1, fontSize:26 }}>
+              {sucFR}<br/>
+              {sucPr}
+            </div>
           </div>
         </div>
         <div className="border-left border-dark" style={{ width: 77 }}></div>
@@ -361,27 +372,7 @@ class StudentMarks extends Component {
               }).map((e, i) => (
                 <EmptyRow />
               ))}
-              {/*
-                <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-              <EmptyRow />
-                 */}
+              
 
               <Total total={this.props.obj.total} />
             </div>
@@ -391,7 +382,7 @@ class StudentMarks extends Component {
               moyenne={this.props.obj.moyenne}
               totalMoyenne={this.props.obj.Totalmoyen}
             />
-            <Observation moyenne={this.props.obj.moyenne} />
+            <Observation totalMoyenne={this.props.obj.Totalmoyen} />
             <div
               className="d-flex border-bottom border-dark"
               style={{ height: 137 }}

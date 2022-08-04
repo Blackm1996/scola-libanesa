@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Paper, Button, Typography, TextField } from "@material-ui/core";
-import { withStyles } from "@material-ui/core";
+import { Grid, Paper, Button, Typography, TextField } from "@mui/material";
+import { withStyles } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 // import languages
@@ -15,7 +15,7 @@ import { addTeacher } from "../../../Api/Teachers";
 import { connect } from "react-redux";
 import { LocalizationProvider, DateTimePicker } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",

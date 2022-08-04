@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Bills extends Model
 {
     use HasFactory;
-    protected $fillable =["School_Year","Month","id_student","Amount"];
+    protected $fillable =["School_Year","Month","id_student","Amount","paymentType","Type","id_Invoice"];
     
     protected $connection = 'mysql';
     

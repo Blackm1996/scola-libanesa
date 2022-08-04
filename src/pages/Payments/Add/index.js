@@ -590,7 +590,7 @@ class AddPayment extends Component {
     // default value
     const defaultValue =
       this.state.inscriptionYears.length !== 0
-        ? { label: "2021-2022", value: "2021-2022" }
+        ? { label: this.state.selectedYear, value: this.state.selectedYear }
         : {};
     return !this.state.loading ? (
       <div className="add-bill">
@@ -631,7 +631,7 @@ class AddPayment extends Component {
               initialValues={{
                 amount: this.state.amount,
                 month: this.state.selectedMonth,
-                paymentType: "",
+                paymentType: "cash",
               }}
               onSubmit={this.onSubmit}
               render={this.form}

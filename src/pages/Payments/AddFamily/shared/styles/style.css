@@ -1,0 +1,20 @@
+.ss {
+    color: #fff;
+    background-color: #ff6347;
+    border-color: #ff6347;
+    outline: none;
+    min-width: 90;
+  }
+.ss:focus {
+    border-color: #f86a50;
+    background-color: #f86a50;
+    outline: 0;
+    min-width: 90;
+  }
+  
+.ss:disabled {
+    color: #fff;
+    background-color: #968380;
+    border-color: #968380;
+    min-width: 90;
+  }

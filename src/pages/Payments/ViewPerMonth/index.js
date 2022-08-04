@@ -1,5 +1,6 @@
 import React, { useState, Component } from "react";
 import MaterialTable from "material-table";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import SelectMonth from "../../../components/SelectMonth";
 import SelectYear from "../../../components/SelectYear";
 // import languages
@@ -62,7 +63,7 @@ class NotPayedStudents extends Component {
   //on search change
   onSearchChange = (query) => {
     let bills = this.state.dataAPI.filter((bill) => {
-      let { id, name, Amount: amount, date, type } = bill;
+      let { id, name, Amount: amount, month, type } = bill;
       type = type == null && "";
       id = id.toString();
       name = name.toLowerCase();
@@ -73,7 +74,7 @@ class NotPayedStudents extends Component {
         id.startsWith(query) ||
         name.startsWith(query.toLowerCase()) ||
         amount.startsWith(query.toLowerCase()) ||
-        date.startsWith(query.toLowerCase()) ||
+        month.startsWith(query.toLowerCase()) ||
         type.startsWith(query.toLowerCase())
       ) {
         return bill;
@@ -89,16 +90,17 @@ class NotPayedStudents extends Component {
     const pageLanguage = this.props.language;
 
     // Language KEywords
-    const { bills, search, noRecords, id, amount, date, type, name } =
+    const { bills, search, noRecords, id, amount, month, type, name } =
       this.state.langKeywords[pageLanguage];
 
     const columns = [
       { title: `${id}`, field: "id" },
       { title: `${name}`, field: "name" },
       { title: `${amount}`, field: "Amount" },
-      { title: `${date}`, field: "date" },
+      { title: `${month}`, field: "Month" },
       { title: `${type}`, field: "type" },
     ];
+    const thema=createTheme();
     return (
       <div className="main-table">
         <div className="container-fluid">
@@ -117,6 +119,7 @@ class NotPayedStudents extends Component {
           {/* start table */}
 
           <div className="students-all col-10 mx-auto">
+            <ThemeProvider theme={thema}>
             <MaterialTable
               title={bills}
               columns={columns}
@@ -136,6 +139,7 @@ class NotPayedStudents extends Component {
                 },
               }}
             />
+            </ThemeProvider>
           </div>
           {/* end table */}
         </div>

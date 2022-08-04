@@ -158,6 +158,10 @@ class Navbar extends Component {
                     <Link to="/admin/students/notpayed">
                       <i className="fa fa-dollar"></i> {notPayed}
                     </Link>
+
+                    <Link to="/admin/students/viewFamilies">
+                      <i className="fa fa-people-group"></i> All Family
+                    </Link>
                   </div>
                 </div>
                 <div className="subnav">
@@ -214,6 +218,9 @@ class Navbar extends Component {
                     <Link to="/admin/students/addexpense">
                       <i className="fa fa-dollar"></i> {addExpense}
                     </Link>
+                    <Link to="/admin/students/addFamilyBills">
+                      <i className="fa fa-dollar"></i> Add Bills
+                    </Link>                    
                     <Link to="/admin/students/viewexpenses">
                       <i className="fa fa-eye"></i> {viewExpenses}
                     </Link>

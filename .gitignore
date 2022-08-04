@@ -18,6 +18,9 @@
 .env.test.local
 .env.production.local
 src.rar
+src1.rar
+scores.sql
+backend.rar
 
 npm-debug.log*
 yarn-debug.log*

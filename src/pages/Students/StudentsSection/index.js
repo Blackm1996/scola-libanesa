@@ -15,13 +15,13 @@ import { ENGLISH, FRENCH, PORTO } from "../../../languages";
 import CircularProgress from "@mui/material/CircularProgress";
 // import language words
 import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "./LangKeys";
-import { Box, Tabs, Tab } from "@material-ui/core";
+import { Box, Tabs, Tab } from "@mui/material";
 import styles from "./style.module.css";
 //import Tabs from '../../../components/Tabs/';
 import Page1 from "./TabsPages/TeacherCoursesTable/Page1";
 import Page2 from "./TabsPages/ScoresTable/Page2";
 import Page3 from "./TabsPages/AddScores";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider, createTheme } from '@mui/material';
 import swal from "sweetalert";
 
 const StudentsTable = (props) => {
@@ -31,12 +31,14 @@ const StudentsTable = (props) => {
       props.setMarks(response.data);
     });
   }, []);
+  const thema=createTheme();
   return (
-    <>
+    <ThemeProvider theme={thema}>
       <MaterialTable
         title={props.title}
         columns={props.columns}
-        options={{ debounceInterval: 700, padding: "dense" }}
+        options={{ debounceInterval: 700, padding: "dense", pageSize: 20,
+        pageSizeOptions: [20, 30, 50],}}
         data={props.data}
         onRowClick={props.onRowClick}
         onSearchChange={props.onSearchChange}
@@ -47,7 +49,7 @@ const StudentsTable = (props) => {
           },
         }}
       />
-    </>
+    </ThemeProvider>
   );
 };
 
@@ -136,6 +138,7 @@ class StudentsSection extends React.Component {
 
   //handle tabs change
   handle = (event, newValue) => {
+    console.log(newValue);
     this.setState({
       selectedTab: newValue,
     });
@@ -188,7 +191,8 @@ class StudentsSection extends React.Component {
 
         response.data.map((student) => {
           let bill = {};
-          bill.name = `${student.Last_Name} ${student.First_Name} `;
+          bill.id=student.id;
+          bill.name = `${student.First_Name} ${student.Last_Name} `;
           bill.grade = student.grade === null ? "" : student.grade;
           bill.inscriptionTax = student.Inscription_Tax;
           bill.booksUniform = student["Books/Uniform_total"];
@@ -202,7 +206,8 @@ class StudentsSection extends React.Component {
 
   // on Row click
   onRowClick = (event, rowData) => {
-    this.props.history.push("/admin/profile/" + rowData.id);
+    //this.props.history.push("/admin/profile/" + rowData.id);
+    window.open("/admin/profile/" + rowData.id,'_blank');
   };
 
   //on search change
@@ -378,7 +383,7 @@ class StudentsSection extends React.Component {
 
     //grade-section name
     const gradeAndSection = `${this.state.gradeName}-${this.state.sectionName}`;
-    const theme = createMuiTheme({
+    const theme = createTheme({
       overrides: {
         MuiTabs: {
           indicator: {
@@ -522,8 +527,8 @@ class StudentsSection extends React.Component {
               </Link>
             </div>
             {/* end trash edit icons section */}
-            <Box sx={{ marginBottom: 40, paddingRight: 4, paddingLeft: 4 }}>
-              <MuiThemeProvider theme={theme}>
+            <Box sx={{ marginBottom: 5, paddingRight: 4, paddingLeft: 4 }}>
+              <ThemeProvider theme={theme}>
                 <Tabs
                   value={this.state.selectedTab}
                   onChange={this.handle}
@@ -536,12 +541,12 @@ class StudentsSection extends React.Component {
                   <Tab label={scores} />
                   <Tab label={addScores} />
                 </Tabs>
-              </MuiThemeProvider>
+              </ThemeProvider>
             </Box>
 
             {this.state.selectedTab === 0 && (
               <Box
-                sx={{ marginRight: 136, marginLeft: 136, position: "relative" }}
+                sx={{ marginRight: 10, marginLeft: 10, position: "relative" }}
               >
                 <StudentsTable
                   id={this.props.match.params.id}

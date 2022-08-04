@@ -10,6 +10,7 @@ import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "./LangKeys";
 import { connect } from "react-redux";
 import axios from "axios";
 import "./style.css";
+import { ThemeProvider, createTheme } from '@mui/material';
 
 class NotPayedStudents extends Component {
   state = {
@@ -74,6 +75,7 @@ class NotPayedStudents extends Component {
       { title: `${type}`, field: "transaction_type" },
       { title: `${date}`, field: "Date" },
     ];
+    const thema=createTheme();
     return (
       <div className="main-table">
         <div className="container-fluid">
@@ -93,6 +95,7 @@ class NotPayedStudents extends Component {
 
           {/* onChangePage = { (e, pg) => {console.log(`current page is : ${e} `); this.setState({ pageNum: e })}} */}
           <div className="students-all col-10 mx-auto">
+            <ThemeProvider theme={thema}>
             <MaterialTable
               title={titlePage}
               columns={columns}
@@ -112,6 +115,7 @@ class NotPayedStudents extends Component {
                 },
               }}
             />
+            </ThemeProvider>
           </div>
           {/* end table */}
         </div>

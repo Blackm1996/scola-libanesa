@@ -93,7 +93,6 @@ class StudentController extends Controller
                 'First_Name' => 'required',
                 'Last_Name' => 'required',
                 'id_family' => 'required',
-                'id_guardian' => 'required',
             ]);
             // check if the data was inserted before
             $data = Student_Profile::where([
@@ -212,25 +211,66 @@ class StudentController extends Controller
             //echo $request;
             $object = Student_Profile::findOrFail($id);
             //     echo asset($object->ID_URL)."             ".$object->Vaccine_URL;
-            $temp = new Student_Profile;
-            $temp->First_Name = $request->input('First_Name');
-            $temp->Last_Name =  $request->input('Last_Name');
-            $temp->Birthday =  $request->input('Birthday');
-            $temp->Birthplace = $request->input('Birthplace');
-            $temp->Sex = $request->input('Sex');
-            $ID_URL=$request->input('ID_URL');
+            $object->First_Name = $request->input('First_Name');
+            $object->Last_Name =  $request->input('Last_Name');
+            $object->Birthday =  $request->input('Birthday');
+            $object->Birthplace = $request->input('Birthplace');
+            $object->Nationality = $request->input('Nationality');
+            $object->id_family = $request->input('id_family');
+            $object->Sex = $request->input('Sex');
+            $object->id_guardian = $request->input('id_guardian');
             if(isset($_FILES["ID_URL"])){
 
                 Storage::delete($object->ID_URL);
-                $temp->ID_URL = Storage::put('public/ID_URL', $request->file('ID_URL'));
+                $object->ID_URL = Storage::put('public/ID_URL', $request->file('ID_URL'));
             }
             if(isset($_FILES["Vaccine_URL"])){
                 Storage::delete($object->Vaccine_URL);
-                $temp->Vaccine_URL = Storage::put('public/Vaccine_URL', $request->file('Vaccine_URL'));
+                $object->Vaccine_URL = Storage::put('public/Vaccine_URL', $request->file('Vaccine_URL'));
             }
-            $object->update($temp->toArray());
+              
+            $object->save();
+
+            if(isset($request->medical)){
+                $newn=array();
+                foreach ($request->medical as $casem){
+                    $newn[]=$casem['Name'];
+                    $old=Medical::where('id_student',$id)->where("Name",$casem['Name'])->get();
+                    if($old->isEmpty())
+                    {
+                        $ttm=new Medical;
+                        $ttm->Name=$casem['Name'];
+                        $ttm->Description=$casem['Description'];
+                        $ttm->id_student=$id;
+                        $med=Medical::Create($ttm->toArray());
+                    }
+                }
+                Medical::where('id_student',$id)->whereNotIn("Name",$newn)->delete();
+            }
+            else
+                Medical::where('id_student',$id)->delete();
+            
+            
+            if(isset($request->medicine)){
+                $newt=array();
+                foreach ($request->medicine as $casec){
+                    $newt[]=$casec;
+                    $old=Medicine::where('id_student',$id)->where("Name",$casec)->get();
+                    if($old->isEmpty())
+                    {
+                        $ttm=new Medicine;
+                        $ttm->Name=$casec;
+                        $ttm->id_student=$id;
+                        $med=Medicine::Create($ttm->toArray());
+                    }
+                }
+                Medicine::where('id_student',$id)->whereNotIn("Name",$newt)->delete();
+            }
+            else
+                Medicine::where('id_student',$id)->delete();
+            
         } catch (\Exception $e) {
-            return response()->json('can\'t update the data', 404);
+            return response()->json($e, 404);
         }
 
         return response()->json(['status' => 'data updated successflly'], 200);
@@ -240,7 +280,11 @@ class StudentController extends Controller
     
    public function studentInfo($id){
     try{
-    $student = Student_Profile::findOrFail($id);
+        $student = Student_Profile::findOrFail($id);
+        $medical=Medical::select("Name","Description")->where('id_student',$id)->get();
+        $medicine=Medicine::select("Name")->where('id_student',$id)->get();
+        $student["medical"]=$medical;
+        $student["medicine"]=$medicine;
     }
     catch(\Exception $e)
     {
@@ -269,6 +313,8 @@ class StudentController extends Controller
             $student = Student_Profile::findOrFail($id);
             Storage::delete($student['ID_URL']);
             Storage::delete($student['Vaccine_URL']);
+            Medicine::where('id_student',$id)->delete();
+            Medical::where('id_student',$id)->delete();
             $student->delete();
         } catch (\Exception $e) {
             return response()->json('data can\'t be updated', 404);

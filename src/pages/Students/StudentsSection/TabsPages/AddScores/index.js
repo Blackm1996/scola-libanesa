@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Box, TableRow } from "@material-ui/core";
+import { Box, TableRow } from "@mui/material";
 import axios from "axios";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
 import "./style.module.css";
 import { connect } from "react-redux";
 // import languages

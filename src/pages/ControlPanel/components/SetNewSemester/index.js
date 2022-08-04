@@ -9,7 +9,7 @@ import {
 } from "../../SchoolYear/langKeys";
 import swal from "sweetalert";
 import axios from "axios";
-import { MenuItem, FormControl, Box, Select } from "@material-ui/core";
+import { MenuItem, FormControl, Box, Select } from "@mui/material";
 
 function SetNewSemester(props) {
   const [selectSemester, setSelectedSemester] = useState("");

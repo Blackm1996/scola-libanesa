@@ -51,7 +51,8 @@ Route::group([
   Route::get('/studentFileYear/{id}/{School_Year}',[App\Http\Controllers\StudentInscriptionController::class,'show']);
   Route::delete('/studentFileYear/{id}/{School_Year}',[App\Http\Controllers\StudentInscriptionController::class,'destroy']);
   Route::get('/missingStudent/{id_grade}/{School_Year}',[App\Http\Controllers\StudentInscriptionController::class,'missingStudents']);
-
+  Route::post('/attendanceChange',[App\Http\Controllers\StudentInscriptionController::class,'attendChange']);
+  Route::get('/getAllYears',[App\Http\Controllers\StudentInscriptionController::class,'getAllYears']);
 
 
 
@@ -102,7 +103,7 @@ Route::post('/bills',[App\Http\Controllers\BillsController::class,'store']);
 Route::get('/billsYear/{id}',[App\Http\Controllers\BillsController::class,'showYears']);
 Route::get('printBill/{id}/{School_Year}',[App\Http\Controllers\BillsController::class,'showPrinter']);
 Route::get('/allMonthBills/{month}/{School_Year}',[App\Http\Controllers\BillsController::class,'allMonthBills']);
-
+Route::post('/familyBill',[App\Http\Controllers\BillsController::class,'store_family']);
 // Books
 Route::delete('books/{id}',[App\Http\Controllers\BooksController::class,'destroy']);
 Route::get('book/{id}',[App\Http\Controllers\BooksController::class,'show']);
@@ -180,10 +181,14 @@ Route::get('classScores/{idSection}',[App\Http\Controllers\scoresController::cla
 Route::post('addfamily',[App\Http\Controllers\FamilyController::class,'store']);
 Route::get('familyID/{id}',[App\Http\Controllers\FamilyController::class,'family_id_card']);
 Route::get('getMembers/{id_family}',[App\Http\Controllers\FamilyController::class,'getStudents']);
+Route::get('getFinance/{School_Year}/{id_family}',[App\Http\Controllers\FamilyController::class,'getStudentsFinance']);
+Route::get('/families/{limit}/{search}/{orderBy}/{sort}',[App\Http\Controllers\FamilyController::class,'index']);
+Route::get('/family/{id}',[App\Http\Controllers\FamilyController::class,'show']);
 
 //guardian
 Route::post('addguardian',[App\Http\Controllers\GuardianController::class,'store']);
 Route::get('guardians',[App\Http\Controllers\GuardianController::class,'getAll']);
+Route::get('guardian/{id}',[App\Http\Controllers\GuardianController::class,'get']);
 
 Route::post('avatar', function(Request $request) {
    //echo 'omak ar3a'; 

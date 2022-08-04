@@ -7,11 +7,13 @@ use App\models\Family;
 use App\models\Student_Profile;
 use App\models\Student_inscription;
 use App\models\Grades;
+use App\Models\Bills;
 use App\models\Options;
 use App\models\Phone_fam;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;
+use DB;
 
 class FamilyController extends Controller
 {
@@ -37,7 +39,7 @@ class FamilyController extends Controller
 
     public function getStudents($id_family)
     {
-        $School_Year=Options::where('option_name','School_Year')->get(['option_value']);
+        $School_Year=Options::where('option_name','registration_year')->get(['option_value']);
         $student = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
         ->join('grades','grades.id','=','student_inscriptions.id_grade')
         ->where('student_inscriptions.School_Year','=',$School_Year[0]->option_value)
@@ -49,6 +51,77 @@ class FamilyController extends Controller
         }
         
         return  response()->json($student,200);
+    }
+
+    public function getStudentsFinance($School_Year,$id_family)
+    {
+        try {
+        $students = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
+        ->join('grades','grades.id','=','student_inscriptions.id_grade')
+        ->where('student_inscriptions.School_Year','=',$School_Year)
+        ->where('student_inscriptions.Attending',1)
+        ->where('id_family',$id_family)
+        ->get(['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name','grades.Name as Grade_Name'
+                ,'student_inscriptions.Inscription_Tax','student_inscriptions.Monthly_Total','student_inscriptions.Month_Start','student_inscriptions.Books/Uniform_total']);
+        if($students->count()==0)
+        {
+            return response()->json([],204);
+        }
+        $students->transform(function($student,$key) use($School_Year){
+            $inscription=Bills::where('id_student',$student->id)->where('School_Year',$School_Year)->where('Type','Inscription')->sum('Amount');
+            $boouni=Bills::where('id_student',$student->id)->where('School_Year',$School_Year)->where('Type','BooksUniforms')->sum('Amount');
+            $student['Inscription_Rest']=(int)$student['Inscription_Tax']-$inscription;
+            $student['Books/Uniform_Rest']=(int)$student['Books/Uniform_total']-$boouni;
+            //return  response()->json(['Rest'=>(int)$total['Monthly_Total'] -$bills],200);
+            $mybills = Bills::where('id_student',$student->id)->where('School_Year',$School_Year)->where('Type','Monthly')->orderBy('created_at','desc')->get();
+    
+  
+        // $tempMonth =(int)Options::select('option_value')->where('option_name','start_month')->first();
+        $tempMonth= (int)$student['Month_Start'];
+        $option = Options::select('option_value')->where('option_name','end_month')->first();
+        $endMonth = (int)$option['option_value'];
+        while (true) {
+            if($tempMonth==$endMonth){
+                if($mybills->contains('Month',$endMonth)){
+                    $totalPayed = $mybills->where('Month',$endMonth)->sum('Amount');
+                    //  echo $bill->sum('Amount');}//shila d8re 
+                    $rest = (int)$student['Monthly_Total'] - $totalPayed;
+                    $student['Pay_Start']=$tempMonth;
+                    $student['Rest']=$rest<=0 ? 0 : $rest;
+                }else{
+                    $student['Pay_Start']=$tempMonth;
+                    $student['Rest']=$student['Monthly_Total'];
+                }
+              break;
+            }
+        if($mybills->contains('Month',$tempMonth)){
+            $totalPayed = $mybills->where('Month',$tempMonth)->sum('Amount');
+             //  echo $bill->sum('Amount');}//shila d8re 
+            $rest = (int)$student['Monthly_Total'] - $totalPayed;
+            if($rest>0){
+                    $student['Pay_Start']=$tempMonth;
+                    $student['Rest']=$rest;
+                    break;
+                 }
+               }else{
+                   $student['Pay_Start']=$tempMonth;
+                   $student['Rest']=$student['Monthly_Total'];
+                   break;
+          }
+          $mybills=$mybills->where('Month','!=',$tempMonth);
+          //echo json_encode($mybills->count().'     ');
+          if($tempMonth!=$endMonth){
+          $tempMonth++;}
+          if($tempMonth > 12){$tempMonth=1;}
+        } //End While
+          return $student;
+        });
+        return  response()->json($students,200);
+
+        } catch (Exception $e) {
+            return response()->json($family, 404);
+        }
+        
     }
     public function store(Request $request)
     {
@@ -93,7 +166,7 @@ class FamilyController extends Controller
                     $validation=Validator::make($phone,[
                         "Phone_Nb" =>'required|numeric',
                         "Owner_Type" =>'required',
-                        "is_Whats" =>'requireds'
+                        "is_Whats" =>'required'
                     ]);
                     $tempPh=new Phone_fam;
                     $tempPh->id_Owner=$family->id;
@@ -104,13 +177,58 @@ class FamilyController extends Controller
                 }
             }
         }catch(TypeError $e){
-            return response()->json($family, 404);
+            return response()->json($e, 404);
         } 
         catch (Exception $e) {
-            return response()->json($family, 404);
+            return response()->json($e, 404);
         }
         $pdf =base64_encode(self::familyIdCard($family->id));
         return response()->json(['status'=>'data insereted successflly','id'=>$family->id,'pdf'=>$pdf],201);
+    }
+
+    public function index($limit,$search,$orderBy,$sort)
+    {
+    
+        try {
+            $allFamilies = Family::select('family.id','Comm_Phone','Father_Name','Mother_Name',DB::raw("count(*) AS Members"))
+            ->where(
+                function($q) use($search) {
+                    if($search!='^'){
+                        $q->where('family.id','LIKE', '%' . $search .'%')
+                        ->orWhere('family.Comm_Phone','LIKE',$search .'%')
+                        ->orWhere('family.Father_Name','LIKE','%' .$search .'%')
+                        ->orWhere('family.Mother_Name','LIKE','%' .$search .'%');}
+                    else{
+                        $q->where('family.id','>',0);    
+                    }
+                })
+            ->join("student_profiles",'family.id','=', 'student_profiles.id_family')
+            ->groupBy('student_profiles.id_family','family.id','Comm_Phone','Father_Name','Mother_Name')
+            ->orderBy('family.'.$orderBy,$sort)->paginate($limit);
+       
+        } catch (\Exception $e) {
+            return response()->json($e, 404);
+       }
+        return response()->json($allFamilies, 206);
+    }
+    public function show($id_family)
+    {
+        try {
+            $results=Family::where("id",$id_family)->first();
+            if($results == null)
+                return response()->json("No Family Found",204);
+        $phoneNbs=Phone_fam::where("id_Owner",$id_family)->get();
+        $results["phones"]=$phoneNbs;
+        $members=Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
+        ->join('grades','grades.id','=','student_inscriptions.id_grade')
+        ->where('id_family',$id_family)
+        ->get(['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name','grades.Name as Grade_Name']);
+        $results["members"]=$members;
+        } catch (\Exception $th) {
+            return response()->json($e, 404);
+        }
+        $pdf =base64_encode(self::familyIdCard($id_family));
+        return response()->json(['data'=>$results,'pdf'=>$pdf],200);
     }
 
 }

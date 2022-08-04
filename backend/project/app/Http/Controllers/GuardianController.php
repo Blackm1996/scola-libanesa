@@ -93,4 +93,14 @@ class GuardianController extends Controller
        return json_encode($guardians);
     }
 
+    public function get($id)
+    {
+        try {
+            $guardian=Guardian::select('id','Name','Comm_Phone')->where("id",$id)->first();
+        } catch (Exception $e) {
+            return response()->json('something went wrong', 404);
+       }
+       return json_encode($guardian);
+    }
+
 }

@@ -1,30 +1,34 @@
-import React, { Component } from "react";
-import { Select, MenuItem } from "@material-ui/core";
+import React, { useState,useEffect } from "react";
+import { Select, MenuItem } from "@mui/material";
+import axios from "axios";
 
-class GradeDDL extends Component {
-    constructor() {
-      super();
-      this.state = {
-        years: ["2021-2022"],
-        selectedYear: "2021-2022"
-      }
-    }
+
+const SelectYear =(props)=> {
+  const [years,setYears]=useState([]);
+  const[selectedYear,setSelectedYear]=useState("");
+
+    useEffect(()=>{
+      axios
+      .get("/getAllYears")
+      .then((response)=>{
+        setYears(response.data);
+        setSelectedYear(years[years.length-1]);
+      })
+
+    },[]);
 
     //handle section
-    handleSelect = ( e ) => {
-      this.setState({
-        selectedYear: e.target.value
-      });
-      this.props.updateYear( e.target.value );     
-    }
-    render() {
-        return (
-            <div className="mb-2 mr-2">
+    const handleSelect = ( e ) => {
+      setSelectedYear(e.target.value);
+      props.updateYear( e.target.value );     
+    };
+    return (
+            <div>
               <center>
-                <Select value={ this.state.selectedYear } onChange={ this.handleSelect } >
+                <Select value={selectedYear} onChange={handleSelect} >
             
                   {
-                      this.state.years.map( year => 
+                      years.map( year => 
                         <MenuItem value={ year }>{ year }</MenuItem>
                       )
                   }
@@ -32,7 +36,6 @@ class GradeDDL extends Component {
               </center>
             </div>
         );
-    }
 }
 
-export default GradeDDL;
+export default SelectYear;

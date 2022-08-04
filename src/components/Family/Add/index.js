@@ -1,17 +1,19 @@
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
+
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle'
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Field, ErrorMessage, FieldArray } from "formik";
-import {Select, MenuItem, FormControl, InputLabel} from '@mui/material';
+
 import * as Yup from "yup";
 import axios from 'axios';
 import swal from 'sweetalert';
 
 const FamilyAddModal = (props)=>{
+    const [submitting,setSubmitting]=useState(false);
+
+
     const onSubmit = (values,actions) => {
+        setSubmitting(true);
         const family ={
             Father_Name:values.fatherName,
             Father_Profession : values.fatherProfession,
@@ -29,6 +31,7 @@ const FamilyAddModal = (props)=>{
             .post('/addfamily',family)
             .then((response)=>{
                 if(response.status == 201) {
+                    setSubmitting(false);
                     console.log(response);
                     swal("added successfully", {
                         icon: "success",
@@ -80,6 +83,7 @@ const FamilyAddModal = (props)=>{
                     actions.setSubmitting(false);
                     props.onClose();
                 }else {
+                    setSubmitting(false);
                     swal(
                        "error1\n"+response,
                       {
@@ -89,6 +93,7 @@ const FamilyAddModal = (props)=>{
                   }
             })
             .catch((error) => {
+                setSubmitting(false);
                 swal(
                  ' error2'+error,
                   {
@@ -328,6 +333,7 @@ const FamilyAddModal = (props)=>{
                         type="submit"
                         className="btn btn-primary btn-block"
                         id="test"
+                        disabled={submitting}
                     >
                         <i className="fa fa-user-plus "></i>
                         <span>add</span>

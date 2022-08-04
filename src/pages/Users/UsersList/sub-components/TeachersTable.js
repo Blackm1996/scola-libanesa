@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
+import { ThemeProvider, createTheme } from '@mui/material';
 import { ENGLISH, FRENCH, PORTO } from "../../../../languages";
 import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "../LangKeys";
 import { connect } from "react-redux";
@@ -18,8 +19,9 @@ const TeachersTable = (props) => {
   // Language KEywords
   const { edit, delete1, noRecords, searchKey, users, actions } =
     langKeywords[pageLanguage];
-
+  const thema=createTheme();
   return (
+    <ThemeProvider theme={thema}>
     <MaterialTable
       options={{
         debounceInterval: 700,
@@ -54,7 +56,7 @@ const TeachersTable = (props) => {
           actions: `${actions}`,
         },
       }}
-    />
+    /></ThemeProvider>
   );
 };
 

@@ -1,39 +1,59 @@
 /* Readable Scalable Secure */
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import "./style.css";
+import FamilyAddModal from "../../../../components/Family/Add";
 // import languages
 import { ENGLISH, FRENCH, PORTO } from "../../../../languages";
 // import language words
 import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "../Add/LangKeys";
 // import connect from react-redux
 import { connect } from "react-redux";
+import AsyncCreatableSelect from 'react-select/async-creatable';
 import { Formik, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
 import { TOGGLE_LANG } from "../../../../redux/actions";
 import swal from "sweetalert";
+import { List, ListItem, ListItemText, IconButton, TextField } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import GuardianAddModal from "../../../../components/Guardian/Add";
+import axios from "axios";
+import MaterialTable from "material-table";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-class EditStudent extends Component {
-  state = {
-    pageLang: this.props.language,
-    langKeywords: {
-      [ENGLISH]: ENGLISHWORDS,
-      [PORTO]: PORTOWORDS,
-      [FRENCH]: FRENCHWORDS,
-    },
-    student: {},
-    idURL: null,
-    vaccineURL: null,
-    months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-  };
+const  EditStudent=(props)=>{
+  const[pageLang,setPageLang]=useState(props.language);
+  const[langKeywords,setLangKeywords]=useState({
+    [ENGLISH]: ENGLISHWORDS,
+    [PORTO]: PORTOWORDS,
+    [FRENCH]: FRENCHWORDS,
+  });
+  const[idURL,setIdURL]=useState(null);
+  const[vaccineURL,setVaccineURL]=useState(null);
+  const[medicalList,setMedicalList]=useState([]);
+  const[medicalNew,setMedicalNew]=useState("");
+  const[medicineList,setMedicineList]=useState([]);
+  const[medicineNew,setMedicineNew]=useState("");
+  const[familyID,setFamilyID]=useState("");
+  const[famModal,setFamModal]=useState(false);
+  const[famIsValid,setFamIsValid]=useState(false);
+  const[familyMembers,setFamilyMembers]=useState([]);
+  const[guardModal,setGuardModal]=useState(false);
+  const[guardiansIsLoading,setGuardiansIsLoading]=useState(false);
+  const[guardianData,setGuardianData]=useState({"id":"","Name":"","Comm_Phone":""});
+  const [submitting,setSubmitting]=useState(false);
+  const[student,setStudent]=useState({});
 
-  componentDidMount = () => {
+
+  
+  useEffect(()=>{
+
     // Page Lang
-    const pageLanguage = this.props.language;
+    const pageLanguage = props.language;
 
     // All Name
 
-    const { error1Add } = this.state.langKeywords[pageLanguage];
+    const { error1Add } = langKeywords[pageLanguage];
 
     /* start Resole problem when we reload the page and the language is returned to default value in redux [ENGLISH ]*/
 
@@ -41,11 +61,11 @@ class EditStudent extends Component {
     const globalLang = localStorage.getItem("language");
     if (globalLang != null) {
       // when we click update button we should update the update and we need to set language in redux from localstorage
-      this.props.toggleLanguages(globalLang);
+      props.toggleLanguages(globalLang);
     }
     /* end Resole problem when we reload the page and the language is returned to default value in redux [ENGLISH ]*/
 
-    const studentID = this.props.match.params.id;
+    const studentID = props.match.params.id;
     axios
       .get(
         `/student/${studentID}`
@@ -54,16 +74,16 @@ class EditStudent extends Component {
         //const id, firstName, lastName, birthDate, birthPlace, phoneNum, sex, tuteur, idURL, vaccineURL;
 
         //getted student details
-        const student = response.data;
-
-        const id = student.id;
-        const firstName = student.First_Name;
-        const lastName = student.Last_Name;
+        const students = response.data;
+        console.log(students);
+        const id = students.id;
+        const firstName = students.First_Name;
+        const lastName = students.Last_Name;
 
         // birthdate
-        var birthDate = student.Birthday;
+        var birthDate = students.Birthday;
 
-        if (birthDate == "--") {
+        if (birthDate === "--") {
           birthDate = {
             day: "",
             month: "",
@@ -71,9 +91,6 @@ class EditStudent extends Component {
           };
         } else {
           const splitBirthday = birthDate.split("-");
-          const day = splitBirthday[0];
-          const month = splitBirthday[1];
-          const year = splitBirthday[2];
 
           birthDate = {
             day: splitBirthday[0],
@@ -83,172 +100,216 @@ class EditStudent extends Component {
         }
 
         //birthplace
-        const birthPlace = student.Birthplace == null ? "" : student.Birthplace;
+        const birthPlace = students.Birthplace === null ? "" : students.Birthplace;
 
-        //phone number
-        const phoneNum = student.Tel == null ? "" : student.Tel;
-
+        const nationality= students.Nationality === null? "" : students.Nationality;
+        const guardian_id= students.id_guardian === null? "" : students.id_guardian;
+        const famId= students.id_family === null? "" : students.id_family;
+        if(famId!=="")
+          setFamilyID("fam_"+famId);
         //sex
-        const sex = student.Sex == null ? "" : student.Sex;
-        //tuteur
-        const tuteur = student.Teuteur == null ? "" : student.Teuteur;
-        //idURL
-        const idURL =
-          student.ID_URL == null
-            ? ""
-            : process.env.REACT_APP_BACKEND+`project/storage/app/${student.ID_URL}`;
-        //vaccineURL
-        const vaccineURL =
-          student.ID_URL == null
-            ? ""
-            : process.env.REACT_APP_BACKEND+`project/storage/app/${student.Vaccine_URL}`;
-        // getted birthday
-        const birth = response.data.Birthday;
+        const sex = students.Sex === null ? "" : students.Sex;
 
-        this.setState({
-          student: {
+        //idURL
+        const idURLs =
+          students.ID_URL === null
+            ? ""
+            : process.env.REACT_APP_BACKEND+`project/storage/app/${students.ID_URL}`;
+        //vaccineURL
+        const vaccineURLs =
+          students.ID_URL === null
+            ? ""
+            : process.env.REACT_APP_BACKEND+`project/storage/app/${students.Vaccine_URL}`;
+        let med1=[];
+        students.medical.forEach(element => 
+        {
+          let res=element.Description===null? "":':'+element.Description
+          med1.push(element.Name+res);
+        });
+
+        setMedicalList(med1);
+        let med2=[];
+        students.medicine.forEach(element => 
+          {
+            med2.push(element.Name);
+          });
+        setMedicineList(med2);
+        setStudent({
             id,
             firstName,
             lastName,
             birthDate,
             birthPlace,
-            phoneNum,
             sex,
-            tuteur,
-            idURL,
-            vaccineURL,
-          },
-          idURL,
-          vaccineURL,
-        });
+            nationality,
+            guardian_id,
+            famId,
+            idURLs,
+            vaccineURLs,
+          }
+         );
+
+         setIdURL(idURLs);
+         setVaccineURL(vaccineURLs)
+         if(guardian_id!=="")
+         {axios
+          .get(`/guardian/${guardian_id}`)
+          .then((response)=>{
+            if(response.status===200)
+            {
+              setGuardianData(response.data);
+            }
+      });}
       })
       .catch((error) => {
+        console.log(error);
         swal(error1Add, { icon: "error" });
       });
-    // splid birthday
-  };
+  },[]);
 
-  // Create Blob file from URL
-  blobCreationFromURL = (inputURI) => {
-    var binaryVal;
+  useEffect(()=>{
+    
+    var famid=familyID.split("_");
+    if(famid.length>1){
 
-    // mime extension extraction
-    var inputMIME = inputURI.split(",")[0].split(":")[1].split(";")[0];
+      axios
+      .get("getMembers/"+famid[1])
+      .then((response)=>{
 
-    // Extract remaining part of URL and convert it to binary value
-    if (inputURI.split(",")[0].indexOf("base64") >= 0)
-      binaryVal = atob(inputURI.split(",")[1]);
-    // Decoding of base64 encoded string
-    else binaryVal = unescape(inputURI.split(",")[1]);
+        if(response.status===200)
+        {
+          setFamIsValid(true);
+          setFamilyMembers(response.data);
 
-    // Computation of new string in which hexadecimal
-    // escape sequences are replaced by the character
-    // it represents
-
-    // Store the bytes of the string to a typed array
-    var blobArray = [];
-    for (var index = 0; index < binaryVal.length; index++) {
-      blobArray.push(binaryVal.charCodeAt(index));
+        }
+        else
+        {
+          setFamIsValid(false);
+          setFamilyMembers([]);
+        }
+      });
     }
+    else{
+      setFamIsValid(false);
+      setFamilyMembers([]);
+    }
+  },[familyID]);
 
-    return new Blob([blobArray], {
-      type: inputMIME,
-    });
+
+  const setFamily = (value)=>{setFamilyID(value)};
+  const openFamModal = ()=>{setFamModal(true)};
+  const closeFamModal = ()=>{setFamModal(false)};
+  const openGuardModal = ()=>{setGuardModal(true)};
+  const closeGuardModal = ()=>{setGuardModal(false)};
+  const toogleLoading=()=>{setGuardiansIsLoading(!guardiansIsLoading)}
+
+  const fetchGuardians=(InputValue,callback)=>{
+    toogleLoading();
+    axios
+      .get("/guardians")
+      .then((response)=>{
+        if(response.status===200)
+        {
+          toogleLoading();
+          callback(response.data);
+        }
+      })
   };
 
+
+  
   // Submit Form
-  onSubmit = (values) => {
+  const onSubmit = (values,actions) => {
+    setSubmitting(true);
     // Page Lang
-    const pageLanguage = this.props.language;
-    // Language KEywords
+      // Language KEywords
     const { updateMessage, successUpdate, error1 } =
-      this.state.langKeywords[pageLanguage];
-    // student id
-    const studentID = this.props.match.params.id;
+    langKeywords[pageLang];
+  // date after concat day with month with year [ex 1-1-2008]
+  var appendedDate = `${values.birthDate.day}-${values.birthDate.month}-${values.birthDate.year}`;
 
-    //date submitted
-    var appendedDate;
-    var birthDate = values.birthDate;
+  var medl=[];
+  medicalList.map((item)=>{
+    var tiw=item.split(":");
+    var des=tiw.length===2?tiw[1]:"";
+    medl.push({"Name":tiw[0],"Description":des});
+  })
+  const famidfi=familyID===""?"":familyID.split("_")[1];
+  const student ={
+    First_Name  : values.firstName,
+    Last_Name : values.lastName,
+    Birthday : appendedDate,
+    Sex : values.sex,
+    Birthplace : values.birthPlace,
+    Nationality : values.nationality,
+    id_family : famidfi,
+    id_guardian : guardianData.id,
+    medical : medl,
+    medicine : medicineList
+  }
 
-    appendedDate = `${values.birthDate.day}-${values.birthDate.month}-${values.birthDate.year}`;
-
-    let formData = new FormData();
-    formData.append("First_Name", values.firstName);
-    formData.append("Last_Name", values.lastName);
-    formData.append("Birthday", appendedDate);
-    formData.append("Sex", values.sex);
-    formData.append("Tel", values.phoneNum);
-    formData.append("Birthplace", values.birthPlace);
-    formData.append("Teuteur", values.tuteur);
-    if (values.idURL != "") formData.append("ID_URL", values.idURL);
-    if (values.vaccineURL != "")
-      formData.append("Vaccine_URL", values.vaccineURL);
-    //formData.append("Vaccine_URL", vaccineURL);
-
-    swal({
-      title: updateMessage,
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willUpdate) => {
-      if (willUpdate) {
-        axios
-          .post(
-            `/student/${studentID}`,
-            formData
-          )
-          .then((response) => {
-            if (response.status == 200) {
-              swal(successUpdate, {
-                icon: "success",
-              }).then((response) => {
-                window.location.reload();
-              });
-            } else {
+  if (values.idURL != "") student["ID_URL"]=values.idURL;
+  if (values.vaccineURL != "")
+    student["Vaccine_URL"]=values.vaccineURL;
+    const studentID = props.match.params.id;
+    console.log(student);
+    
+      swal({
+        title: updateMessage,
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willUpdate) => {
+        if (willUpdate) {
+          axios
+            .post(
+              `/student/${studentID}`,
+              student
+            )
+            .then((response) => {
+              setSubmitting(false);
+              actions.setSubmitting(false);
+              if (response.status == 200) {
+                swal(successUpdate, {
+                  icon: "success",
+                }).then((response) => {
+                  window.location.reload();
+                });
+              } else {
+                swal(error1, {
+                  icon: "error",
+                });
+              }
+            })
+            .catch((error) => {
               swal(error1, {
                 icon: "error",
               });
-            }
-          })
-          .catch((error) => {
-            swal(error1, {
-              icon: "error",
-            });
-          });
-      }
-    });
-
-    /*
-    addPublicStudentFile(formData)
-      .then((response) => {
-        if (response.status == 201) {
-          swal("student added successfuly", {
-            icon: "success",
-          });
-          this.props.history.push(
-            `/admin/profile/${response.data.id}/addyearfile`
-          );
-        } else {
-          if (response.status == 200)
-            swal("student is already exist, please try again ...", {
-              icon: "error",
             });
         }
-      })
-      .catch((error) => {
-        swal("Something went wrong. Please try again later.", {
-          icon: "error",
-        });
       });
-    
-    */
   };
 
-  // Inscription Form
+  const deleteMedical = (index) => () =>
+  {
+    setMedicalList(medicalList.filter((_, i) => i !== index));
+  };
 
-  form = (props) => {
-    //student details
-    const student = this.state.student;
+  const deleteMedicine = (index) => () =>
+  {
+    setMedicineList(medicineList.filter((_, i) => i !== index));
+  };
+
+  const formatOptionLabel=(option)=>{
+      return(
+        <div>
+        <div>{option.Name}</div>
+        <div>{option.Comm_Phone}</div>
+      </div>
+      );
+  };
+  // Inscription Form
+  const form = (props) => {
     //days array
     var days = [];
     for (let i = 1; i <= 31; i++) {
@@ -257,12 +318,10 @@ class EditStudent extends Component {
 
     //Years
     var years = [];
-    for (let i = 1980; i <= 2030; i++) {
-      years.push(i);
+    let ye = new Date().getFullYear();
+    for (let i = 0; i <= 25; i++) {
+      years.push(ye-i);
     }
-
-    // Page Lang
-    const pageLanguage = this.props.language;
 
     // Language KEywords
     const {
@@ -275,23 +334,21 @@ class EditStudent extends Component {
       classLevel,
       placeOfBirth,
       guardian,
-      uniformBooks,
-      registerFees,
-      monthlyPayment,
-      beginMonthPay,
+      nationality,
       studentId,
       vaccination,
-      add,
-      remove,
       update,
+      months,
       sex,
-    } = this.state.langKeywords[pageLanguage];
+    } = langKeywords[pageLang];
 
+    const thema=createTheme();
     return (
       <form onSubmit={props.handleSubmit}>
         <div className="row">
           <div className="first-section col-lg-6 col-12">
-            {/* start Student prename */}
+            
+            {/* Student prename */}
             <div className="form-group">
               <label htmlFor="firstName">{prename}</label>
               <Field
@@ -299,33 +356,16 @@ class EditStudent extends Component {
                 type="text"
                 className="form-control"
                 id="firstName"
-                placeholder={student.firstName}
+                placeholder=""
                 autoComplete="off"
               />
               <span className="error">
                 <ErrorMessage name="firstName" />
               </span>
             </div>
-            {/* end Student prename */}
 
-            {/* start Student Name */}
-            <div className="form-group">
-              <label htmlFor="lastName">{name}</label>
-              <Field
-                name="lastName"
-                type="text"
-                className="form-control"
-                id="lastName"
-                placeholder={student.lastName}
-                autoComplete="off"
-              />
-              <span className="error">
-                <ErrorMessage name="lastName" />
-              </span>
-            </div>
-            {/* end Student Name */}
-
-            {/* start Date of birthday  */}
+           
+            {/* Date of birthday  */}
             <div className="form-group birth-date">
               <label htmlFor="firstName">{birthDate}</label>
 
@@ -336,6 +376,7 @@ class EditStudent extends Component {
                   id="birthDate.day"
                   className="form-control"
                   component="select"
+                  defaultValue=""
                 >
                   <option value=""></option>
                   {days.map((item, index) => {
@@ -358,12 +399,13 @@ class EditStudent extends Component {
                   id="birthDate.month"
                   className="form-control"
                   component="select"
+                  defaultValue=""
                 >
                   <option value=""></option>
-                  {this.state.months.map((item, index) => {
+                  {langKeywords[pageLang].months.map(item => {
                     return (
-                      <option key={index} value={item}>
-                        {item}
+                      <option key={item.value} value={item.name}>
+                        {item.name}
                       </option>
                     );
                   })}
@@ -380,6 +422,7 @@ class EditStudent extends Component {
                   id="birthDate.year"
                   className="form-control"
                   component="select"
+                  defaultValue=""
                 >
                   <option value=""></option>
                   {years.map((item, index) => {
@@ -395,80 +438,20 @@ class EditStudent extends Component {
                 </span>
               </div>
             </div>
-            {/* end Date of birthday  */}
 
-            {/* Student sex */}
+            {/*Nationality*/}
             <div className="form-group">
-              <label htmlFor="sex">{sexLabel}</label>
+              <label htmlFor="nationality">{nationality}</label>
               <Field
-                name="sex"
-                id="sex"
-                className="form-control"
-                component="select"
-              >
-                <option value=""></option>
-                {sex.map((item, index) => {
-                  return (
-                    <option key={index} value={item.value}>
-                      {item.name}
-                    </option>
-                  );
-                })}
-              </Field>
-              <span className="error">
-                <ErrorMessage name="sex" />
-              </span>
-            </div>
-
-            {/* Student phone number */}
-            <div className="form-group">
-              <label htmlFor="phoneNum">{phoneNumber}</label>
-              <Field
-                name="phoneNum"
+                name="nationality"
                 type="text"
                 className="form-control"
-                id="phoneNum"
-                placeholder="ex: xxxxxx-xxxxxx"
-                autoComplete="off"
-                onWheel={(e) => e.target.blur()}
-                pattern="^[0-9-]*[0-9]$"
-              />
-              <span className="error">
-                <ErrorMessage name="phoneNum" />
-              </span>
-            </div>
-          </div>
-
-          <div className="first-section col-lg-6 col-12">
-            {/* Place of birthday */}
-            <div className="form-group">
-              <label htmlFor="birthPlace">{placeOfBirth}</label>
-              <Field
-                name="birthPlace"
-                type="text"
-                className="form-control"
-                id="birthPlace"
+                id="nationality"
                 placeholder=""
                 autoComplete="off"
               />
               <span className="error">
-                <ErrorMessage name="birthPlace" />
-              </span>
-            </div>
-
-            {/* Turteur */}
-            <div className="form-group">
-              <label htmlFor="tuteur">{guardian}</label>
-              <Field
-                name="tuteur"
-                type="text"
-                className="form-control"
-                id="tuteur"
-                placeholder=""
-                autoComplete="off"
-              />
-              <span className="error">
-                <ErrorMessage name="tuteur" />
+                <ErrorMessage name="nationality" />
               </span>
             </div>
 
@@ -485,16 +468,148 @@ class EditStudent extends Component {
                 onChange={(event) => {
                   let img = event.target.files[0];
                   props.setFieldValue("idURL", event.currentTarget.files[0]);
-                  this.setState({
-                    idURL: URL.createObjectURL(img),
-                  });
+                  setIdURL(URL.createObjectURL(img));
                 }}
               />
               <span className="error">
                 <ErrorMessage name="idURL" />
               </span>
 
-              <img className="upload-img" src={this.state.idURL} />
+              <img className="upload-img" src={idURL} />
+            </div>
+            
+            {/*Family ID*/}
+          <div className="form-group">
+              <label htmlFor="famId">Family ID</label>
+              <Field
+                name="famId"
+                type="text"
+                className="form-control"
+                id="famId"
+                placeholder=""
+                autoComplete="off"
+                value={familyID}
+                onChange={e=>{setFamilyID(e.target.value)}}
+              />
+              <span className="error">
+                <ErrorMessage name="famId" />
+              </span>
+                <button className="btn btn-primary" onClick={(e)=>{e.preventDefault();openFamModal();}} style={{marginTop:14}}>New Family</button>
+                <FamilyAddModal
+                  isOpen={famModal}
+                  onClose={closeFamModal}
+                  setFamily={setFamily}
+                />
+                {famIsValid && <ThemeProvider theme={thema}><MaterialTable
+                  options={{search : false,
+                              paging : false,
+                              }}
+                  columns={[
+                    { title: studentId, field: "id" },
+                    { title: prename, field: "First_Name" },
+                    { title: name, field: "Last_Name" },
+                    { title: classLevel, field: "Grade_Name" },
+                  ]}
+                  data={familyMembers}
+                /></ThemeProvider>}
+          </div>
+
+            {/* Medical */}
+            <div className="form-group">
+              <label htmlFor="medical">Medical</label>
+              <Field
+                className="list_m"
+                //component={TextField}
+                //style={{width : 300}}
+                onBlur={props.handleBlur}
+                value={medicalNew}
+                onChange={e=>{setMedicalNew(e.target.value)}}/>
+                <IconButton style={{position : "relative"}} onClick={()=>{
+                  if(medicalNew !=="")
+                  {
+                    
+                  setMedicalList([...medicalList,medicalNew]);
+                  setMedicalNew('');
+                  }
+                }} 
+                  ><ArrowForwardIcon /></IconButton>
+              <List sx={{ border: 1 }} style={{minHeight : 90}}>
+                {
+                    medicalList.map((item,key) =>
+                    {
+                      let keye=key;
+                        return(<ListItem
+                        key={keye}
+                          secondaryAction={
+                          <IconButton edge="end" aria-label="delete" onClick={deleteMedical(keye)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        }>
+                          <ListItemText
+                                primary={item}
+                            />
+                        </ListItem>);
+                    })
+                }
+              </List>
+              </div>   
+          </div>
+{/*_________________________________________________________________________________________________________________*/}
+          <div className="first-section col-lg-6 col-12">
+             {/* Student Name */}
+             <div className="form-group">
+              <label htmlFor="lastName">{name}</label>
+              <Field
+                name="lastName"
+                type="text"
+                className="form-control"
+                id="lastName"
+                placeholder=""
+                autoComplete="off"
+              />
+              <span className="error">
+                <ErrorMessage name="lastName" />
+              </span>
+            </div>
+
+            {/* Student sex */}
+            <div className="form-group">
+              <label htmlFor="sex">{sexLabel}</label>
+              <Field
+                name="sex"
+                id="sex"
+                className="form-control"
+                component="select"
+              >
+                <option value=""></option>
+                {sex.map((item, index) => {
+                  return (
+                    <option key={index} value={item.value}>
+                      {" "}
+                      {item.name}
+                    </option>
+                  );
+                })}
+              </Field>
+              <span className="error">
+                <ErrorMessage name="sex" />
+              </span>
+            </div>
+
+            {/* Place of birthday */}
+            <div className="form-group">
+              <label htmlFor="birthPlace">{placeOfBirth}</label>
+              <Field
+                name="birthPlace"
+                type="text"
+                className="form-control"
+                id="birthPlace"
+                placeholder=""
+                autoComplete="off"
+              />
+              <span className="error">
+                <ErrorMessage name="birthPlace" />
+              </span>
             </div>
 
             {/* Vaccination */}
@@ -513,31 +628,96 @@ class EditStudent extends Component {
                     "vaccineURL",
                     event.currentTarget.files[0]
                   );
-                  this.setState({
-                    vaccineURL: URL.createObjectURL(img),
-                  });
+                 setVaccineURL(URL.createObjectURL(img));
                 }}
               />
               <span className="error">
                 <ErrorMessage name="vaccineURL" />
               </span>
 
-              <img className="upload-img" src={this.state.vaccineURL} />
+              <img className="upload-img" src={vaccineURL} />
             </div>
+
+            {/*Guardian ID*/}
+          <div className="form-group">
+              <label htmlFor="guardian_id">{guardian+" ID"}</label>
+              <AsyncCreatableSelect
+                name="guardian_id"
+                id="guardian_id"
+                key={guardianData.id}
+                value={guardianData}
+                isLoading={guardiansIsLoading}
+                isSearchable
+                isClearable
+                defaultOptions
+                loadOptions={fetchGuardians}
+                formatOptionLabel={e => e.Name + '-' + e.Comm_Phone}
+                onChange={(value)=>{setGuardianData(value)}}
+                getOptionValue={e => e.id}
+              />
+              <button className="btn btn-primary" onClick={(e)=>{e.preventDefault();openGuardModal();}} style={{marginTop:14}}>New Guardian</button>
+                <GuardianAddModal
+                  isOpen={guardModal}
+                  onClose={closeGuardModal}
+                  setGuardian={setGuardianData}
+                />
+              <span className="error">
+                <ErrorMessage name="guardian_id" />
+              </span>
+            </div>     
+
+             {/* Medicien */}
+            <div className="form-group">
+              <label htmlFor="medine">Medicine</label>
+              <Field
+                className="list_m"
+                //component={TextField}
+                //style={{width : 300}}
+                onBlur={props.handleBlur}
+                value={medicineNew}
+                onChange={e=>{setMedicineNew(e.target.value)}}/>
+                <IconButton style={{position : "relative"}} onClick={()=>{
+                  if(medicineNew !=="")
+                  {
+                    
+                  setMedicineList([...medicineList,medicineNew]);
+                  setMedicineNew('');
+                  }
+                }} 
+                  ><ArrowForwardIcon /></IconButton>
+              <List sx={{ border: 1 }} style={{minHeight : 90}}>
+                {
+                    medicineList.map((item,key) =>
+                    {
+                      let keye=key;
+                        return(<ListItem
+                        key={keye}
+                          secondaryAction={
+                          <IconButton edge="end" aria-label="delete" onClick={deleteMedicine(keye)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        }>
+                          <ListItemText
+                                primary={item}
+                            />
+                        </ListItem>);
+                    })
+                }
+              </List>
+              </div>     
           </div>
+{/*_____________________________________________________________________________________________________*/}
+
 
           {/* Submit Input*/}
           <div className="form-group col-12">
             <button
               type="submit"
               className="btn btn-primary btn-block"
-              style={{
-                width: "175px",
-                margin: "auto",
-                borderRadius: "4px !important",
-              }}
+              id="test"
+              disabled={submitting}
             >
-              <i className="fa fa-user-plus"></i>
+              <i className="fa fa-user-plus "></i>
               <span>{update}</span>
             </button>
           </div>
@@ -547,11 +727,10 @@ class EditStudent extends Component {
   };
 
   // Schema Of Yup
-  schema = () => {
-    // Page Lang
-    const pageLanguage = this.props.language;
+  const schema = () => {
+
     // Language KEywords
-    const { required } = this.state.langKeywords[pageLanguage];
+    const { required, number } = langKeywords[pageLang];
 
     const schema = Yup.object().shape({
       firstName: Yup.string().required(required),
@@ -562,62 +741,47 @@ class EditStudent extends Component {
         month: Yup.string().required(required),
         year: Yup.string().required(required),
       }),
+      //famId: Yup.string().min(12,"tiw").required(required),
+      nationality: Yup.string().required(required),
+      //guardian_id : Yup.mixed().required(required),
       // sex: Yup.string().required(required),
       // phoneNum: Yup.number()
-      //   .typeError("accept numbers only")
+      //   .typeError(number)
       //   .required(required),
-      // tuteur: Yup.string().required(required)
+      // tuteur: Yup.string().required(required),
+      // vaccineURL: Yup.mixed().required(required),
+      // idURL: Yup.mixed().required(required),
     });
     return schema;
   };
 
-  render() {
-    // Page Lang
-    const pageLanguage = this.props.language;
-
+  
     // All Name
 
     const {
-      titleUpdate,
-      name,
-      classLevel,
-      birthDate,
-      sex,
-      uniformBooks,
-      guardian,
-      prename,
-      vaccination,
-      studentId,
-      phoneNumber,
-      placeOfBirth,
-      registerFees,
-      monthlyPayment,
-      beginMonthPay,
-      updateProfile,
-    } = this.state.langKeywords[pageLanguage];
+      titlePage,
+    } = langKeywords[pageLang];
 
     return (
       <div className="inscription-student">
         <div className="container-fluid">
           <div className="col-12 text-center">
             <div className="title-of-middle">
-              <h2>{updateProfile}</h2>
+              <h2>{titlePage}</h2>
             </div>
           </div>
 
           {/* Start Formik */}
           <Formik
             enableReinitialize={true}
-            initialValues={{ ...this.state.student, idURL: "", vaccineURL: "" }}
-            onSubmit={this.onSubmit}
-            render={this.form}
-            validationSchema={this.schema()}
-          />
+            initialValues={{ ...student, idURL: "", vaccineURL: "" }}
+            onSubmit={onSubmit}
+            validationSchema={schema}
+          >{form}</Formik>
           {/* End Formik */}
         </div>
       </div>
     );
-  }
 }
 
 const mapStateToProps = (state) => {

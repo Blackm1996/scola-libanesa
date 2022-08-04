@@ -5,7 +5,7 @@ import TranslateIcon from "@mui/icons-material/Translate";
 import { ENGLISH, FRENCH, PORTO } from "../../../languages";
 import { connect } from "react-redux";
 import { TOGGLE_LANG } from "../../../redux/actions";
-import { MenuItem, Menu } from "@material-ui/core";
+import { MenuItem, Menu } from "@mui/material";
 
 function PositionedMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);

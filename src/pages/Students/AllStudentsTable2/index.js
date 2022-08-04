@@ -9,6 +9,7 @@ import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "./LangKeys";
 // import connect from react-redux
 import { connect } from "react-redux";
 import './style.css';
+import { ThemeProvider, createTheme } from '@mui/material';
 
 class AllStudents extends Component {
   tableRef = React.createRef();
@@ -71,6 +72,7 @@ class AllStudents extends Component {
     else 
       return numberOfPages = parseInt( totalStudents );  
   }
+  themea=createTheme();
   //render
   render() {
     // Page Lang
@@ -94,14 +96,14 @@ class AllStudents extends Component {
           </div>
         
           
-          <div className="d-flex col-12 mx-auto">
+          <div className="d-flex flex-row">
             {/* Start years selection */}
-            <SelectYear
+            <SelectYear className="p-2"
               updateYear={ this.updateYear }
             />
             {/* End years selection */}
             {/* Start grade DDL */}
-            <GradeDDL
+            <GradeDDL className="p-2"
               updateGradeId={this.updateGradeId}
               updateSectionId={this.updateSectionId}
             />
@@ -110,6 +112,7 @@ class AllStudents extends Component {
           {/* start table */}
           
         <div className="students-all col-12 mx-auto">
+          <ThemeProvider theme={this.themea}>
           <MaterialTable
             tableRef={this.tableRef}
             title=""
@@ -165,8 +168,7 @@ class AllStudents extends Component {
                 )
                   .then((resp) => resp.json())
                   .then((resp) => {
-                    const numberOfPages = this.pagesNumber( resp.total, query.pageSize );
-                        
+                                            
                     resolve({
                       data: resp.data, // your data array
                       page: query.page, // current page number
@@ -176,6 +178,7 @@ class AllStudents extends Component {
               })
             }
           />
+          </ThemeProvider>
         </div>
         {/* end table */}
         </div>

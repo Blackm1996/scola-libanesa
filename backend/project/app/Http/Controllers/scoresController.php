@@ -21,7 +21,7 @@ public function classScores($idSection)
     $response =array();
     $School_Year=Options::where('option_name','School_Year')->get(['option_value']);
     $students=Student_Inscription::where('School_Year',$School_Year[0]->option_value)
-    ->where('id_classroom',$idSection)->get(['id_student']);
+    ->where('id_classroom',$idSection)->where('Attending',1)->get(['id_student']);
     foreach($students as $student){
        $content= scoresController::totalScores($student->id_student);
        //$content=file_get_contents($content);

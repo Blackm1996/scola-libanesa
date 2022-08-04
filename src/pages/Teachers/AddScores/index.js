@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button } from "@material-ui/core";
+import { Box, Button } from "@mui/material";
 import axios from "axios";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
 import { useParams } from "react-router-dom";
 import "./style.module.css";
 import { connect } from "react-redux";

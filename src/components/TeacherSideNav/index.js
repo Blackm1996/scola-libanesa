@@ -7,7 +7,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
 import axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
 import { connect } from "react-redux";

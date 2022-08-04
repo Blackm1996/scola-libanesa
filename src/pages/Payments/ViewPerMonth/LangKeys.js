@@ -7,6 +7,7 @@ export const ENGLISHWORDS = {
   name: "name",
   amount: "Amount",
   date: "Date",
+  month: "Month",
   description: "Description",
   type: "Transaction type"
 };
@@ -19,6 +20,7 @@ export const FRENCHWORDS = {
   name: "Nom",
   amount: "Montant",
   date: "Date",
+  month: "Mois",
   description: "Description",
   type: "Type de transaction"
 };
@@ -30,6 +32,7 @@ export const PORTOWORDS = {
   name: "Apelido",
   amount: "Montante",
   date: "Data",
+  month: "Mês",
   description: "Descrição",
   type: "transaçãoTipo"
 };

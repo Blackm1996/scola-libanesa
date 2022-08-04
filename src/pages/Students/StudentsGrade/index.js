@@ -12,8 +12,8 @@ import autoTable from "jspdf-autotable";
 import "./style.css";
 //view grade taxes
 import ViewGrade from "../../Grades/ViewGrade";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import { Box, Tabs, Tab } from "@material-ui/core";
+import { ThemeProvider, createTheme } from '@mui/material';
+import { Box, Tabs, Tab } from "@mui/material";
 import styles from "./style.module.css";
 import CoursesScoresTable from "./Components/CoursesScoresTable";
 
@@ -124,7 +124,8 @@ class StudentsGrade extends React.Component {
 
   // on Row click
   onRowClick = (event, rowData) => {
-    this.props.history.push("/admin/profile/" + rowData.id);
+    //this.props.history.push("/admin/profile/" + rowData.id);
+    window.open("/admin/profile/" + rowData.id,'_blank');
   };
 
   //on search change
@@ -212,7 +213,7 @@ class StudentsGrade extends React.Component {
       { title: `${prename}`, field: "firstName" },
       { title: `${name}`, field: "lastName" },
     ];
-    const theme = createMuiTheme({
+    const theme = createTheme({
       overrides: {
         MuiTabs: {
           indicator: {
@@ -221,6 +222,7 @@ class StudentsGrade extends React.Component {
         },
       },
     });
+    const thema=createTheme();
     return (
       <div className="all-students">
         <div className="container-fluid">
@@ -253,8 +255,8 @@ class StudentsGrade extends React.Component {
 
           {/* start tabs  */}
           <div className={` d-print-none tabs ${styles.tabs}`}>
-            <Box sx={{ marginBottom: 40, paddingRight: 4, paddingLeft: 4 }}>
-              <MuiThemeProvider theme={theme}>
+            <Box sx={{ marginBottom: 8, paddingRight: 4, paddingLeft: 4 }}>
+              <ThemeProvider theme={theme}>
                 <Tabs
                   value={this.state.selectedTab}
                   onChange={this.handle}
@@ -265,18 +267,18 @@ class StudentsGrade extends React.Component {
                   <Tab label={students} />
                   <Tab label={coursesAndScores} />
                 </Tabs>
-              </MuiThemeProvider>
+              </ThemeProvider>
             </Box>
             {/* start tab1 students table */}
             {this.state.selectedTab === 0 && (
               <Box
-                sx={{ marginRight: 136, marginLeft: 136, position: "relative" }}
+                sx={{ marginRight: 10, marginLeft: 10, position: "relative" }}
               >
                 {/* start table students and print button */}
                 {this.state.loading ? (
                   <div>loading...</div>
                 ) : (
-                  <>
+                  <ThemeProvider theme={thema}>
                     <MaterialTable
                       title={this.state.gradeName}
                       columns={columns}
@@ -308,7 +310,7 @@ class StudentsGrade extends React.Component {
                       </div>
                     ) : null}
                     {/* end print grade button */}
-                  </>
+                  </ThemeProvider>
                 )}
               </Box>
             )}

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\Student_Inscription;
 use App\Models\Bills;
 use App\Models\Student_Profile;
 use App\Models\Options;
+use App\Models\Invoice;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 use DateInterval;
 
 use DB;
@@ -27,7 +30,8 @@ class BillsController extends Controller
          try{
        $response = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
        ->join('grades','grades.id','=','student_inscriptions.id_grade')->where('student_inscriptions.School_Year',$School_Year)
-       ->where('student_inscriptions.id_classroom',$id_classroom)->get(['First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
+       ->where('student_inscriptions.Attending',1)
+       ->where('student_inscriptions.id_classroom',$id_classroom)->get(['student_profiles.id as id','First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
        return json_encode($response);
          }
          catch(\Exception $e)
@@ -124,8 +128,9 @@ public function studentNotpayed($month,$School_Year,$search,$orderBy,$sort){
 
 $PayedStduents= Student_Profile::select('student_profiles.id','student_inscriptions.id_grade',DB::raw('(student_inscriptions.Monthly_Total -'.\DB::raw("SUM(Amount)").') AS rest'),'student_inscriptions.id_classroom')
 ->leftjoin('bills','bills.id_student','student_profiles.id')->join('student_inscriptions','student_inscriptions.id_student','student_profiles.id')
-->where('student_inscriptions.School_Year',$School_Year)->where('bills.School_Year',$School_Year)
+->where('student_inscriptions.School_Year',$School_Year)->where('bills.School_Year',$School_Year)->where('student_inscriptions.Attending',1)
 ->where('bills.Month',$month)
+->where('bills.Type','Monthly')
 ->where(
                 function($q) use($search) { 
                     if($search!='^'){
@@ -141,7 +146,7 @@ $s= DB::table( DB::raw("({$PayedStduents->toSql()}) as sub") )->mergeBindings($P
 
 $student=Student_Profile::select('student_profiles.id','student_inscriptions.id_grade','student_inscriptions.Monthly_Total AS rest','student_inscriptions.id_classroom')->leftjoin('bills',function ($join) use($month,$School_Year) {
             $join->on('bills.id_student', '=', 'student_profiles.id')
-                 ->where('bills.Month',$month)->where('bills.School_Year',$School_Year);
+                 ->where('bills.Month',$month)->where('bills.Type','Monthly')->where('bills.School_Year',$School_Year)->where('student_inscriptions.Attending',1);
         })->leftjoin('student_inscriptions','student_inscriptions.id_student','student_profiles.id')->whereNull('bills.id')
         ->where('student_inscriptions.School_Year',$School_Year)
         ->where('student_inscriptions.Monthly_Total',"!=",0)
@@ -212,6 +217,7 @@ public function months()
          try{
        $response = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
        ->join('grades','grades.id','=','student_inscriptions.id_grade')->where('student_inscriptions.School_Year',$School_Year)
+       ->where('student_inscriptions.Attending',1)
        ->where('student_profiles.id',$id)->get(['First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
        return json_encode($response->first());
          }
@@ -245,6 +251,189 @@ public function months()
         //
     }
 
+    protected function normalize($word)
+        {
+                   
+            $word = str_replace("@","%40",$word);
+            $word = str_replace("`","%60",$word);
+            $word = str_replace("¢","%A2",$word);
+            $word = str_replace("£","%A3",$word);
+            $word = str_replace("¥","%A5",$word);
+            $word = str_replace("|","%A6",$word);
+            $word = str_replace("«","%AB",$word);
+            $word = str_replace("¬","%AC",$word);
+            $word = str_replace("¯","%AD",$word);
+            $word = str_replace("º","%B0",$word);
+            $word = str_replace("±","%B1",$word);
+            $word = str_replace("ª","%B2",$word);
+            $word = str_replace("µ","%B5",$word);
+            $word = str_replace("»","%BB",$word);
+            $word = str_replace("¼","%BC",$word);
+            $word = str_replace("½","%BD",$word);
+            $word = str_replace("¿","%BF",$word);
+            $word = str_replace("À","%C0",$word);
+            $word = str_replace("Á","%C1",$word);
+            $word = str_replace("Â","%C2",$word);
+            $word = str_replace("Ã","%C3",$word);
+            $word = str_replace("Ä","%C4",$word);
+            $word = str_replace("Å","%C5",$word);
+            $word = str_replace("Æ","%C6",$word);
+            $word = str_replace("Ç","%C7",$word);
+            $word = str_replace("È","%C8",$word);
+            $word = str_replace("É","%C9",$word);
+            $word = str_replace("Ê","%CA",$word);
+            $word = str_replace("Ë","%CB",$word);
+            $word = str_replace("Ì","%CC",$word);
+            $word = str_replace("Í","%CD",$word);
+            $word = str_replace("Î","%CE",$word);
+            $word = str_replace("Ï","%CF",$word);
+            $word = str_replace("Ð","%D0",$word);
+            $word = str_replace("Ñ","%D1",$word);
+            $word = str_replace("Ò","%D2",$word);
+            $word = str_replace("Ó","%D3",$word);
+            $word = str_replace("Ô","%D4",$word);
+            $word = str_replace("Õ","%D5",$word);
+            $word = str_replace("Ö","%D6",$word);
+            $word = str_replace("Ø","%D8",$word);
+            $word = str_replace("Ù","%D9",$word);
+            $word = str_replace("Ú","%DA",$word);
+            $word = str_replace("Û","%DB",$word);
+            $word = str_replace("Ü","%DC",$word);
+            $word = str_replace("Ý","%DD",$word);
+            $word = str_replace("Þ","%DE",$word);
+            $word = str_replace("ß","%DF",$word);
+            $word = str_replace("à","%E0",$word);
+            $word = str_replace("á","%E1",$word);
+            $word = str_replace("â","%E2",$word);
+            $word = str_replace("ã","%E3",$word);
+            $word = str_replace("ä","%E4",$word);
+            $word = str_replace("å","%E5",$word);
+            $word = str_replace("æ","%E6",$word);
+            $word = str_replace("ç","%E7",$word);
+            $word = str_replace("è","%E8",$word);
+            $word = str_replace("é","%E9",$word);
+            $word = str_replace("ê","%EA",$word);
+            $word = str_replace("ë","%EB",$word);
+            $word = str_replace("ì","%EC",$word);
+            $word = str_replace("í","%ED",$word);
+            $word = str_replace("î","%EE",$word);
+            $word = str_replace("ï","%EF",$word);
+            $word = str_replace("ð","%F0",$word);
+            $word = str_replace("ñ","%F1",$word);
+            $word = str_replace("ò","%F2",$word);
+            $word = str_replace("ó","%F3",$word);
+            $word = str_replace("ô","%F4",$word);
+            $word = str_replace("õ","%F5",$word);
+            $word = str_replace("ö","%F6",$word);
+            $word = str_replace("÷","%F7",$word);
+            $word = str_replace("ø","%F8",$word);
+            $word = str_replace("ù","%F9",$word);
+            $word = str_replace("ú","%FA",$word);
+            $word = str_replace("û","%FB",$word);
+            $word = str_replace("ü","%FC",$word);
+            $word = str_replace("ý","%FD",$word);
+            $word = str_replace("þ","%FE",$word);
+            $word = str_replace("ÿ","%FF",$word);
+
+            return urldecode($word);
+        }
+
+    public function generate_Invoice($id)
+    {
+        $invoice=Invoice::firstWhere("id",$id);
+
+        $pdf = new \setasign\Fpdi\Fpdi();
+		$pagecount = $pdf->setSourceFile(dirname(__DIR__, 3).'\storage\Templates\fatura_template.pdf');
+
+		$tpl = $pdf->importPage(1);
+		$pdf->AddPage();
+
+		
+		$pdf->useTemplate($tpl);
+		$pdf->SetFont('Arial','',14);
+        $pdf->useTemplate($tpl);
+		$pdf->SetFont('Arial','',14);
+		//Recpnb 1
+		$pdf->SetXY(161,33);
+		$pdf->Cell(0,0,self::normalize('ELI_'.$invoice["id"]));
+		//Date
+		$pdf->SetXY(148,47);
+		$pdf->Cell(0,0,date("d/m/Y"));
+		//family ID 1
+		$pdf->SetXY(50,51);
+		$pdf->Cell(0,0,self::normalize('fam_'.$invoice["id_family"]));
+		//Student Name 1
+		$pdf->SetXY(24,56.4);
+		$pdf->MultiCell(175,8.1,self::normalize('                             '.$invoice["Students"]),0,"L");
+		//School Year 1
+		$pdf->SetXY(52,77);
+		$pdf->Cell(0,0,self::normalize($invoice["School_Year"]));
+
+		//Montante 1
+		$pdf->SetXY(108,77);
+		$pdf->Cell(0,0,self::normalize($invoice['Amount'].' xCFA'));
+
+		//Description 1
+		$pdf->SetXY(24,81.5);
+		$pdf->MultiCell(175,8.1,self::normalize('                      '.$invoice['Description']),0,"L");
+
+		$pdf->SetFont('Arial','',11);
+		//Class
+		$pdf->SetXY(40.4,100);
+		$pdf->MultiCell(153,6,self::normalize($invoice['Classes']),0,"L");
+		$pdf->SetFont('Arial','',14);
+
+		$pdf->Line(0,148.85,210,148.85);
+
+
+		//Recpnb 2
+		$pdf->SetXY(161,177);
+		$pdf->Cell(0,0,self::normalize('ELI_'.$invoice["id"]));
+		//Date
+		$pdf->SetXY(148,191);
+		$pdf->Cell(0,0,date("d/m/Y"));
+		//family ID 2
+		$pdf->SetXY(50,195);
+		$pdf->Cell(0,0,self::normalize('fam_'.$invoice["id_family"]));
+		//Student Name 2
+		$pdf->SetXY(24,200.4);
+		$pdf->MultiCell(175,8.1,self::normalize('                             '.$invoice["Students"]),0,"L");
+		//School Year 2
+		$pdf->SetXY(52,221);
+		$pdf->Cell(0,0,self::normalize($invoice["School_Year"]));
+
+		//Montante 2
+		$pdf->SetXY(108,221);
+		$pdf->Cell(0,0,self::normalize($invoice['Amount'].' xCFA'));
+
+		//Description 2
+		$pdf->SetXY(24,225.5);
+		$pdf->MultiCell(175,8.1,self::normalize('                      '.$invoice['Description']),0,"L");
+
+		$pdf->SetFont('Arial','',11);
+		//Class 2
+		$pdf->SetXY(40.4,244);
+		$pdf->MultiCell(153,6,self::normalize($invoice['Classes']),0,"L");
+		$pdf->SetFont('Arial','',14);
+        return $pdf->Output('S');
+    }
+    public function store_family(Request $request)
+    {
+        try {
+            $invoice=Invoice::Create($request->fatura);
+        foreach ($request->data as $payment) {
+            $temp=$payment;
+            if(strcmp($temp['paymentType'],'pardoned')!=0)
+                $temp['id_invoice']=$invoice->id;
+            Bills::Create($temp);
+        }
+        } catch(Exception $e){
+            return response()->json($e,400);
+        }
+        $pdf=base64_encode(self::generate_Invoice($invoice->id));
+        return response()->json(['status'=>'data insereted successflly','pdf'=>$pdf],201);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -261,6 +450,7 @@ public function months()
             'School_Year'=>'required',
             'Amount' => 'required|numeric|min:1',
             'paymentType' => 'required',
+            'Type' => 'required',
         ]);
         $student=Bills::Create($request->all());}
         catch(\Exception $e){
@@ -278,7 +468,7 @@ public function months()
        // echo $currentMonth.PHP_EOL;
     $table = Student_inscription::select('Month_Start','Monthly_total')->where('id_student',$id)->
     where('School_Year',$School_Year)->first();
-    $mybills = Bills::where('id_student',$id)->where('School_Year',$School_Year)->orderBy('created_at','desc')->get();
+    $mybills = Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('Type','Monthly')->orderBy('created_at','desc')->get();
     $response = array("startMonth"=>$table['Month_Start'],"bills"=>array());
   
    // $tempMonth =(int)Options::select('option_value')->where('option_name','start_month')->first();
@@ -340,67 +530,7 @@ public function months()
                 return response()->json("something went wrong",404);
             }
            return json_encode($response);
-/*
-     $continue=true;
-    // continue variable is the variable to let the loop while count the current month and dont stop before it
-    $monthstate=true;
-    // monthstate boolean variable i set it for the while loop if the current month is equal to the monthstart so the whille loop will count 12 month recusrvily   
-    
-    
-    $tempMonth= (int)$table['Month_Start'];
-    if($tempMonth==$currentMonth){$monthstate=false;}
-   
-  //  while($mybills->count()>0 || $continue){
-     // 5od awal shaher balsh ydaf3 fi wshof iza nafs l startmonth iza la2a 7ot sfora ya3ne awal sahher ma dafa3 
-     // w iza eh bkoun dafa3 w iza zedna 3an l 12 raje3a 3al wa7d w araka ames
-     //echo $tempMonth. PHP_EOL;
-    //echo $mybills->count().PHP_EOL;
-    if($tempMonth==$currentMonth && $monthstate ){$continue=false;}
-    $monthstate=true; 
-    if($mybills->contains('Month',$tempMonth)){
-    $totalPayed = $mybills->where('Month',$tempMonth)->sum('Amount');
-     //  echo $bill->sum('Amount');}//shila d8re 
-    $rest = $table['Monthly_total'] - $totalPayed;
-    if($rest==0){
-     $response['bills'][]=array(
-        'month'=>$tempMonth,
-        'payed'=>$totalPayed,
-        'totalCost'=>$table['Monthly_total'],
-        'theRest' =>$rest,
-        'status'=>'true'
-    );}
-    else{
-        $response['bills'][]=array(
-            'month'=>$tempMonth,
-            'payed'=>$totalPayed,
-            'totalCost'=>$table['Monthly_total'],
-            'theRest' =>$rest,
-            'status'=>'false'
-        ); }
-       }else{
-      //   echo $bill->Month.'    '.$table['Month_Start'].PHP_EOL.$currentMonth;
-   
-  //   echo $a. PHP_EOL;
-   
-        
-            $response['bills'][]=array(
-            'month'=>$tempMonth,
-            'payed'=>'0',
-            'totalCost'=>$table['Monthly_total'],
-            'theRest' =>$table['Monthly_total'],
-            'status'=>'false'
-        );
-  }
-  $mybills=$mybills->where('Month','!=',$tempMonth);
-  //echo json_encode($mybills->count().'     ');
-  $tempMonth++;
-  if($tempMonth > 12){$tempMonth=1;}}
-    }
-    catch(\Exception $e)
-    {
-        return response()->json("something went wrong",404);
-    }
-   return json_encode($response);}*/
+
 }
 
 
@@ -411,7 +541,8 @@ public function Rest($id,$School_Year,$month)
 {
 
 try{
-    $bills =  Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('Month',$month)->sum('Amount');
+    $bills =  Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('Type','Monthly')
+    ->where('Month',$month)->sum('Amount');
     $total = Student_Inscription::select('Monthly_Total')->where('id_student',$id)->where('School_Year',$School_Year)->first();
     return  response()->json(['Rest'=>(int)$total['Monthly_Total'] -$bills],200);
 
@@ -450,8 +581,8 @@ catch(\Exception $e)
  public function allMonthBills($month,$School_Year)
  {
 //try{
-  $response=Bills::join('student_profiles','student_profiles.id','bills.id_student')->where('Month',$month)->where('School_Year',$School_Year)->
-  get(["student_profiles.id",db::raw("CONCAT(student_profiles.First_Name,' ',student_profiles.Last_Name) AS name"),"Amount","bills.created_at as date","bills.paymentType as type"]);
+  $response=Bills::join('student_profiles','student_profiles.id','bills.id_student')->where(db::raw("Month(created_at)"),$month)->where('School_Year',$School_Year)->where('Type','Monthly')->
+  get(["student_profiles.id",db::raw("CONCAT(student_profiles.First_Name,' ',student_profiles.Last_Name) AS name"),"Amount","bills.Month","bills.paymentType as type"]);
   return json_encode($response);
  //}
 //catch(\Exception $e)
@@ -486,7 +617,7 @@ catch(\Exception $e)
     public function show($id,$month,$School_Year)
     {
         //try{
-      $response=Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('Month',$month)->get();//}
+      $response=Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('bills.Type','Monthly')->where('Month',$month)->get();//}
       //catch(\Exception $e)
         //{
         // return response()->json("something went wrong",404);

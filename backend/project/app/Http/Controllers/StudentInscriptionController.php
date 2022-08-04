@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Student_inscription;
 use App\Models\Grades;
+use App\models\Options;
 use App\Models\Bills;
 use App\Models\Classroom;
 
@@ -117,7 +118,26 @@ class StudentInscriptionController extends Controller
       //      return response()->json("something went wrong",404);
       //  }
     }
+    public function attendChange(Request $request)
+    {
+        try {
+            $validation = $request->validate([
+                'id_student' =>  'required|numeric',
+                'attendance'=>'required|numeric',
+            ]);
+    
+            $id_student=$request->input('id_student');
+            $School_Year=Options::where('option_name','School_Year')->get(['option_value'])[0]->option_value;
 
+            if(Student_inscription::where('id_student',$id_student)->where('School_Year',$School_Year)->exists())
+            {
+                $object =Student_inscription::where('id_student',$id_student)->where('School_Year',$School_Year)->update(['Attending'=>$request->input('attendance')]);
+                return response()->json(['status'=>'data updated successflly'],200);
+            }
+        } catch(\Exception $e){
+            return response()->json($e,404);}
+          
+    }
     
     /**
      * Display the specified resource.
@@ -132,7 +152,7 @@ class StudentInscriptionController extends Controller
           'Books/Uniform_total As booksUniformtotal',
           'Monthly_Total',
           'id_classroom',
-         'Month_Start','id_grade','Discount')->where("id_student",$id)->where("School_Year",$School_Year)->first();
+         'Month_Start','id_grade','Discount','Attending')->where("id_student",$id)->where("School_Year",$School_Year)->first();
 
          //$grade = Grades::select('Name as gradeName')->where('id',$student->id_grade)->first();
          $sectionID=null;
@@ -148,6 +168,7 @@ class StudentInscriptionController extends Controller
              'gradeId'=>$student->id_grade,
              'sectionId'=>$student->id_classroom,
              'Discount'=>$student->Discount,
+             'attending'=>$student->Attending,
              ],200);
       }
       catch(\Exception $e)
@@ -238,11 +259,26 @@ class StudentInscriptionController extends Controller
     public function missingStudents($id_grade,$School_Year)
     {
         try{
-        $students_id=Student_Inscription::join('student_profiles','student_profiles.id','=','student_inscriptions.id_student')->where('student_inscriptions.id_grade',$id_grade)->where('student_inscriptions.School_Year',$School_Year)->where('student_inscriptions.id_classroom',null)->get(
-        ['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name'
-        ]);
+        $students_id=Student_Inscription::join('student_profiles','student_profiles.id','=','student_inscriptions.id_student')
+        ->where('student_inscriptions.id_grade',$id_grade)
+        ->where('student_inscriptions.School_Year',$School_Year)
+        ->where('student_inscriptions.id_classroom',null)
+        ->get(['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name']);
     }catch(\Exception $e){return json_encode($e);}
         return json_encode($students_id);
+    }
+
+    public function getAllYears()
+    {
+        try {
+            $e=Student_Inscription::distinct()->get(['School_Year']);
+        } catch(Exception $e){return json_encode($e);}
+
+        $all_years=array();
+        foreach ($e as $key => $value) {
+            array_push($all_years,$value['School_Year']);
+        }
+        return json_encode($all_years);
     }
 
 

@@ -282,6 +282,7 @@ class AddStudentYearFile extends Component {
         id_student: studentID,
       };
 
+      console.log(fileYear);
       // add inscription
       addStudentYearFile(fileYear)
         .then((response) => {
@@ -450,7 +451,6 @@ class AddStudentYearFile extends Component {
     const { required } = this.state.langKeywords[pageLanguage];
 
     const schema = Yup.object().shape({
-      year: Yup.string().required(required),
       inscriptionTax: Yup.number()
         .typeError("accept numbers only")
         .required(required),
@@ -554,9 +554,8 @@ class AddStudentYearFile extends Component {
               discount: 0,
             }}
             onSubmit={this.onSubmit}
-            render={this.form}
-            validationSchema={this.schema()}
-          />
+            validationSchema={this.schema}
+          >{this.form}</Formik>
           {/* End Formik */}
         </div>
       </div>

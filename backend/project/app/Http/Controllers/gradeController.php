@@ -53,7 +53,7 @@ public function studentGrade($idGrade,$School_Year)
     try{
         $response = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
       ->join('grades','grades.id','=','student_inscriptions.id_grade')->where('student_inscriptions.School_Year',$School_Year)
-      ->where('student_inscriptions.id_grade',$idGrade)->get(['First_Name','Last_Name','grades.Name as grade','Tel','Inscription_Tax','Books/Uniform_total']);
+      ->where('student_inscriptions.id_grade',$idGrade)->get(['First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
       return json_encode($response);
         }
         catch(\Exception $e)

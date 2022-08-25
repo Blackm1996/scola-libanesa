@@ -14,8 +14,6 @@ import BodyOfEdit from "./sub-components/BodyOfEdit";
 import swal from "sweetalert";
 
 // base url
-const baseUrl = "http://mmm.escola-libanesa.com/test2/api/usersInfos";
-
 const useStyles = makeStyles((theme) => ({
   modal: {
     position: "absolute",
@@ -133,8 +131,8 @@ function TeachersList(props) {
   };
 
   const updateUser = async () => {
-    await axios
-      .post(baseUrl, choosedUser)
+    axios
+      .post("/usersInfos", choosedUser)
       .then((response) => {
         setData(data.concat(response.data));
         openCloseModalIsert();
@@ -147,7 +145,7 @@ function TeachersList(props) {
   //delete teachers from db
   const confirmDelete = async () => {
     setLoading(true);
-    await axios
+    axios
       .delete(`/deleteInstructor/${choosedUser.id}`)
       .then((response) => {
         if (response.status === 200) {

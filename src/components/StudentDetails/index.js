@@ -86,6 +86,9 @@ class StudentDetails extends Component {
       vaccination,
       guardian,
       studentId,
+      familyID,
+      GuardianID,
+      Nationality,
       phoneNumber,
       placeOfBirth,
     } = this.state.langKeywords[pageLanguage];
@@ -178,6 +181,42 @@ class StudentDetails extends Component {
                   </div>
                 </div>
                 <hr />
+                <div className="row">
+                  <div className="col-sm-4">
+                    <h6 className="mb-0">{Nationality}</h6>
+                  </div>
+                  <div className="col-sm-8 text-secondary">
+                    {student.Nationality}
+                  </div>
+                </div>
+                <hr />
+                <div className="row">
+                  <div className="col-sm-4">
+                    <h6 className="mb-0">{phoneNumber}</h6>
+                  </div>
+                  <div className="col-sm-8 text-secondary">
+                    {student.phone_number}
+                  </div>
+                </div>
+                <hr />
+                <div className="row">
+                  <div className="col-sm-4">
+                    <h6 className="mb-0">{familyID}</h6>
+                  </div>
+                  <div className="col-sm-8 text-secondary">
+                    <Link to={`/admin/students/viewFamily/${student.id_family}`}>{student.id_family}</Link>
+                  </div>
+                </div>
+                <hr />
+                <div className="row">
+                  <div className="col-sm-4">
+                    <h6 className="mb-0">{GuardianID}</h6>
+                  </div>
+                  <div className="col-sm-8 text-secondary">
+                    {student.id_guardian}
+                  </div>
+                </div>
+              
               </div>
 
               {/* start trash edit icons sectio*/}

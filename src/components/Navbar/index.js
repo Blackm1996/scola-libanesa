@@ -148,7 +148,7 @@ class Navbar extends Component {
                     {students} <i className="fa fa-caret-down"></i>
                   </button>
                   <div className="subnav-content">
-                    <Link to="/admin">
+                    <Link to="/admin/students/All">
                       <i className="fa fa-eye"></i> {allStudent}
                     </Link>
                     <Link to="/admin/students/add">

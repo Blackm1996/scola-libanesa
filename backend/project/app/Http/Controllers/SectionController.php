@@ -23,8 +23,10 @@ class SectionController extends Controller
     public function index($School_Year)
     {
         try{
-        $sections= Grades::leftjoin('classrooms','grades.id','=','classrooms.id_grade')->where('classrooms.School_Year',$School_Year)->orwhere('classrooms.id_grade',null)->orderBy('grades.id')->get(['grades.Name as gradeName',
-        'grades.id as gradeId','classrooms.Name as sectionName','classrooms.id as sectionId']);
+            $classr=Classroom::where("School_Year",$School_Year);
+            $sections=Grades::leftJoinSub($classr,"Sections",function($join){
+             $join->on("grades.id",'=','Sections.id_grade');
+            })->get(['grades.Name as gradeName','grades.id as gradeId','Sections.Name as sectionName','Sections.id as sectionId']);
         $allSections = array();
         $tempsection = array();
         $oldgrade=0;
@@ -44,7 +46,7 @@ class SectionController extends Controller
         }
        }
        array_push($allSections,$tempsection);}
-       catch(\Exception $e){
+       catch(\Throwable $e){
            return json_encode($e);
        }
         return json_encode($allSections);

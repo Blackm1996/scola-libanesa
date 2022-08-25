@@ -188,7 +188,7 @@ class StudentsSection extends React.Component {
       .get(`/sectionBills/${nextProps.match.params.id}/${nextProps.schoolYear}`)
       .then((response) => {
         var studentsBills = [];
-
+        
         response.data.map((student) => {
           let bill = {};
           bill.id=student.id;
@@ -198,6 +198,7 @@ class StudentsSection extends React.Component {
           bill.booksUniform = student["Books/Uniform_total"];
           studentsBills.push(bill);
         });
+        console.log(studentsBills);
         this.setState({
           studentsBills: [...studentsBills],
         });

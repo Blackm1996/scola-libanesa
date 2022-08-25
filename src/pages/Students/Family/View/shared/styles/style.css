@@ -1,0 +1,40 @@
+/* start id details section */
+.studentID-section {
+  margin-top: 74px
+}
+
+.images span {
+  color: #1e1e1e9c;
+  font-size: 13px;
+  font-weight: bold
+}
+
+.card {
+  width: 76%;
+  border-radius: 50px 0 50px 0
+}
+
+/* start edit and trash section */
+.card .trash-and-edit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: var(--main-color-1);
+}
+.card .trash-and-edit i {
+  padding: 7px 10px;
+  color: var(--main-color-1);
+  cursor: pointer
+}
+.card .trash-and-edit i:hover {
+  color: var(--main-color-2);
+  background-color: var(--main-color-1);
+}
+/* end edit and trash section */
+hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* end id details section */
+

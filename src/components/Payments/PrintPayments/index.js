@@ -6,6 +6,7 @@ import "./style.css";
 
 class PrintTable extends Component {
   state = {
+    id: "",
     name: "",
     grade: "",
     telephone: "",

@@ -9,6 +9,7 @@ use App\Models\Options;
 use App\Models\Student_Inscription;
 use App\Models\Medical;
 use App\Models\Medicine;
+use App\Models\Family;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Arr;
 use App\Models\Grades;
@@ -60,6 +61,30 @@ class StudentController extends Controller
              $q->where('student_inscriptions.id_classroom',$sectionId);
              }
     })
+    ->orderBy('student_profiles.'.$orderBy,$sort)->paginate($limit);
+       
+        } catch (\Exception $e) {
+            return response()->json('something went wrong', 404);
+       }
+        return response()->json($allStudent, 206);
+    }
+
+    public function indexAll($limit,$search,$orderBy,$sort)
+    {
+    
+        try {
+            $allStudent = Student_Profile::select('id','First_Name','Last_Name')
+            ->where(
+                function($q) use($search) {
+                    if($search!='^'){
+          $q->where('student_profiles.id','LIKE', '%' . $search .'%')
+            ->orWhere('student_profiles.First_Name','LIKE','%' .$search .'%')
+            ->orWhere('student_profiles.Last_Name','LIKE','%' .$search .'%');}
+            else{
+             $q->where('student_profiles.id','>',0);    
+            }
+      })
+      
     ->orderBy('student_profiles.'.$orderBy,$sort)->paginate($limit);
        
         } catch (\Exception $e) {
@@ -283,6 +308,12 @@ class StudentController extends Controller
         $student = Student_Profile::findOrFail($id);
         $medical=Medical::select("Name","Description")->where('id_student',$id)->get();
         $medicine=Medicine::select("Name")->where('id_student',$id)->get();
+        $phone_number=null;
+        if($student->id_family!=null)
+        {
+            $phone_number=(Family::select("Comm_Phone")->first())["Comm_Phone"];
+        }
+        $student["phone_number"]=$phone_number;
         $student["medical"]=$medical;
         $student["medicine"]=$medicine;
     }
@@ -311,13 +342,21 @@ class StudentController extends Controller
     
         try {
             $student = Student_Profile::findOrFail($id);
-            Storage::delete($student['ID_URL']);
-            Storage::delete($student['Vaccine_URL']);
+            if($student['ID_URL']!=null) Storage::delete($student['ID_URL']);
+            if($student['Vaccine_URL']!=null) Storage::delete($student['Vaccine_URL']);
             Medicine::where('id_student',$id)->delete();
             Medical::where('id_student',$id)->delete();
+            $family=$student->id_family;
+            $siblings=Student_Profile::where("id_family",$family)->whereNot("id",$student->id)->get();
             $student->delete();
+            if($siblings->isEmpty())
+            {
+                $fam=Family::findOrFail($family);
+                $fam->delete();
+            }
+
         } catch (\Exception $e) {
-            return response()->json('data can\'t be updated', 404);
+            return response()->json($e, 404);
         }
         return response(['status' => 'student is deleted'], 204);
     }

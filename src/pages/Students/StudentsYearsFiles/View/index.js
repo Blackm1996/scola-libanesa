@@ -44,7 +44,7 @@ class ViewInscription extends Component {
       sectionId: "",
       
     },
-    attending: 1,
+    attending: -1,
     discount: 0,
     newMonthTotal: "",
   };
@@ -595,7 +595,7 @@ class ViewInscription extends Component {
     
   };
   render() {
-    console.log(this.state.attending);
+    
     //inscription
     const inscription = this.state.inscriptionDetails;
 
@@ -655,12 +655,12 @@ class ViewInscription extends Component {
           </div>
                         
           {/* start add grade and section */}
-          <div className="form-group text-center mx-auto col-lg-6 col-12 pl-2 m-b-20">
+          {this.state.attending>=0 && <div className="form-group text-center mx-auto col-lg-6 col-12 pl-2 m-b-20">
           <div className={this.state.attending==1?"p-2 bg-success text-white":
                                 "p-2 bg-danger text-white"}>
                                   {this.state.attending==1? "Attending":"OUT"}
-                                </div>
           </div>
+          </div>}
           {/* end add grade and section */}
           <div className="mx-auto col-lg-6 col-12 pl-2">
           
@@ -731,10 +731,10 @@ class ViewInscription extends Component {
           
           
         </div>
-        <div className="mx-auto col-lg-6 col-12 pl-2">
+        {this.state.attending>=0 && <div className="mx-auto col-lg-6 col-12 pl-2">
             <button style={this.state.attending==1? {backgroundColor:'#F93154',color:'#FBFBFB'}:{backgroundColor:'#00B74A',color:'#FBFBFB'}}
                   onClick={this.kikckout_resume}>{this.state.attending==1? 'Kick out':'Attend Again'} </button>
-          </div>
+          </div>}
       </div>
     );
   }

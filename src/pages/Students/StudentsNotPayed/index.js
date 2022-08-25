@@ -161,9 +161,10 @@ class NotPayedStudents extends Component {
                   //pagination
                   /*const pageNum = query.page + 1;
                   const limit = query.pageSize;*/
-
+                  const stri=process.env.REACT_APP_API_URL+`notPayedstudent/${this.state.month}/${this.state.year}/${search}/${orderBy}/${orderDirection}`;
+                  console.log(stri);
                   fetch(
-                    process.env.REACT_APP_API_URL+`notPayedstudent/${this.state.month}/${this.state.year}/${search}/${orderBy}/${orderDirection}`
+                    stri
                   )
                     .then((resp) => resp.json())
                     .then((resp) => {

@@ -190,7 +190,13 @@ class FamilyController extends Controller
     {
     
         try {
-            $allFamilies = Family::select('family.id','Comm_Phone','Father_Name','Mother_Name',DB::raw("count(*) AS Members"))
+            $members =Student_Profile::select("id_family",DB::raw("count(*) AS Members"))
+            ->whereNotNull("id_family")
+            ->groupBy("id_family");
+            $allFamilies = Family::select('family.id','Comm_Phone','Father_Name','Mother_Name',DB::raw("IFNULL(Members,0) as Members"))
+            ->leftJoinSub($members,"mem",function($join){
+                $join->on('family.id','=', 'mem.id_family');
+            })
             ->where(
                 function($q) use($search) {
                     if($search!='^'){
@@ -202,15 +208,14 @@ class FamilyController extends Controller
                         $q->where('family.id','>',0);    
                     }
                 })
-            ->join("student_profiles",'family.id','=', 'student_profiles.id_family')
-            ->groupBy('student_profiles.id_family','family.id','Comm_Phone','Father_Name','Mother_Name')
-            ->orderBy('family.'.$orderBy,$sort)->paginate($limit);
+            ->orderBy($orderBy,$sort)->paginate($limit);
        
         } catch (\Exception $e) {
             return response()->json($e, 404);
        }
         return response()->json($allFamilies, 206);
     }
+    
     public function show($id_family)
     {
         try {
@@ -219,16 +224,65 @@ class FamilyController extends Controller
                 return response()->json("No Family Found",204);
         $phoneNbs=Phone_fam::where("id_Owner",$id_family)->get();
         $results["phones"]=$phoneNbs;
-        $members=Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
+
+        $all_studentsID=array();
+        //Current School Year students
+        $School_Year=(Options::where('option_name','School_Year')->get(['option_value']))[0]->option_value;
+        $current_students=Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
         ->join('grades','grades.id','=','student_inscriptions.id_grade')
+        ->where("student_inscriptions.School_Year",$School_Year)
         ->where('id_family',$id_family)
         ->get(['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name','grades.Name as Grade_Name']);
-        $results["members"]=$members;
-        } catch (\Exception $th) {
+        $results["current_students"]=$current_students;
+
+        foreach ($current_students as $key => $value) {
+            array_push($all_studentsID,$value->id);
+        }
+
+        //Next Year Students
+        $Registration_Year=(Options::where('option_name','registration_year')->get(['option_value']))[0]->option_value;
+        $next_year=Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
+        ->join('grades','grades.id','=','student_inscriptions.id_grade')
+        ->where("student_inscriptions.School_Year",$Registration_Year)
+        ->where('id_family',$id_family)
+        ->get(['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name','grades.Name as Grade_Name']);
+        $results["next_year"]=$next_year;
+
+        foreach ($next_year as $key => $value) {
+            array_push($all_studentsID,$value->id);
+        }
+
+        //Other Students
+        $others=Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
+        ->where('id_family',$id_family)
+        ->whereNotIn('student_inscriptions.id_student',$all_studentsID)
+        /*->whereNotExists(function($query) use($id_family,$Registration_Year,$School_Year) {
+            $query->from("student_profiles")->join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
+            ->where('id_family',$id_family)
+            ->where("student_inscriptions.School_Year",$School_Year)
+            ->orWhere("student_inscriptions.School_Year",$Registration_Year);
+        })*/
+        ->get(['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name']);
+        $results["others"]=$others;
+
+
+        } catch (\Exception $e) {
             return response()->json($e, 404);
         }
         $pdf =base64_encode(self::familyIdCard($id_family));
         return response()->json(['data'=>$results,'pdf'=>$pdf],200);
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $family = Family::findOrFail($id);
+            Phone_fam::where('id_Owner',$id)->delete();
+            $family->delete();
+        } catch (\Exception $e) {
+            return response()->json('data can\'t be updated', 404);
+        }
+        return response(['status' => 'student is deleted'], 204);
     }
 
 }

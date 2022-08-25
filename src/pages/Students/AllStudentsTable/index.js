@@ -1,24 +1,18 @@
-import React from "react";
-import BootstrapTable from "react-bootstrap-table-next";
-//import { Container, Button, Row, Col, Spinner } from "reactstrap";
-//import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import filterFactory, {
-  textFilter,
-  selectFilter,
-} from "react-bootstrap-table2-filter";
-import axios from "axios";
-//import { users } from "./usersAPI";
-import "./style.css";
+import React, { useState, Component } from "react";
+import MaterialTable from "material-table";
+import GradeDDL from "../../../components/GradeDDL";
+import SelectYear from "../../../components/SelectYear";
 // import languages
 import { ENGLISH, FRENCH, PORTO } from "../../../languages";
 // import language words
 import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "./LangKeys";
 // import connect from react-redux
 import { connect } from "react-redux";
+import './style.css';
+import { ThemeProvider, createTheme } from '@mui/material';
 
-class AllStudentsTable extends React.Component {
-  //state
+class AllStudentsTable extends Component {
+  tableRef = React.createRef();
   state = {
     pageLang: this.props.language,
     langKeywords: {
@@ -26,145 +20,137 @@ class AllStudentsTable extends React.Component {
       [PORTO]: PORTOWORDS,
       [FRENCH]: FRENCHWORDS,
     },
-    sectionOptions: { A: "A", B: "B", C: "C", D: "D" },
-    classOptions: {
-      class1: "class1",
-      class2: "class2",
-      class3: "class3",
-      class4: "class4",
-      class5: "class5",
-      class6: "class6",
-    },
-    users: [],
+
+   
+  };
+ 
+
+
+
+
+
+
+  // on Row click
+  onRowClick = (event, rowData) => {
+    window.open("/admin/profile/" + rowData.id,'_blank');
+    //this.props.history.push("/admin/profile/" + rowData.id);
   };
 
-  // component did mount
-  componentDidMount = () => {
-    axios.get("/api/student").then((response) => {
-      this.setState({
-        users: response.data,
-      });
-    });
-  };
-  //filter by Id
-  filterById = (filterVal, data) => {
-    if (filterVal) {
-      return data.filter((student) =>
-        student.id.toString().startsWith("" + filterVal.toString())
-      );
-    }
-    return data;
-  };
-
-  //filter by first name
-  filterByFirstName = (filterVal, data) => {
-    if (filterVal) {
-      return data.filter((student) =>
-        student.First_Name.toLowerCase().startsWith(
-          "" + filterVal.toLowerCase()
-        )
-      );
-    }
-    return data;
-  };
-
-  //filter by last name
-  filterByLastname = (filterVal, data) => {
-    if (filterVal) {
-      return data.filter((student) =>
-        student.Last_Name.toLowerCase().startsWith("" + filterVal.toLowerCase())
-      );
-    }
-    return data;
-  };
-
+  //onChangeRowsPerPage
+  onChangeRowsPerPage  = ( value ) => {
+    this.setState({
+      limit: value
+    })
+  }
+  //add Pages
+  pagesNumber = (total , limit) => {
+    let totalStudents = total / limit ;
+    let numberOfPages;
+    if ( !(totalStudents % 1 == 0) )  // number of pages contains decimal that means we should add 1
+      return numberOfPages = parseInt( totalStudents + 1);
+    else 
+      return numberOfPages = parseInt( totalStudents );  
+  }
+  themea=createTheme();
   //render
   render() {
     // Page Lang
     const pageLanguage = this.props.language;
 
     // Language KEywords
-    const { titlePage, firstName, lastName } =
+    const { titlePage, studentId, firstName, lastName, search, noRecords } =
       this.state.langKeywords[pageLanguage];
-    const classOptions = this.state.classOptions;
-    const sectionOptions = this.state.sectionOptions;
-
-    var firstNameFilter = "";
-    var lastNameFilter = "";
-    var classFilter = "";
-    var sectionFilter = "";
 
     const columns = [
-      {
-        dataField: "id",
-        text: "ID",
-        sort: true,
-        filter: textFilter({
-          onFilter: this.filterById,
-        }),
-      },
-      {
-        dataField: "Last_Name",
-        text: `${firstName}`,
-        sort: true,
-        filter: textFilter(),
-        filter: textFilter({
-          onFilter: this.filterByLastname,
-        }),
-      },
-      {
-        dataField: "First_Name",
-        text: `${lastName}`,
-        sort: true,
-        filter: textFilter({
-          onFilter: this.filterByFirstName,
-        }),
-      },
+      { title: studentId, field: "id" },
+      { title: firstName, field: "First_Name" },
+      { title: lastName, field: "Last_Name" },
     ];
-    const tableRowEvents = {
-      onClick: (e, row, rowIndex) => {
-        this.props.history.push("/admin/profile/" + row.id);
-      },
-    };
-
-    //default sorted
-    const defaultSorted = [
-      {
-        dataField: "id",
-        order: "desc",
-      },
-    ];
-
     return (
-      <div className="all-students">
+      <div className="main-table">
         <div className="container-fluid">
+        
           <div className="col-12 text-center">
-            <h2 className="title-of-middle">{titlePage}</h2>
+            <h2 className="title-of-middle">{ titlePage }</h2>
           </div>
-          {/* start Students table*/}
-          <div className="students-table">
-            <BootstrapTable
-              bootstrap4
-              keyField="id"
-              data={this.state.users}
-              columns={columns}
-              filter={filterFactory()}
-              pagination={paginationFactory()}
-              rowEvents={tableRowEvents}
-              defaultSorted={defaultSorted}
-            />
-          </div>
-          {/* end Students table*/}
+          {/* start table */}
+          
+        <div className="students-all col-12 mx-auto">
+          <ThemeProvider theme={this.themea}>
+          <MaterialTable
+            tableRef={this.tableRef}
+            title=""
+            columns={columns}
+            options={{
+              pageSize: 50,
+              pageSizeOptions:[50, 100, 200],
+              debounceInterval: 700,
+              padding: "dense"
+            }} 
+            onRowClick={this.onRowClick} 
+            localization={{
+                    toolbar: { searchPlaceholder: `${search}` },
+                    body: {
+                      emptyDataSourceMessage: `${noRecords}`,
+                    },
+            }}
+            data={(query) =>
+              new Promise((resolve, reject) => {
+                // prepare your data and then call resolve like this:
+
+                var search = "^";
+                var orderBy = "id";
+                var orderDirection = "desc";
+
+                //searching
+                if (query.search) {
+                  search = query.search.trim();
+                }
+                //sorting
+                if (query.orderBy) {
+                  orderBy = query.orderBy.field;
+                  orderDirection = query.orderDirection;
+                }
+                //filtering
+                if (query.filters.length) {
+                  const filter = query.filters.map((filter) => {
+                    return `&${filter.column.field}${filter.operator}${filter.value}`;
+                  });
+
+                }
+                //pagination
+
+                const pageNum = query.page + 1;
+                const limit = query.pageSize;
+
+                fetch(
+                        process.env.REACT_APP_API_URL+`student/${limit}/${search}/${orderBy}/${orderDirection}?page=${pageNum}`
+                )
+                  .then((resp) => resp.json())
+                  .then((resp) => {
+                                            
+                    resolve({
+                      data: resp.data, // your data array
+                      page: query.page, // current page number
+                      totalCount: resp.total// total row number
+                    });
+                  });
+              })
+            }
+          />
+          </ThemeProvider>
         </div>
+        {/* end table */}
+        </div>
+        
       </div>
     );
   }
 }
-
 const mapStateToProps = (state) => {
   return {
     language: state.language,
   };
 };
-
 export default connect(mapStateToProps)(AllStudentsTable);
+

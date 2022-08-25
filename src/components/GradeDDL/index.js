@@ -30,14 +30,6 @@ class GradeDDL extends Component {
         grades: [...this.state.grades, ...resp.data],
       });
     });
-    //   this.setState({
-    //     grades: [
-    //         { name: 'Colors', sections: ['Red', 'Black', 'Orange', 'Blue'] },
-    //         { name: 'Sports', sections: ['Red2', 'Black2', 'Orange2', 'Blue3'] },
-    //         { name: 'Fruits', sections: ['Red3', 'Black3', 'Orange3', 'Blue3'] },
-    //         { name: 'Countrynames', sections: ['Red4', 'Black4', 'Orange4', 'Blue4']}
-    //     ]
-    //   })
   }
   selectChange(e) {
     this.setState({ gradeSelected: e.target.value });

@@ -20,6 +20,7 @@ import EditInscription from "../../Students/StudentsYearsFiles/Edit";
 import EditFileYear from "../../Students/StudentsYearsFiles/Edit";
 import AddPayment from "../../Payments/Add";
 import PrintPayment from "../../../components/Payments/PrintPayment";
+import AddFamily from "../../Payments/AddFamily";
 
 class Details extends Component {
   state = {
@@ -35,11 +36,16 @@ class Details extends Component {
       Last_Name: "",
       Birthday: "",
       Birthplace: "",
+      Nationality: "",
       Sex: "",
       ID_URL: "",
       Vaccine_URL: "",
+      id_family: "",
+      id_guardian: "",
+      phone_number: "",
     },
     printDetails: {
+      id: "",
       name: "",
       grade: "",
       inscriptionTax: "",
@@ -47,6 +53,8 @@ class Details extends Component {
     },
     modalVis: false,
     imgToShow: "",
+    medical : [],
+    medicine : [],
   };
 
   //component did mount
@@ -57,8 +65,11 @@ class Details extends Component {
     axios
       .get(`/student/${studentID}`)
       .then((response) => {
+        console.log(response);
         this.setState({
           studentDetails: response.data,
+          medical: response.data.medical,
+          medicine: response.data.medicine,
         });
       });
   };
@@ -77,15 +88,19 @@ class Details extends Component {
         `/printBill/${this.props.match.params.id}/${this.props.schoolYear}`
       )
       .then((resp) => {
+        
         const studentData = resp.data;
+        console.log(studentData);
         if (studentData != null) {
           const name = `${resp.data.First_Name} ${resp.data.Last_Name}`;
           const {
+            id,
             grade,
             Inscription_Tax: inscriptionTax,
           } = studentData;
           const booksUniform = studentData["Books/Uniform_total"];
           const printDetails = {
+            id: id === null ? "" : id,
             name: name === null ? "" : name,
             grade: grade === null ? "" : grade,
             inscriptionTax: inscriptionTax === null ? "" : inscriptionTax,
@@ -152,11 +167,20 @@ class Details extends Component {
                 {bills} <i className="fa fa-caret-down"></i>
               </Link>
               <div className="dropdown-menu">
-                {(this.props.role == "admin" ||
-                  this.props.role == "manager") && (
+                {(this.props.role === "admin" ||
+                  this.props.role === "manager") && this.state.studentDetails.id_family === null &&(
                   <Link
                     className="dropdown-item"
                     to={`/admin/profile/${studentId}/addbill`}
+                  >
+                    {create}
+                  </Link>
+                )}
+                {(this.props.role === "admin" ||
+                  this.props.role === "manager") && this.state.studentDetails.id_family !== null &&(
+                  <Link
+                    className="dropdown-item"
+                    to={`/admin/profile/${studentId}/addFamilyBills/${this.state.studentDetails.id_family}`}
                   >
                     {create}
                   </Link>
@@ -255,6 +279,11 @@ class Details extends Component {
               exact
               path="/admin/profile/:id/updatestudent"
               component={EditStudent}
+            />
+            <Route
+              exact
+              path="/admin/profile/:id/addFamilyBills/:familyID"
+              component={AddFamily}
             />
             {/* end routes section */}
           </div>

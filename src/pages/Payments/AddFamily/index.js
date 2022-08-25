@@ -9,6 +9,7 @@ import { addPayment, getYears, getStudent } from "../../../Api/Payments";
 import MaterialTable from "material-table";
 import { ThemeProvider, createTheme, Checkbox } from '@mui/material';
 import NumberFormat from 'react-number-format';
+import { useParams } from "react-router-dom";
 
 
 import "./shared/styles/style.css";
@@ -27,9 +28,11 @@ const AddFamilyBills = (props)=>
     const[monthlyLess,setMonthlyLess]=useState(false);
     const[startMonth,setStartMonth]=useState(0);
     const[paymentType,setPaymentType]=useState("cash");
+    const [submitting,setSubmitting]=useState(false);
 
     const selectTableRef= useRef();
 
+    const {familyID:famID} =useParams();
 
     useEffect(()=>{
       
@@ -48,8 +51,7 @@ const AddFamilyBills = (props)=>
       }
     },[billers])
     useEffect(()=>{
-       //console.log(familyID);
-        
+       console.log("props:"+JSON.stringify(props));
         let pattern = /^fam_[0-9]{8}$/;
         let result = pattern.test(familyID);
         setBillers([]);
@@ -58,12 +60,12 @@ const AddFamilyBills = (props)=>
           axios
           .get("getFinance/"+selectedYear+"/"+famid[1])
           .then((response)=>{
-            console.log(response);
+            //console.log(response);
             if(response.status==200)
             {
               setFamIsValid(true);
               setFamilyMembers(response.data);
-              console.log(familyMembers);
+              //console.log(familyMembers);
               setMonthlyLess(false);
             }
             else
@@ -80,7 +82,7 @@ const AddFamilyBills = (props)=>
           setMonthlyLess(false);
         }
         
-      },[familyID]);
+      },[familyID,selectedYear]);
       const studentID = props.match.params.id;
     useEffect(()=>{
     axios
@@ -93,9 +95,20 @@ const AddFamilyBills = (props)=>
         swal("ERROR", { icon: "error" });
         //window.location.reload();
       });
-
     },[]);
    
+    useEffect(()=>{
+      setFamilyID("fam_"+famID);
+      axios
+      .get('/getAllYears')
+      .then((response) => {setInscriptionYears(response.data)})
+      .catch((error) => {
+        swal("ERROR", { icon: "error" });
+        //window.location.reload();
+      });
+    },[])
+    
+    
     const customStyles = {
         option: (provided, state) => ({
           ...provided,
@@ -136,7 +149,12 @@ const AddFamilyBills = (props)=>
       };
 
       const disableRow=(row)=>{
-        return (row.Rest === 0||(startMonth!=0 && billType==='Monthly'&& row.Pay_Start!=startMonth));
+        switch (billType){
+          case "BooksUniforms": return row.Books_Uniform_Rest===0;
+          case "Inscription": return row.Inscription_Rest===0;
+          default:return (row.Rest === 0||(startMonth!=0 && row.Pay_Start!=startMonth));
+        }
+        
         //return true;
 
       };
@@ -149,7 +167,7 @@ const AddFamilyBills = (props)=>
             var da={...billers[i]};
             da.pardoned=false;
             switch (billType){
-                case "BooksUniform":{da.paying = da.Books_Uniform_Rest; break;}
+                case "BooksUniforms":{da.paying = da.Books_Uniform_Rest; break;}
                 case "Inscription":{da.paying = da.Inscription_Rest; break;}
                 default:{da.paying = da.Monthly_Total;break;}
             }
@@ -176,13 +194,13 @@ const AddFamilyBills = (props)=>
     {
       //console.log(e);
       let m=Number(e.target.value)>=0?Number(e.target.value):0;
-      console.log(m);
+      //console.log(m);
       /*if(m<1)
         m=1;
       else
         if(m>10)
           m=10;*/
-      console.log((m+startMonth) % 12);
+      //console.log((m+startMonth) % 12);
       if(((m+startMonth)%12)>7)
       {
         
@@ -240,10 +258,11 @@ const AddFamilyBills = (props)=>
     };*/
 
     const submit = ()=>{
-        console.log("less? "+monthlyLess)
+        setSubmitting(true);
+        /*console.log("less? "+monthlyLess)
         console.log("number of months: "+monthsNb)
         console.log("Total Amount: "+totalAmount);
-        console.log(billers);
+        console.log(billers);*/
 
         let data=[];
         let name="";
@@ -259,8 +278,9 @@ const AddFamilyBills = (props)=>
                 data.push({
                   School_Year:selectedYear,
                   id_student:biller.id,
-                  billType:billType,
+                  Type:billType,
                   paymentType:paymentType,
+                  Month:0,
                   Amount:biller.paying
                 });
                 if(monthlyLess && biller.pardoned)
@@ -268,15 +288,16 @@ const AddFamilyBills = (props)=>
                   data.push({
                     School_Year:selectedYear,
                   id_student:biller.id,
-                  billType:billType,
+                  Type:billType,
                   paymentType:"pardoned",
+                  Month:0,
                   Amount:biller.Inscription_Rest-biller.paying
                   })
                 }
               });
               break;
             }
-            case "BooksUniform" :{
+            case "BooksUniforms" :{
               description="Livros e Uniforms";
               billers.forEach(biller => {
                 name+=biller.First_Name+", ";
@@ -284,8 +305,9 @@ const AddFamilyBills = (props)=>
                 data.push({
                   School_Year:selectedYear,
                   id_student:biller.id,
-                  billType:billType,
+                  Type:billType,
                   paymentType:paymentType,
+                  Month:0,
                   Amount:biller.paying
                 });
                 if(monthlyLess && biller.pardoned)
@@ -293,8 +315,9 @@ const AddFamilyBills = (props)=>
                   data.push({
                     School_Year:selectedYear,
                     id_student:biller.id,
-                    billType:billType,
+                    Type:billType,
                     paymentType:"pardoned",
+                    Month:0,
                     Amount:biller['Books/Uniform_Rest']-biller.paying
                   })
                 }
@@ -327,7 +350,7 @@ const AddFamilyBills = (props)=>
                 data.push({
                   School_Year:selectedYear,
                   id_student:biller.id,
-                  billType:billType,
+                  Type:billType,
                   paymentType:paymentType,
                   Month:month,
                   Amount:biller.fmpaying
@@ -337,7 +360,7 @@ const AddFamilyBills = (props)=>
                   data.push({
                     School_Year:selectedYear,
                     id_student:biller.id,
-                    billType:billType,
+                    Type:billType,
                     paymentType:"pardoned",
                     Month:month,
                     Amount:biller.Monthly_Total-biller.paying
@@ -349,7 +372,7 @@ const AddFamilyBills = (props)=>
                   data.push({
                     School_Year:selectedYear,
                     id_student:biller.id,
-                    billType:billType,
+                    Type:billType,
                     paymentType:paymentType,
                     Month:month,
                     Amount:biller.paying
@@ -359,7 +382,7 @@ const AddFamilyBills = (props)=>
                     data.push({
                     School_Year:selectedYear,
                     id_student:biller.id,
-                    billType:billType,
+                    Type:billType,
                     paymentType:"pardoned",
                     Month:month,
                     Amount:biller.Monthly_Total-biller.paying
@@ -379,12 +402,12 @@ const AddFamilyBills = (props)=>
           Description:description,
         };
         const body={"data":data,"fatura":fatura}
-        console.log(body);
+        //console.log(body);
         axios
             .post('/familyBill',body)
             .then((response)=>{
                 if(response.status == 201) {
-                    console.log(response);
+                    //console.log(response);
                     swal("added successfully", {
                         icon: "success",
                         buttons : {
@@ -433,6 +456,7 @@ const AddFamilyBills = (props)=>
                           window.location.reload(true);
                       })
                 }else {
+                  setSubmitting(false);
                     swal(
                        "error1\n"+response,
                       {
@@ -442,6 +466,7 @@ const AddFamilyBills = (props)=>
                   }
             })
             .catch((error) => {
+              setSubmitting(false);
                 swal(
                  ' error2'+error,
                   {
@@ -453,28 +478,29 @@ const AddFamilyBills = (props)=>
 
 /*_____________________________________________________________________________________________________*/
       //Year Options
+      const defaultYearValue = {mvalue: selectedYear, label: selectedYear };
       var years = [],
       year = "";
-
     for (var i = 0; i < inscriptionYears.length; i++) {
-      year = inscriptionYears[i]["School_Year"];
+      year = inscriptionYears[i];
       years.push({ value: year, label: year });
     }
-      const defaultYearValue = { label: selectedYear, value: selectedYear };
+      //console.log(years);
+      
 /*____________________________________________________________________________________________________-*/
     //Payement Options
       var paymentOptions=[{label:"Cash", value:"cash"},
                           {label:"Bank Transfer", value:"bank_transfer"},
                           {label:"Check", value:"check"},
                           {label:"Orange Money", value:"orange_money"},];
-      const defaultPaymentValue = {label:"Cash", value:"cash"};
+      const defaultPaymentValue = {label:paymentType, value:paymentType};
 /*_____________________________________________________________________________________________________*/
       //Bill Options
       var billOptions = [{label: "Monthly", value: "Monthly"},
                             {label: "Inscription Tax", value: "Inscription"},
-                            {label: "Books and Uniforms", value: "BooksUniform"}];
+                            {label: "Books and Uniforms", value: "BooksUniforms"}];
       
-      const defaultBillValue = {label: "Monthly", value: "Monthly"};
+      const defaultBillValue = {label: billType, value: billType};
 /*____________________________________________________________________________________________________-*/
 
     const paymentForm = () =>{
@@ -548,7 +574,7 @@ const AddFamilyBills = (props)=>
                 );
             }
 
-            case "BooksUniform" :{
+            case "BooksUniforms" :{
                 return(
                   <div>
                     <ThemeProvider theme={MUITabletheme}><MaterialTable
@@ -721,16 +747,16 @@ const AddFamilyBills = (props)=>
           <div className="col-12 text-center">
             <h2 className="title-of-middle">Create Family Payement</h2>
 
-            <div className="w-100" style={{marginBottom : 30}}>
-                <input value={familyID} style={{width:300, height:35, padding:5}} onChange={(e)=>{setFamilyID(e.target.value)}}/>
-            </div>
 
             <div className="select-container w-100 " >
+            <input value={familyID} style={{width:300, height:35, padding:5, marginBottom:10}} onChange={(e)=>{setFamilyID(e.target.value)}}/>
+
               <div className="select">
                 <Select
                   style={{ fontSize: 0 }}
                   placeholder="Select class"
                   defaultValue={defaultBillValue}
+                  value={defaultBillValue}
                   options={billOptions}
                   styles={customStyles}
                   theme={(theme) => ({
@@ -745,14 +771,15 @@ const AddFamilyBills = (props)=>
                   onChange={onBillTypeChange}
                 />
               </div>
-            </div>
+          
             {/* Start select search */}
-            {/*<div className="select-container w-100">
+      
               <div className="select">
                 <Select
                   style={{ fontSize: 0 }}
                   placeholder="Select class"
                   defaultValue={defaultYearValue}
+                  value={defaultYearValue}
                   options={years}
                   styles={customStyles}
                   theme={(theme) => ({
@@ -767,7 +794,7 @@ const AddFamilyBills = (props)=>
                   onChange={onDropdownChange}
                 />
               </div>
-            </div>*/}
+            </div>
             {/* end select search */}
             
             <ThemeProvider className="col-12" theme={MUITabletheme} >
@@ -807,7 +834,7 @@ const AddFamilyBills = (props)=>
                            var da={...row};
                            da.pardoned=false;
                            switch (billType){
-                            case "BooksUniform":{da.paying = row["Books/Uniform_Rest"];break;}
+                            case "BooksUniforms":{da.paying = row["Books/Uniform_Rest"];break;}
                             case "Inscription":{da.paying = row.Inscription_Rest; break;}
                             default:{da.paying = row.Monthly_Total;da.fmpaying = row.Rest;break;}
                            }
@@ -823,19 +850,17 @@ const AddFamilyBills = (props)=>
             {
                 famIsValid && billers.length!==0 && paymentForm()
             }
-            
-            <div className="form-group" style={{align:"center",marginLeft:125,marginBottom:20}}>
-                <fieldset>
+
+            <div className="form-group w-100 p-3" /*style={{align:"center",marginLeft:125,marginBottom:20,maxWidth:400}}*/>
                     <label> Total Amount</label>
                     <NumberFormat
                         thousandSeparator
                         suffix=' xCfa'
-                        className="form-control"
+                        //className="form-control"
                         //onWheel={(e) => e.target.blur()}
                         value={totalAmount}
                         disabled
                         />
-                </fieldset>
             </div>
             <div className="select-container w-100 " >
               <div className="select">
@@ -859,7 +884,7 @@ const AddFamilyBills = (props)=>
               </div>
             </div>
             
-            <button className="ss" onClick={submit} disabled={billers.length===0 || totalAmount===0}> Confirm </button>
+            <button className="ss" onClick={submit} disabled={submitting || billers.length===0 || totalAmount===0} style={{marginBottom:100}}> Confirm </button>
           </div>
          </div>
          </div>

@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import MaterialTable from "material-table";
 import GradeDDL from "../../../components/GradeDDL";
 import SelectYear from "../../../components/SelectYear";
@@ -10,77 +10,61 @@ import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "./LangKeys";
 import { connect } from "react-redux";
 import './style.css';
 import { ThemeProvider, createTheme } from '@mui/material';
+import axios from "axios";
 
-class AllStudents extends Component {
-  tableRef = React.createRef();
-  state = {
-    pageLang: this.props.language,
-    langKeywords: {
-      [ENGLISH]: ENGLISHWORDS,
-      [PORTO]: PORTOWORDS,
-      [FRENCH]: FRENCHWORDS,
-    },
-    year: "2021-2022",
-    gradeId: "0",
-    sectionId: "0",
-   
-  };
+
+const AllStudents = (props) => {
+
+  const tableRef = useRef();
+  const[pageLang,setPageLang]=useState(props.language);
+  const[langKeywords,setLangKeywords]=useState({
+    [ENGLISH]: ENGLISHWORDS,
+    [PORTO]: PORTOWORDS,
+    [FRENCH]: FRENCHWORDS,
+  });
+  const[year,setYear]=useState(props.match.schoolYear);
+  const[gradeId,setGradeId]=useState(0);
+  const[sectionId,setSectionId]=useState(0);
  
+  useEffect(()=>{
+    axios
+        .get("/schoolYear")
+        .then(response=>{
+          setYear(response.data["school_year"]);
+          tableRef.current.onQueryChange();
+        })
+  },[])
   //update year 
-  updateYear = ( year ) => {
-    this.setState({
-      year
-    });
-    this.tableRef.current.onQueryChange();
+  const updateYear = ( year ) => {
+    setYear(year);
+    tableRef.current.onQueryChange();
   }
 
   //update grade id
-  updateGradeId = (id) => {
-    this.setState({
-      gradeId: id,
-      sectionId: 0
-    });
-    this.tableRef.current.onQueryChange();
+  const updateGradeId = (id) => {
+    setGradeId(id);
+    setSectionId(0);
+    tableRef.current.onQueryChange();
   };
 
   //update section id
-  updateSectionId = (id) => {
-    this.setState({
-      sectionId: id
-    });
-    this.tableRef.current.onQueryChange();
+  const updateSectionId = (id) => {
+    setSectionId(id);
+    tableRef.current.onQueryChange();
   };
 
   // on Row click
-  onRowClick = (event, rowData) => {
+  const onRowClick = (event, rowData) => {
     window.open("/admin/profile/" + rowData.id,'_blank');
-    //this.props.history.push("/admin/profile/" + rowData.id);
+    //props.history.push("/admin/profile/" + rowData.id);
   };
 
-  //onChangeRowsPerPage
-  onChangeRowsPerPage  = ( value ) => {
-    this.setState({
-      limit: value
-    })
-  }
-  //add Pages
-  pagesNumber = (total , limit) => {
-    let totalStudents = total / limit ;
-    let numberOfPages;
-    if ( !(totalStudents % 1 == 0) )  // number of pages contains decimal that means we should add 1
-      return numberOfPages = parseInt( totalStudents + 1);
-    else 
-      return numberOfPages = parseInt( totalStudents );  
-  }
-  themea=createTheme();
-  //render
-  render() {
+  const themea=createTheme();
+
     // Page Lang
-    const pageLanguage = this.props.language;
 
     // Language KEywords
-    const { titlePage, studentId, firstName, lastName, search, noRecords } =
-      this.state.langKeywords[pageLanguage];
+    const { titlePage, studentId, firstName, lastName, search, noRecords } = langKeywords[pageLang];
 
     const columns = [
       { title: studentId, field: "id" },
@@ -99,22 +83,22 @@ class AllStudents extends Component {
           <div className="d-flex flex-row">
             {/* Start years selection */}
             <SelectYear className="p-2"
-              updateYear={ this.updateYear }
+              updateYear={ updateYear }
             />
             {/* End years selection */}
             {/* Start grade DDL */}
             <GradeDDL className="p-2"
-              updateGradeId={this.updateGradeId}
-              updateSectionId={this.updateSectionId}
+              updateGradeId={updateGradeId}
+              updateSectionId={updateSectionId}
             />
             {/* End grade DDL */}
           </div>
           {/* start table */}
           
         <div className="students-all col-12 mx-auto">
-          <ThemeProvider theme={this.themea}>
+          <ThemeProvider theme={themea}>
           <MaterialTable
-            tableRef={this.tableRef}
+            tableRef={tableRef}
             title=""
             columns={columns}
             options={{
@@ -123,7 +107,7 @@ class AllStudents extends Component {
               debounceInterval: 700,
               padding: "dense"
             }} 
-            onRowClick={this.onRowClick} 
+            onRowClick={onRowClick} 
             localization={{
                     toolbar: { searchPlaceholder: `${search}` },
                     body: {
@@ -133,20 +117,16 @@ class AllStudents extends Component {
             data={(query) =>
               new Promise((resolve, reject) => {
                 // prepare your data and then call resolve like this:
-                var gradeId = this.state.gradeId;
-                var sectionId = this.state.sectionId;
+               
                 var search = "^";
                 var orderBy = "id";
                 var orderDirection = "desc";
-                let url = "http://localhost:3000/olympic?";
                 //searching
                 if (query.search) {
-                  url += `q=${query.search}`;
                   search = query.search.trim();
                 }
                 //sorting
                 if (query.orderBy) {
-                  url += `&_sort=${query.orderBy.field}&_order=${query.orderDirection}`;
                   orderBy = query.orderBy.field;
                   orderDirection = query.orderDirection;
                 }
@@ -155,17 +135,14 @@ class AllStudents extends Component {
                   const filter = query.filters.map((filter) => {
                     return `&${filter.column.field}${filter.operator}${filter.value}`;
                   });
-                  url += filter.join("");
+
                 }
                 //pagination
-                url += `&_page=${query.page + 1}`;
-                url += `&_limit=${query.pageSize}`;
-                const pageNum = query.page + 1;
-                const limit = query.pageSize;
 
-                fetch(
-                        process.env.REACT_APP_API_URL+`student/${limit}/${search}/${orderBy}/${orderDirection}/${ this.state.year }/${gradeId}/${sectionId}?page=${pageNum}`
-                )
+                const pageNum = query.page + 1;
+                const limit=query.pageSize;
+                const url=process.env.REACT_APP_API_URL+`student/${limit}/${search}/${orderBy}/${orderDirection}/${ year }/${gradeId}/${sectionId}?page=${pageNum}`;
+                fetch(url)
                   .then((resp) => resp.json())
                   .then((resp) => {
                                             
@@ -185,7 +162,7 @@ class AllStudents extends Component {
         
       </div>
     );
-  }
+  
 }
 const mapStateToProps = (state) => {
   return {

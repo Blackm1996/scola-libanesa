@@ -5,6 +5,7 @@ import "./style.css";
 
 class PrintTable extends Component {
   state = {
+    id : "",
     name: "",
     grade: "",
     telephone: "",
@@ -20,7 +21,7 @@ class PrintTable extends Component {
   };
   render() {
     
-    const { name, grade, telephone, inscriptionTax, booksUniform } = this.props.printDetails;
+    const { id, name, grade, telephone, inscriptionTax, booksUniform } = this.props.printDetails;
     return (
       <>
         {/* start print section */}
@@ -40,6 +41,14 @@ class PrintTable extends Component {
 
             {/* start header */}
             <div className="header border-right border-top border-left border-dark col-12 mx-auto">
+            <div className="row text-center">
+                <div className="col-6 item border-right border-dark border-bottom text-uppercase">
+                  ID
+                </div>
+                <div className="col-6 item border-dark border-bottom">
+                  {id}
+                </div>
+              </div>
               <div className="row text-center">
                 <div className="col-6 item border-right border-dark border-bottom text-uppercase">
                   NOME-APELIDO

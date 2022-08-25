@@ -30,6 +30,7 @@ import SpecialPage from "../SpecialPage";
 import addFamilyBills from "../Payments/AddFamily";
 import viewFamily from "../Students/Family/View";
 import ViewAllFamilies from "../Students/Family/ViewAll";
+import AllStudentsTable from "./AllStudentsTable";
 class Students extends Component {
   render() {
     //navbar links
@@ -55,6 +56,10 @@ class Students extends Component {
         {/* Start main section */}
         <div className={`${styles.middleComponent} col-12 col-md-8 col-lg-8`}>
           <Route exact path="/admin" component={AllStudents} />
+          <Route exact
+            path="/admin/students/All"
+            component={AllStudentsTable}
+          />
           <Route
             exact
             path="/admin/students/notpayed"

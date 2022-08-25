@@ -33,6 +33,8 @@ Route::group([
   Route::get('/student/{id}',[App\Http\Controllers\StudentController::class,'studentInfo']);
 
   Route::get('/student/{limit}/{search}/{orderBy}/{sort}/{year}/{gradeId}/{sectionId}',[App\Http\Controllers\StudentController::class,'index']);
+  
+  Route::get('/student/{limit}/{search}/{orderBy}/{sort}',[App\Http\Controllers\StudentController::class,'indexAll']);
 
   Route::get('/student/{id}/{School_Year}',[App\Http\Controllers\StudentController::class,'show']);
   
@@ -184,6 +186,7 @@ Route::get('getMembers/{id_family}',[App\Http\Controllers\FamilyController::clas
 Route::get('getFinance/{School_Year}/{id_family}',[App\Http\Controllers\FamilyController::class,'getStudentsFinance']);
 Route::get('/families/{limit}/{search}/{orderBy}/{sort}',[App\Http\Controllers\FamilyController::class,'index']);
 Route::get('/family/{id}',[App\Http\Controllers\FamilyController::class,'show']);
+Route::delete('family/{id}',[App\Http\Controllers\FamilyController::class,'destroy']);
 
 //guardian
 Route::post('addguardian',[App\Http\Controllers\GuardianController::class,'store']);

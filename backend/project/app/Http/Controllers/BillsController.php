@@ -125,10 +125,11 @@ $count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($st
 
 public function studentNotpayed($month,$School_Year,$search,$orderBy,$sort){
     try{
-
+$ass=0;
 $PayedStduents= Student_Profile::select('student_profiles.id','student_inscriptions.id_grade',DB::raw('(student_inscriptions.Monthly_Total -'.\DB::raw("SUM(Amount)").') AS rest'),'student_inscriptions.id_classroom')
 ->leftjoin('bills','bills.id_student','student_profiles.id')->join('student_inscriptions','student_inscriptions.id_student','student_profiles.id')
-->where('student_inscriptions.School_Year',$School_Year)->where('bills.School_Year',$School_Year)->where('student_inscriptions.Attending',1)
+->where('student_inscriptions.School_Year',$School_Year)->where('bills.School_Year',$School_Year)
+->where('student_inscriptions.Attending',1)
 ->where('bills.Month',$month)
 ->where('bills.Type','Monthly')
 ->where(
@@ -140,15 +141,17 @@ $PayedStduents= Student_Profile::select('student_profiles.id','student_inscripti
       })
              ->groupBy('student_profiles.id','student_inscriptions.id_grade','student_inscriptions.Monthly_Total','student_inscriptions.id_classroom');
 
+$ass++;
 $s= DB::table( DB::raw("({$PayedStduents->toSql()}) as sub") )->mergeBindings($PayedStduents->getQuery())->where('rest','>',0);
 
-
+$ass++;
 
 $student=Student_Profile::select('student_profiles.id','student_inscriptions.id_grade','student_inscriptions.Monthly_Total AS rest','student_inscriptions.id_classroom')->leftjoin('bills',function ($join) use($month,$School_Year) {
             $join->on('bills.id_student', '=', 'student_profiles.id')
-                 ->where('bills.Month',$month)->where('bills.Type','Monthly')->where('bills.School_Year',$School_Year)->where('student_inscriptions.Attending',1);
+                 ->where('bills.Month',$month)->where('bills.Type','Monthly')->where('bills.School_Year',$School_Year);
         })->leftjoin('student_inscriptions','student_inscriptions.id_student','student_profiles.id')->whereNull('bills.id')
         ->where('student_inscriptions.School_Year',$School_Year)
+        ->where('student_inscriptions.Attending',1)
         ->where('student_inscriptions.Monthly_Total',"!=",0)
         ->where(
                 function($q) use($search) { 
@@ -167,27 +170,14 @@ $student=Student_Profile::select('student_profiles.id','student_inscriptions.id_
             $q->whereIn('student_inscriptions.Month_Start',[9,10,11,12])->orWhere('student_inscriptions.Month_Start','<=',$month);}
          }
              )->union($s);
-
+$ass++;
 $count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($student->getQuery())
 ->select('sub.id','student_profiles.First_Name','student_profiles.Last_Name','classrooms.Name as className','grades.Name as gradeName','sub.rest')
 ->leftjoin('classrooms','classrooms.id','sub.id_classroom')->leftjoin('grades','grades.id','sub.id_grade')
 ->join('student_profiles','student_profiles.id','sub.id')
    
-   ->orWhere(      function($q) use($School_Year,$month) {/*
-             $tempMonths= array();
-          list($one, $two) = explode("-",$School_Year,2);
-          if($month > 8 and $month <=12){$year=$one;}
-          else{$month=$two;}
-           $start    = (new \DateTime(CONCAT($one,'student_inscriptions.Month_Start','01'))->modify('first day of this month');
-           $end      = (new \DateTime(CONCAT($two,'6','01'))->modify('first day of next month');
-           $interval = DateInterval::createFromDateString('1 month');
-           $period   = new \DatePeriod($start, $interval, $end);
-           foreach ($period as $dt) {
-         echo array_push($tempMonths,$dt->format("m"));
-           }
-          $q->where('sub.School_Year',$School_Year)
-            ->whereBetween($month,[9,10,11,12,1,2,3,4,5,6]);*/ 
-      })->orderBy($orderBy,$sort)->get();
+->orderBy($orderBy,$sort)->get();
+$ass++;
       $tot=0;
       foreach($count as $item)
       {
@@ -197,7 +187,7 @@ $count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($st
      }
       catch(\Exception $e)
       {
-          return json_encode($e);
+          return json_encode(["ass"=>$ass,"query"=>$student->toSql()]);
       }
    return json_encode($count);
 }
@@ -218,7 +208,7 @@ public function months()
        $response = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
        ->join('grades','grades.id','=','student_inscriptions.id_grade')->where('student_inscriptions.School_Year',$School_Year)
        ->where('student_inscriptions.Attending',1)
-       ->where('student_profiles.id',$id)->get(['First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
+       ->where('student_profiles.id',$id)->get(['student_profiles.id as id','First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
        return json_encode($response->first());
          }
          catch(\Exception $e)
@@ -450,7 +440,6 @@ public function months()
             'School_Year'=>'required',
             'Amount' => 'required|numeric|min:1',
             'paymentType' => 'required',
-            'Type' => 'required',
         ]);
         $student=Bills::Create($request->all());}
         catch(\Exception $e){

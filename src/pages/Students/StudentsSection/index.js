@@ -504,7 +504,7 @@ class StudentsSection extends React.Component {
                 (item, index) =>
                   item != null && (
                     <>
-                      <StudentsMarks obj={item} />
+                      <StudentsMarks obj={item} withEmptyRows />
                     </>
                   )
               )}

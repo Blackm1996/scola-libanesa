@@ -3,24 +3,26 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import "./style.css";
 // import languages
-import { ENGLISH, FRENCH, PORTO } from "../../../languages";
+import { ENGLISH, FRENCH, PORTO } from "../../../../../languages";
 // import language words
 import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "./LangKeys";
 // import connect from react-redux
 import { connect } from "react-redux";
 import { Link, Route } from "react-router-dom";
 import axios from "axios";
-import StudentDetails from "../../../components/StudentDetails";
-import ImageModal from "../../../components/ImageModal";
-import ViewPayment from "../../Payments/View";
-import EditStudent from "../../Students/StudentsPublicFiles/Edit";
-import AddStudentYearFile from "../../Students/StudentsYearsFiles/Add";
-import ViewInscription from "../../Students/StudentsYearsFiles/View";
-import EditInscription from "../../Students/StudentsYearsFiles/Edit";
-import EditFileYear from "../../Students/StudentsYearsFiles/Edit";
-import AddPayment from "../../Payments/Add";
-import PrintPayment from "../../../components/Payments/PrintPayment";
-import AddFamily from "../../Payments/AddFamily";
+import StudentDetails from "../../../../../components/StudentDetails";
+import ImageModal from "../../../../../components/ImageModal";
+import ViewPayment from "../../../../Payments/View";
+import EditStudent from "../../../../Students/StudentsPublicFiles/Edit";
+import AddStudentYearFile from "../../../../Students/StudentsYearsFiles/Add";
+import ViewInscription from "../../../../Students/StudentsYearsFiles/View";
+import EditInscription from "../../../../Students/StudentsYearsFiles/Edit";
+import EditFileYear from "../../../../Students/StudentsYearsFiles/Edit";
+import AddPayment from "../../../../Payments/Add";
+import PrintPayment from "../../../../../components/Payments/PrintPayment";
+import AddFamily from "../../../../Payments/AddFamily";
+import PrintStudentMarks from "../PrintStudentMarks";
+import ShowStudentMarks from "../ShowStudentMarks";
 
 class Details extends Component {
   state = {
@@ -52,9 +54,11 @@ class Details extends Component {
       booksUniform: "",
     },
     modalVis: false,
+    printMarks: false,
+    printPayment: false,
     imgToShow: "",
-    medical : [],
-    medicine : [],
+    medical: [],
+    medicine: [],
   };
 
   //component did mount
@@ -82,13 +86,13 @@ class Details extends Component {
 
   // print bill
   printBill = () => {
-    
+
     axios
       .get(
         `/printBill/${this.props.match.params.id}/${this.props.schoolYear}`
       )
       .then((resp) => {
-        
+
         const studentData = resp.data;
         console.log(studentData);
         if (studentData != null) {
@@ -109,14 +113,23 @@ class Details extends Component {
 
           this.setState({
             printDetails: { ...printDetails },
+            printPayment: true,
+            printMarks: false
           });
+          setTimeout(() => window.print(), 2000)
         }
-        window.print();
       });
   };
+
+  printStuMarks = () => {
+    this.setState({
+      printPayment: false,
+      printMarks: true
+    });
+  }
   //show modal
   toggleModalVis = (e) => {
-    
+
     this.setState({
       imgToShow: e.target.src,
       modalVis: !this.state.modalVis,
@@ -133,7 +146,8 @@ class Details extends Component {
       this.state.langKeywords[pageLanguage];
     return (
       <div className="student-profile">
-        <PrintPayment printDetails={this.state.printDetails} />
+        {this.state.printPayment && <PrintPayment printDetails={this.state.printDetails} />}
+        {this.state.printMarks && <PrintStudentMarks printStuMarks={this.printStuMarks} />}
         {this.state.modalVis ? (
           <ImageModal
             img={this.state.imgToShow}
@@ -168,23 +182,23 @@ class Details extends Component {
               </Link>
               <div className="dropdown-menu">
                 {(this.props.role === "admin" ||
-                  this.props.role === "manager") && this.state.studentDetails.id_family === null &&(
-                  <Link
-                    className="dropdown-item"
-                    to={`/admin/profile/${studentId}/addbill`}
-                  >
-                    {create}
-                  </Link>
-                )}
+                  this.props.role === "manager") && this.state.studentDetails.id_family === null && (
+                    <Link
+                      className="dropdown-item"
+                      to={`/admin/profile/${studentId}/addbill`}
+                    >
+                      {create}
+                    </Link>
+                  )}
                 {(this.props.role === "admin" ||
-                  this.props.role === "manager") && this.state.studentDetails.id_family !== null &&(
-                  <Link
-                    className="dropdown-item"
-                    to={`/admin/profile/${studentId}/addFamilyBills/${this.state.studentDetails.id_family}`}
-                  >
-                    {create}
-                  </Link>
-                )}
+                  this.props.role === "manager") && this.state.studentDetails.id_family !== null && (
+                    <Link
+                      className="dropdown-item"
+                      to={`/admin/profile/${studentId}/addFamilyBills/${this.state.studentDetails.id_family}`}
+                    >
+                      {create}
+                    </Link>
+                  )}
                 <Link
                   className="dropdown-item"
                   to={`/admin/profile/${studentId}/viewbill`}
@@ -192,7 +206,7 @@ class Details extends Component {
                   {view}
                 </Link>
                 <Link className="dropdown-item" onClick={this.printBill}>
-                  { print }
+                  {print}
                 </Link>
               </div>
             </li>
@@ -222,6 +236,28 @@ class Details extends Component {
                   to={`/admin/profile/${studentId}/viewinscription`}
                 >
                   {view}
+                </Link>
+              </div>
+            </li>
+            <li className="nav-item">
+              <Link
+                className="nav-link active"
+                to={`/admin/profile/${studentId}/marks`}
+              >
+                Marks <i className="fa fa-caret-down"></i>
+              </Link>
+              <div className="dropdown-menu">
+                <Link
+                  className="dropdown-item"
+                  to={`/admin/profile/${studentId}/view-marks`}
+                >
+                  view
+                </Link>
+                <Link
+                  className="dropdown-item"
+                  onClick={this.printStuMarks}
+                >
+                  print
                 </Link>
               </div>
             </li>
@@ -284,6 +320,11 @@ class Details extends Component {
               exact
               path="/admin/profile/:id/addFamilyBills/:familyID"
               component={AddFamily}
+            />
+            <Route
+              exact
+              path="/admin/profile/:id/view-marks"
+              component={ShowStudentMarks}
             />
             {/* end routes section */}
           </div>

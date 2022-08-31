@@ -11,7 +11,7 @@ const StudentDetails = ({ details }) => {
   return (
     <div
       style={{ height: 180 }}
-      className="d-flex border-top border-bottom border-dark"
+      className="markHeader d-flex border-top border-bottom border-dark"
     >
       <div
         className="d-flex border-right border-dark"
@@ -213,16 +213,15 @@ const Moyenne = ({ moyenne, totalMoyenne }) => {
     </div>
   );
 };
-const Observation = ({totalMoyenne}) => {
-  var sucFR="";
-  var sucPr="";
-  if(totalMoyenne>=10)
-  {
-    sucFR="Passe en classe supérieure.";
-    sucPr="Aprovado pelo nível a seguir.";
+const Observation = ({ totalMoyenne }) => {
+  var sucFR = "";
+  var sucPr = "";
+  if (totalMoyenne >= 10) {
+    sucFR = "Passe en classe supérieure.";
+    sucPr = "Aprovado pelo nível a seguir.";
   }
   return (
-    <div>
+    <div className="markObservation">
       <div className="d-flex border-bottom border-dark">
         <div
           className="d-flex"
@@ -251,9 +250,9 @@ const Observation = ({totalMoyenne}) => {
             ></div>*/}
 
             <div
-            className="border-right border-dark text-left pl-3 d-flex align-items-center font-weight-bolder font-italic " 
-            style={{ flexGrow: 1, fontSize:26 }}>
-              {sucFR}<br/>
+              className="border-right border-dark text-left pl-3 d-flex align-items-center font-weight-bolder font-italic "
+              style={{ flexGrow: 1, fontSize: 26 }}>
+              {sucFR}<br />
               {sucPr}
             </div>
           </div>
@@ -367,12 +366,12 @@ class StudentMarks extends Component {
               {this.props.obj.langScores.map((item, index) => (
                 <Body langScores={item} />
               ))}
-              {Array.apply(null, {
+              {this.props.withEmptyRows && Array.apply(null, {
                 length: 20 - this.props.obj.langScores.length,
               }).map((e, i) => (
                 <EmptyRow />
               ))}
-              
+
 
               <Total total={this.props.obj.total} />
             </div>
@@ -384,7 +383,7 @@ class StudentMarks extends Component {
             />
             <Observation totalMoyenne={this.props.obj.Totalmoyen} />
             <div
-              className="d-flex border-bottom border-dark"
+              className="markSignature d-flex border-bottom border-dark"
               style={{ height: 137 }}
             >
               <div

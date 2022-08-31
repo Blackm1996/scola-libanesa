@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import TeacherMenu from "../../components/LeftComponent/TeacherMenu";
-import Details from "./Details";
+import Details from "./common/components/Details";
 import "./style.css";
 
 class StudentProfile extends Component {

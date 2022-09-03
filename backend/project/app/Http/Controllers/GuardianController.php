@@ -3,8 +3,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use setasaign\Fpdi\Fpdi;
-use App\models\Guardian;
-use App\models\Phone_guar;
+use App\Models\Guardian;
+use App\Models\Phone_guar;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;

@@ -162,8 +162,125 @@ $moyenCoefficient=$coefficient/$coursesCount;
     return json_encode($response);
 }
  
+public function studentScores($idStudent,$School_Year)
+{
+  $n=0;
+
+ $semestersType= DB::table('score_types')->distinct('Name')->get('Name');
+    $semesters = DB::table('score_types')->distinct('semester')->count('semester');
+   
+   
+   
+   $studentInfo=Student_Inscription::join('student_profiles','student_profiles.id','student_inscriptions.id_student')
+   ->join('grades','grades.id','student_inscriptions.id_grade')
+   ->join('classrooms','classrooms.id','student_inscriptions.id_classroom')
+   ->where('student_inscriptions.id_student',$idStudent)
+   ->where('student_inscriptions.School_Year',$School_Year)
+   ->get(['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name','student_inscriptions.School_Year',
+   'grades.Name as gradeName','classrooms.Name as sectionName']);
+  
+   $studentcourses=Student_Inscription::join('course_infos','course_infos.id_grade','student_inscriptions.id_grade')
+   ->where('student_inscriptions.id_student',$idStudent)
+   ->where('course_infos.included',1)
+   ->where('student_inscriptions.School_Year',$School_Year)
+   ->get(['course_infos.id','course_infos.Name','course_infos.score']);
+
+   $scores=array(count($studentcourses));
+   $coursesCount = count($studentcourses);
+   $response = array();
+   $response['studentDetails']=$studentInfo[0]->toArray();
+   
+    /*  $tempsemester=Score_Type::select()
+          ->where('semester','1')
+          ->where('Name','1⁰P')->first();
+      return $tempsemester;*/
+
+   $courseDetails=array();
+   $max=0;
+   $response['langScores']=array();
+     // return $semesters;
+   for($i=0;$i<$coursesCount;$i++)
+   {
+    $scores[$i]=array();
+    $max+=$studentcourses[$i]->score;
+   for($semester=1;$semester<=$semesters;$semester++){
+       foreach($semestersType as $type)
+       {
+        $tempsemester=Score_Type::select()
+          ->where('semester',$semester)
+          ->where('Name',$type->Name)->first();
+
+       if(!Student_Inscription::leftjoin('scores','scores.id_student','student_inscriptions.id_student')
+          ->leftjoin('course_infos','course_infos.id','scores.id_course')
+          ->where('student_inscriptions.id_student',$idStudent)
+          ->where('scores.id_course',$studentcourses[$i]->id)
+          ->where('course_infos.included',1)
+          ->where('student_inscriptions.School_Year',$School_Year)
+          ->where('scores.id_score_type',$tempsemester->id)->exists())
+       {
+        //$n++;
+        array_push($scores[$i],null);
+        // return response()->json(["response"=>false],401);
+       }else
+          {
+          $trimsterScores=Student_Inscription::leftjoin('scores','scores.id_student','student_inscriptions.id_student')
+          ->leftjoin('course_infos','course_infos.id','scores.id_course')
+          ->where('student_inscriptions.id_student',$idStudent)
+          ->where('course_infos.included',1)
+          ->where('scores.id_course',$studentcourses[$i]->id)
+          ->where('student_inscriptions.School_Year',$School_Year)
+          ->where('scores.id_score_type',$tempsemester->id)->get([
+              'scores.score as score']);
+              array_push($scores[$i],$trimsterScores[0]->score);
+          // return json_encode($trimsterScores[0]);
+         // return $scores[0];
+          }
+       }
+      }
+   $courseDetails['langName']=$studentcourses[$i]->Name;
+   $courseDetails['coefficient']=$studentcourses[$i]->score;
+   $courseDetails['scores']=$scores[$i];
+   array_push($response['langScores'],$courseDetails);
+   }
+
+$total=array(count($scores[0]));
+$moyen=array(count($scores[0]));
+$coefficient=$max;
+/*for($i=0;$i<count($scores[0]);$i++)
+{
+   if($i<$coursesCount){
+   $coefficient+=$studentcourses[$i]->score;}
+}*/
+$tempTotal=0;
+$moyenTotal=0;
+$examsNumber=0;
+for($i=0;$i<count($scores[0]);$i++)
+{
+   foreach($scores as $score)
+   {
+      $tempTotal+= $score[$i];
+   }
+   if($tempTotal!=0){$examsNumber++;}
+   $total[$i]=$tempTotal;
+   $moyen[$i]=(20*$tempTotal)/$coefficient;
+   $moyen[$i]=number_format($moyen[$i],2);
+   $moyenTotal+=$moyen[$i];
+   $tempTotal=0;
+}
+$moyenCoefficient=$coefficient/$coursesCount;
+  if($examsNumber==0){$moyenTotal=0;}else{
+  $moyenTotal=($moyenTotal)/$examsNumber;
+  $moyenTotal=number_format($moyenTotal,2);}
+     
+  $response['total']['coefficient']=$coefficient;
+  $response['total']['scores']=$total;
+  $response['moyenne']['coefficient']=20;
+  $response['moyenne']['scores']=$moyen;
+  $response['Totalmoyen']=$moyenTotal;
+   return json_encode($response);
+}
     
-     public function adminSave(Request $request)
+public function adminSave(Request $request)
     {
         try{
     if(Score::where('id_score_type',$request->input('id_score_type'))

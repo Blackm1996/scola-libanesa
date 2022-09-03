@@ -242,7 +242,7 @@ class Details extends Component {
             <li className="nav-item">
               <Link
                 className="nav-link active"
-                to={`/admin/profile/${studentId}/marks`}
+                to={`/admin/profile/${studentId}/view-marks`}
               >
                 Marks <i className="fa fa-caret-down"></i>
               </Link>

@@ -178,6 +178,8 @@ Route::get('classAverage/{id_section}',[App\Http\Controllers\scoresController::c
 Route::post('privelegeScore',[App\Http\Controllers\scoresController::class,'adminSave']);
 Route::get('totalScores/{idStudent}',[App\Http\Controllers\scoresController::class,'totalScores']);
 Route::get('classScores/{idSection}',[App\Http\Controllers\scoresController::class,'classScores']);
+Route::get('studentScores/{idStudent}/{School_Year}',[App\Http\Controllers\scoresController::class,'studentScores']);
+
 
 //family
 Route::post('addfamily',[App\Http\Controllers\FamilyController::class,'store']);

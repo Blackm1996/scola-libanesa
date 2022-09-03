@@ -455,10 +455,11 @@ public function months()
         // get the current month
         $currentMonth = (int)date('m');     
        // echo $currentMonth.PHP_EOL;
-    $table = Student_inscription::select('Month_Start','Monthly_total')->where('id_student',$id)->
+    $table = Student_inscription::select('Month_Start','Monthly_total','Inscription_Tax','Books/Uniform_total')->where('id_student',$id)->
     where('School_Year',$School_Year)->first();
-    $mybills = Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('Type','Monthly')->orderBy('created_at','desc')->get();
-    $response = array("startMonth"=>$table['Month_Start'],"bills"=>array());
+    $mybills = Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('Type','Monthly')
+    ->orderBy('created_at','desc')->get();
+    $response = array("startMonth"=>$table['Month_Start'],"bills"=>array(),"other"=>array());
   
    // $tempMonth =(int)Options::select('option_value')->where('option_name','start_month')->first();
     $tempMonth= (int)$table['Month_Start'];
@@ -468,13 +469,15 @@ public function months()
     while ($tempMonth!=$endMonth || $continue) {
         if($tempMonth==$endMonth){$continue=false;}
         if($mybills->contains('Month',$tempMonth)){
-            $totalPayed = $mybills->where('Month',$tempMonth)->sum('Amount');
+            $totalPayed = $mybills->where('Month',$tempMonth)->where('paymentType','!=',"pardoned")->sum('Amount');
+            $pardoned=$mybills->where('Month',$tempMonth)->where('paymentType',"pardoned")->sum('Amount');
              //  echo $bill->sum('Amount');}//shila d8re 
-            $rest = $table['Monthly_total'] - $totalPayed;
+            $rest = $table['Monthly_total'] - $totalPayed-$pardoned;
             if($rest<=0){
              $response['bills'][]=array(
                 'month'=>$tempMonth,
                 'payed'=>$totalPayed,
+                'pardoned'=>$pardoned,
                 'totalCost'=>$table['Monthly_total'],
                 'theRest' =>$rest,
                 'status'=>'true'
@@ -483,6 +486,7 @@ public function months()
                 $response['bills'][]=array(
                     'month'=>$tempMonth,
                     'payed'=>$totalPayed,
+                    'pardoned'=>$pardoned,
                     'totalCost'=>$table['Monthly_total'],
                     'theRest' =>$rest,
                     'status'=>'false'
@@ -494,6 +498,7 @@ public function months()
                      $response['bills'][]=array(
                      'month'=>$tempMonth,
                      'payed'=>'0',
+                     'pardoned'=>'0',
                      'totalCost'=>$table['Monthly_total'],
                      'theRest' =>$table['Monthly_total'],
                      'status'=>'true');
@@ -503,6 +508,7 @@ public function months()
                      $response['bills'][]=array(
                      'month'=>$tempMonth,
                      'payed'=>'0',
+                     'pardoned'=>'0',
                      'totalCost'=>$table['Monthly_total'],
                      'theRest' =>$table['Monthly_total'],
                      'status'=>'false');
@@ -513,10 +519,60 @@ public function months()
           if($tempMonth!=$endMonth){
           $tempMonth++;}
           if($tempMonth > 12){$tempMonth=1;}}
+
+            $mybills = Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('Type','Inscription')
+            ->orderBy('created_at','desc')->get();
+            $totalPayed = $mybills->where('paymentType','!=',"pardoned")->sum('Amount');
+            $pardoned=$mybills->where('paymentType',"pardoned")->sum('Amount');
+             //  echo $bill->sum('Amount');}//shila d8re 
+            $rest = $table['Inscription_Tax'] - $totalPayed-$pardoned;
+            if($rest<=0){
+                $response['other'][]=array(
+                   'type'=>"Inscription",
+                   'payed'=>$totalPayed,
+                   'pardoned'=>$pardoned,
+                   'totalCost'=>$table['Inscription_Tax'],
+                   'theRest' =>$rest,
+                   'status'=>'true'
+               );}
+               else{
+                   $response['other'][]=array(
+                    'type'=>"Inscription",
+                    'payed'=>$totalPayed,
+                    'pardoned'=>$pardoned,
+                    'totalCost'=>$table['Inscription_Tax'],
+                    'theRest' =>$rest,
+                    'status'=>'false'
+                   ); }
+
+                   $mybills = Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('Type','BooksUniforms')
+            ->orderBy('created_at','desc')->get();
+            $totalPayed = $mybills->where('paymentType','!=',"pardoned")->sum('Amount');
+            $pardoned=$mybills->where('paymentType',"pardoned")->sum('Amount');
+             //  echo $bill->sum('Amount');}//shila d8re 
+            $rest = $table['Books/Uniform_total'] - $totalPayed-$pardoned;
+            if($rest<=0){
+                $response['other'][]=array(
+                   'type'=>"BooksUniforms",
+                   'payed'=>$totalPayed,
+                   'pardoned'=>$pardoned,
+                   'totalCost'=>$table['Books/Uniform_total'],
+                   'theRest' =>$rest,
+                   'status'=>'true'
+               );}
+               else{
+                   $response['other'][]=array(
+                    'type'=>"BooksUniforms",
+                    'payed'=>$totalPayed,
+                    'pardoned'=>$pardoned,
+                    'totalCost'=>$table['Books/Uniform_total'],
+                    'theRest' =>$rest,
+                    'status'=>'false'
+                   ); }
             }
             catch(\Exception $e)
             {
-                return response()->json("something went wrong",404);
+                return response()->json($e,404);
             }
            return json_encode($response);
 

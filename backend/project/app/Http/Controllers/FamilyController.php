@@ -3,13 +3,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use setasaign\Fpdi\Fpdi;
-use App\models\Family;
-use App\models\Student_Profile;
-use App\models\Student_inscription;
-use App\models\Grades;
+use App\Models\Family;
+use App\Models\Student_Profile;
+use App\Models\Student_inscription;
+use App\Models\Grades;
 use App\Models\Bills;
-use App\models\Options;
-use App\models\Phone_fam;
+use App\Models\Options;
+use App\Models\Phone_fam;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;
@@ -29,9 +29,9 @@ class FamilyController extends Controller
 
 		
 		$pdf->useTemplate($tpl);
-		$pdf->SetFont('Arial','B',28);
+		$pdf->SetFont('Arial','B',25);
 		//Recpnb 1
-		$pdf->SetXY(73,70);
+		$pdf->SetXY(75,27);
 		$pdf->Cell(0,0,"fam_".$id);
 		
 		return $pdf->Output('S');
@@ -140,14 +140,10 @@ class FamilyController extends Controller
                 "is_Whats" => 'required'
             ]);
             $data=Family::where([
-                ['Father_Name','=',$request->input('Father_Name')]
-            ])->orWhere([
-                ['Mother_Name','=',$request->input('Mother_Name')]
-            ])->orWhere([
                 ['Comm_Phone','=',$request->input('Comm_Phone')]
             ])->get();
             if (!$data->isEmpty()) {
-                return response()->json("data alreay exist", 200);
+                return response()->json($data, 200);
             }
 
             $temp=new Family;

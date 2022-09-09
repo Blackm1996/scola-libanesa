@@ -311,7 +311,7 @@ class StudentController extends Controller
         $phone_number=null;
         if($student->id_family!=null)
         {
-            $phone_number=(Family::select("Comm_Phone")->first())["Comm_Phone"];
+            $phone_number=(Family::select("Comm_Phone")->where("id",$student->id_family)->first())["Comm_Phone"];
         }
         $student["phone_number"]=$phone_number;
         $student["medical"]=$medical;

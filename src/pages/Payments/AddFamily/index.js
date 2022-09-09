@@ -60,7 +60,7 @@ const AddFamilyBills = (props)=>
           axios
           .get("getFinance/"+selectedYear+"/"+famid[1])
           .then((response)=>{
-            //console.log(response);
+            console.log(response);
             if(response.status==200)
             {
               setFamIsValid(true);
@@ -150,7 +150,7 @@ const AddFamilyBills = (props)=>
 
       const disableRow=(row)=>{
         switch (billType){
-          case "BooksUniforms": return row.Books_Uniform_Rest===0;
+          case "BooksUniforms": return row['Books/Uniform_Rest']===0;
           case "Inscription": return row.Inscription_Rest===0;
           default:return (row.Rest === 0||(startMonth!=0 && row.Pay_Start!=startMonth));
         }
@@ -192,23 +192,17 @@ const AddFamilyBills = (props)=>
     }
     const handleNBMonthChange = (e)=>
     {
-      //console.log(e);
+      console.log(e.target.value);
+      console.log(startMonth);
       let m=Number(e.target.value)>=0?Number(e.target.value):0;
-      //console.log(m);
-      /*if(m<1)
-        m=1;
-      else
-        if(m>10)
-          m=10;*/
-      //console.log((m+startMonth) % 12);
-      if(((m+startMonth)%12)>7)
+      if(startMonth>=9)
       {
-        
-        if(startMonth<7)
-          m=7-startMonth;
-        else
-          m=7+(12-startMonth);
+        if(m+startMonth>19)
+          m=19-startMonth;
       }
+      else
+        if(m+startMonth>7)
+          m=7-startMonth;
       setMonthsNb(m);
       calculateTotal(m);
       
@@ -724,13 +718,8 @@ const AddFamilyBills = (props)=>
                         className="form-control"
                         onWheel={(e) => e.target.blur()}
                         value={monthsNb}
-                        onChange={handleNBMonthChange}
-                        onBlur={(e)=>{if(e.target.value<1) e.target.value=1;
-                                      else
-                                        if(e.target.value>10) e.target.value=10;
-                                      setMonthsNb(e.target.value);
-                                      handleNBMonthChange(e);
-                                    }}
+                        onChange={(e)=>{setMonthsNb(e.target.value)}}
+                        onBlur={handleNBMonthChange}
                         />
                 </fieldset>
             </div>

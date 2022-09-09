@@ -6,6 +6,7 @@ import StudentsMarks from "../../../../../components/StudentMarks";
 import { getYears } from "../../../../../Api/Payments";
 import axios from "axios";
 import styled from "styled-components";
+import { Button } from "@mui/material";
 
 const Wrapper = styled.div`
 .printBill {
@@ -34,41 +35,41 @@ const PrintTable = () => {
     const [loading, setLoading] = useState(false)
     const [selectedYear,setSelectedYear]=useState(null);
     const [inscriptionYears,setInscriptionYears] = useState([]);
+    const [pdf,setPdf]=useState(null);
     const {id} = useParams();
+    
     useEffect(() => {
         
-        setLoading(true)
         axios.get("schoolYear").then(resp=>{
             setSelectedYear(resp.data['school_year'])
         })
         .then(
                 ()=>{
-                    console.log("Done");
+                    
                     getYears(id)
                     .then(
                         response=>{
-                            setInscriptionYears(response.data);
-                            axios.get(`studentScores/${id}/${selectedYear}`).then(resp => {
-                                console.log(resp);
-                                setStudentMarks(resp.data)
-                            })
-                            .then(resp => setLoading(false))
-                            .catch(err => setLoading(false))
+                            setInscriptionYears(response.data);                            
                         }
                     )
                 }
             )
        
-    }, [])
+    }, []);
 
     useEffect(()=>{
-        axios.get(`studentScores/${id}/${selectedYear}`).then(resp => {
-            console.log(resp);
-            setStudentMarks(resp.data)
-        })
-            .then(resp => setLoading(false))
-            .catch(err => setLoading(false))
-    },[selectedYear])
+            setLoading(true);
+            axios.get(`studentScores/${id}/${selectedYear}`).then(resp => {
+                console.log(resp.data.student);
+                setStudentMarks(resp.data.student)
+                setPdf(resp.data.pdf);
+            })
+                .then(resp => setLoading(false))
+                .catch(err => setLoading(false))
+    },[selectedYear]);
+
+
+
     const changeSelectedYear = e=>{
         setSelectedYear(e.value);
     };
@@ -78,6 +79,23 @@ const PrintTable = () => {
     for (var i = 0; i <inscriptionYears.length; i++) {
       year = inscriptionYears[i]["School_Year"];
       years.push({ value: year, label: year });
+    }
+
+    const printMarks=()=>{
+        let binaryString = window.atob(pdf);
+
+        let binaryLen = binaryString.length;
+                            
+        let bytes = new Uint8Array(binaryLen);
+                            
+        for (let i = 0; i < binaryLen; i++) {
+            let ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+                            
+        let blob = new Blob([bytes], {type: "application/pdf"});
+        var blobURL = URL.createObjectURL(blob);
+        window.open(blobURL);
     }
     //const { id, name, grade, telephone, inscriptionTax, booksUniform } = this.props.printDetails;
     return (
@@ -113,6 +131,7 @@ const PrintTable = () => {
                 
               </div>
               
+            <button disabled={pdf === null || pdf === undefined} onClick={printMarks}>Print Score Sheet</button>
             {loading ? <div>... loading</div> :
                 <div className="printBill">
                     <div className="marks d-block d-print-none">

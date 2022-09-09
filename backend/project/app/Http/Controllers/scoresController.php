@@ -12,10 +12,124 @@ use App\Models\Course;
 use App\Models\Options;
 use App\Models\Classroom;
 use App\Models\Student_Inscription;
+use App\Utils\RPDF;
 
 class scoresController extends Controller
 {
 
+private function scoreSheet($student)
+{
+   $path=dirname(__DIR__, 3).'\storage\images\\';
+   $pdf=new RPDF();
+	$pdf->SetMargins(16.6,24.3);
+	$pdf->AddPage('P','A4');
+	$pdf->SetFont('Arial','B',8);
+	$x=$pdf->GetX();
+	$y=$pdf->GetY();
+	$pdf->MultiCell(56,33,$pdf->Image($path."logo.png",$pdf->GetX()+5, $pdf->GetY()+8,17),1,'C');
+	$pdf->SetXY($x+25,$y+9);
+	$pdf->MultiCell(25,5,"Escola \nLibanesa \nInternacional",0,'J');
+
+	$pdf->SetXY($x+56,$y);
+
+	$x=$pdf->GetX();
+	$y=$pdf->GetY();
+	$pdf->Cell(62,23,"Nom et Prenom",1,2,'C');
+	$pdf->Cell(62,10,"Class: CP",1,0,'L');
+	$pdf->SetXY($pdf->getX(),$y);
+	$pdf->Cell(60,17,"Anne Scolaire: ",1,2,'L');
+	$pdf->Cell(60,6,"ID: ",1,2,'L');
+	$pdf->Cell(60,10,"",1,1,'C');
+	$x=$pdf->GetX();
+	$y=$pdf->GetY();
+	$pdf->MultiCell(56,5.125,"\nDispiline /\nDispilina\n ",1,'C');
+	$pdf->SetXY($x+56,$y);
+	$pdf->Cell(8,20.5,"",1,0,'J');
+	$pdf->TextWithDirection($x+61,$y+18.5,'Notation sur','U');
+	$x=$pdf->GetX();
+	$y=$pdf->GetY();
+	$pdf->Cell(33,15,"Trimestre 1",1,2,'C');
+	$pdf->Cell(16.5,5.5,RPDF::normalize("1⁰P"),1,0,'C');
+	$pdf->Cell(16.5,5.5,RPDF::normalize("2⁰P"),1,0,'C');
+	$pdf->SetXY($x+33,$y);
+	$x=$pdf->GetX();
+	$y=$pdf->GetY();
+	$pdf->Cell(33,15,"Trimestre 2",1,2,'C');
+	$pdf->Cell(16.5,5.5,RPDF::normalize("1⁰P"),1,0,'C');
+	$pdf->Cell(16.5,5.5,RPDF::normalize("2⁰P"),1,0,'C');
+	$pdf->SetXY($x+33,$y);
+	$x=$pdf->GetX();
+	$y=$pdf->GetY();
+	$pdf->Cell(33,15,"Trimestre 2",1,2,'C');
+	$pdf->Cell(16.5,5.5,RPDF::normalize("1⁰P"),1,0,'C');
+	$pdf->Cell(16.5,5.5,RPDF::normalize("2⁰P"),1,1,'C');
+	
+	for ($i=0; $i <10 ; $i++) { 
+		$pdf->Cell(56,7,"Matiere",1,0,'C');
+		$pdf->Cell(8,7,"10",1,0,'C');
+		$pdf->Cell(16.5,7,"10",1,0,'C');
+		$pdf->Cell(16.5,7,"10",1,0,'C');
+		$pdf->Cell(16.5,7,"10",1,0,'C');
+		$pdf->Cell(16.5,7,"10",1,0,'C');
+		$pdf->Cell(16.5,7,"10",1,0,'C');
+		$pdf->Cell(16.5,7,"10",1,1,'C');
+	}
+	for ($i=0; $i <10 ; $i++) { 
+		$pdf->Cell(56,7,"",1,0,'C');
+		$pdf->Cell(8,7,"",1,0,'C');
+		$pdf->Cell(16.5,7,"",1,0,'C');
+		$pdf->Cell(16.5,7,"",1,0,'C');
+		$pdf->Cell(16.5,7,"",1,0,'C');
+		$pdf->Cell(16.5,7,"",1,0,'C');
+		$pdf->Cell(16.5,7,"",1,0,'C');
+		$pdf->Cell(16.5,7,"",1,1,'C');
+	}
+
+	$pdf->Cell(56,7,"Total",1,0,'C');
+	$pdf->Cell(8,7,"100",1,0,'C');
+	$pdf->Cell(16.5,7,"100",1,0,'C');
+	$pdf->Cell(16.5,7,"100",1,0,'C');
+	$pdf->Cell(16.5,7,"100",1,0,'C');
+	$pdf->Cell(16.5,7,"100",1,0,'C');
+	$pdf->Cell(16.5,7,"100",1,0,'C');
+	$pdf->Cell(16.5,7,"100",1,1,'C');
+
+	$pdf->SetXY($x+33,$y);
+	$pdf->Cell(15,167.5,"",1,1,'C');
+	$x=$pdf->GetX();
+	$y=$pdf->GetY();
+	$pdf->MultiCell(56,5,"Moyenne Total\nMoyeno Totalo",1,'C');
+	$pdf->SetXY($x+56,$y);
+	$pdf->Cell(8,10,"20",1,0,'C');
+	$pdf->Cell(16.5,10,"20",1,0,'C');
+	$pdf->Cell(16.5,10,"20",1,0,'C');
+	$pdf->Cell(16.5,10,"20",1,0,'C');
+	$pdf->Cell(16.5,10,"20",1,0,'C');
+	$pdf->Cell(16.5,10,"20",1,0,'C');
+	$pdf->Cell(16.5,10,"20",1,0,'C');
+	$pdf->Cell(15,10,"20",1,1,'C');
+	$x=$pdf->GetX();
+	$y=$pdf->GetY();
+	$pdf->MultiCell(56,3.75,"\nObservation\nObservation\n ",1,'C');
+	$pdf->SetXY($x+56,$y);
+	$pdf->Cell(8,15,"20",1,0,'C');
+
+	$x=$pdf->GetX();
+	$y=$pdf->GetY();
+	$pdf->MultiCell(99,3.75,"\nPasse En classe Supe\nPassao onnno Su[er\n ",1,'C');
+	$pdf->SetXY($x+99,$y);
+	$pdf->Cell(15,15,"20",1,1,'C');
+
+	$pdf->Cell(89,20,"",1,0,'C');
+	$x=$pdf->GetX();
+	$y=$pdf->GetY();
+	$pdf->Cell(89,20,"",1,1,'C');
+
+	$pdf->Image($path."Stamp.png",$x+45, $y-10,30);
+	$pdf->Image($path."Sign.png",$x+27, $y-1,30);
+
+	return $pdf->Output('S');
+}
 public function classScores($idSection)
 {
     $response =array();
@@ -125,40 +239,40 @@ public  function totalScores($idStudent)
     array_push($response['langScores'],$courseDetails);
     }
 
-$total=array(count($scores[0]));
-$moyen=array(count($scores[0]));
-$coefficient=$max;
-/*for($i=0;$i<count($scores[0]);$i++)
-{
-    if($i<$coursesCount){
-    $coefficient+=$studentcourses[$i]->score;}
-}*/
-$tempTotal=0;
-$moyenTotal=0;
-$examsNumber=0;
-for($i=0;$i<count($scores[0]);$i++)
-{
-    foreach($scores as $score)
+    $total=array(count($scores[0]));
+    $moyen=array(count($scores[0]));
+    $coefficient=$max;
+    /*for($i=0;$i<count($scores[0]);$i++)
     {
-       $tempTotal+= $score[$i];
-    }
-    if($tempTotal!=0){$examsNumber++;}
-    $total[$i]=$tempTotal;
-    $moyen[$i]=(20*$tempTotal)/$coefficient;
-    $moyen[$i]=number_format($moyen[$i],2);
-    $moyenTotal+=$moyen[$i];
+        if($i<$coursesCount){
+        $coefficient+=$studentcourses[$i]->score;}
+    }*/
     $tempTotal=0;
-}
-$moyenCoefficient=$coefficient/$coursesCount;
-   if($examsNumber==0){$moyenTotal=0;}else{
-   $moyenTotal=($moyenTotal)/$examsNumber;
-   $moyenTotal=number_format($moyenTotal,2);}
+    $moyenTotal=0;
+    $examsNumber=0;
+    for($i=0;$i<count($scores[0]);$i++)
+    {
+        foreach($scores as $score)
+        {
+        $tempTotal+= $score[$i];
+        }
+        if($tempTotal!=0){$examsNumber++;}
+        $total[$i]=$tempTotal;
+        $moyen[$i]=(20*$tempTotal)/$coefficient;
+        $moyen[$i]=number_format($moyen[$i],2);
+        $moyenTotal+=$moyen[$i];
+        $tempTotal=0;
+    }
+    $moyenCoefficient=$coefficient/$coursesCount;
+    if($examsNumber==0){$moyenTotal=0;}else{
+        $moyenTotal=($moyenTotal)/$examsNumber;
+        $moyenTotal=number_format($moyenTotal,2);}
       
-   $response['total']['coefficient']=$coefficient;
-   $response['total']['scores']=$total;
-   $response['moyenne']['coefficient']=20;
-   $response['moyenne']['scores']=$moyen;
-   $response['Totalmoyen']=$moyenTotal;
+    $response['total']['coefficient']=$coefficient;
+    $response['total']['scores']=$total;
+    $response['moyenne']['coefficient']=20;
+    $response['moyenne']['scores']=$moyen;
+    $response['Totalmoyen']=$moyenTotal;
     return json_encode($response);
 }
  
@@ -243,41 +357,43 @@ public function studentScores($idStudent,$School_Year)
    array_push($response['langScores'],$courseDetails);
    }
 
-$total=array(count($scores[0]));
-$moyen=array(count($scores[0]));
-$coefficient=$max;
-/*for($i=0;$i<count($scores[0]);$i++)
-{
-   if($i<$coursesCount){
-   $coefficient+=$studentcourses[$i]->score;}
-}*/
-$tempTotal=0;
-$moyenTotal=0;
-$examsNumber=0;
-for($i=0;$i<count($scores[0]);$i++)
-{
-   foreach($scores as $score)
-   {
-      $tempTotal+= $score[$i];
-   }
-   if($tempTotal!=0){$examsNumber++;}
-   $total[$i]=$tempTotal;
-   $moyen[$i]=(20*$tempTotal)/$coefficient;
-   $moyen[$i]=number_format($moyen[$i],2);
-   $moyenTotal+=$moyen[$i];
-   $tempTotal=0;
-}
-$moyenCoefficient=$coefficient/$coursesCount;
-  if($examsNumber==0){$moyenTotal=0;}else{
-  $moyenTotal=($moyenTotal)/$examsNumber;
-  $moyenTotal=number_format($moyenTotal,2);}
-     
-  $response['total']['coefficient']=$coefficient;
-  $response['total']['scores']=$total;
-  $response['moyenne']['coefficient']=20;
-  $response['moyenne']['scores']=$moyen;
-  $response['Totalmoyen']=$moyenTotal;
-   return json_encode($response);
+    $total=array(count($scores[0]));
+    $moyen=array(count($scores[0]));
+    $coefficient=$max;
+    /*for($i=0;$i<count($scores[0]);$i++)
+    {
+        if($i<$coursesCount){
+        $coefficient+=$studentcourses[$i]->score;}
+    }*/
+    $tempTotal=0;
+    $moyenTotal=0;
+    $examsNumber=0;
+    for($i=0;$i<count($scores[0]);$i++)
+    {
+        foreach($scores as $score)
+        {
+        $tempTotal+= $score[$i];
+        }
+        if($tempTotal!=0){$examsNumber++;}
+        $total[$i]=$tempTotal;
+        $moyen[$i]=(20*$tempTotal)/$coefficient;
+        $moyen[$i]=number_format($moyen[$i],2);
+        $moyenTotal+=$moyen[$i];
+        $tempTotal=0;
+    }
+    $moyenCoefficient=$coefficient/$coursesCount;
+    if($examsNumber==0){$moyenTotal=0;}else{
+        $moyenTotal=($moyenTotal)/$examsNumber;
+        $moyenTotal=number_format($moyenTotal,2);}
+      
+    $response['total']['coefficient']=$coefficient;
+    $response['total']['scores']=$total;
+    $response['moyenne']['coefficient']=20;
+    $response['moyenne']['scores']=$moyen;
+    $response['Totalmoyen']=$moyenTotal;
+
+    $pdf=base64_encode(self::scoreSheet($response));
+    return json_encode(["student"=>$response,"pdf"=>$pdf]);
 }
     
 public function adminSave(Request $request)

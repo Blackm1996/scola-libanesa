@@ -1,0 +1,12 @@
+.medical h2 {
+  padding-top: 41px;
+  padding-bottom: 0;
+}
+
+.medical .medical-table {
+  font-size: 14px
+}
+
+.medical-table td span {
+  font-size: 13px
+}

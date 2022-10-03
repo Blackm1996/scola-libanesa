@@ -21,8 +21,8 @@ import EditFileYear from "../../../../Students/StudentsYearsFiles/Edit";
 import AddPayment from "../../../../Payments/Add";
 import PrintPayment from "../../../../../components/Payments/PrintPayment";
 import AddFamily from "../../../../Payments/AddFamily";
-import PrintStudentMarks from "../PrintStudentMarks";
 import ShowStudentMarks from "../ShowStudentMarks";
+import MedicalInfo from "../Medical";
 
 class Details extends Component {
   state = {
@@ -63,6 +63,7 @@ class Details extends Component {
 
   //component did mount
   componentDidMount = () => {
+    console.log("stud detai",this.props);
     // student id
     //const studentID = this.props.match.params.id;
     const studentID = this.props.studentID;
@@ -102,7 +103,7 @@ class Details extends Component {
             grade,
             Inscription_Tax: inscriptionTax,
           } = studentData;
-          const booksUniform = studentData["Books/Uniform_total"];
+          const booksUniform = studentData["Books_Uniform_total"];
           const printDetails = {
             id: id === null ? "" : id,
             name: name === null ? "" : name,
@@ -147,7 +148,6 @@ class Details extends Component {
     return (
       <div className="student-profile">
         {this.state.printPayment && <PrintPayment printDetails={this.state.printDetails} />}
-        {this.state.printMarks && <PrintStudentMarks printStuMarks={this.printStuMarks} />}
         {this.state.modalVis ? (
           <ImageModal
             img={this.state.imgToShow}
@@ -244,20 +244,20 @@ class Details extends Component {
                 className="nav-link active"
                 to={`/admin/profile/${studentId}/view-marks`}
               >
-                Marks <i className="fa fa-caret-down"></i>
+                Information <i className="fa fa-caret-down"></i>
               </Link>
               <div className="dropdown-menu">
                 <Link
                   className="dropdown-item"
                   to={`/admin/profile/${studentId}/view-marks`}
                 >
-                  view
+                  Marks
                 </Link>
                 <Link
                   className="dropdown-item"
-                  onClick={this.printStuMarks}
+                  to={`/admin/profile/${studentId}/medical`}
                 >
-                  print
+                  Medical
                 </Link>
               </div>
             </li>
@@ -325,6 +325,11 @@ class Details extends Component {
               exact
               path="/admin/profile/:id/view-marks"
               component={ShowStudentMarks}
+            />
+            <Route
+              exact
+              path="/admin/profile/:id/medical"
+              component={MedicalInfo}
             />
             {/* end routes section */}
           </div>

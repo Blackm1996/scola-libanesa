@@ -1,5 +1,6 @@
 export const ENGLISHWORDS = {
   addGrade: "Add grade",
+  Name: "Name",
   defInscriptionTax: "default inscription tax",
   defMonthlyPay: "default monthly payment",
   defUniformCost: "default uniform cost",
@@ -17,7 +18,7 @@ export const ENGLISHWORDS = {
 };
 export const FRENCHWORDS = {
   addGrade: "Ajouter un classe",
-
+  Name: "Nom",
   defInscriptionTax: "taxe d'inscription par défaut",
   defMonthlyPay: "Paiement mensuel par défaut",
   defUniformCost: "Coût uniforme par défaut",
@@ -35,6 +36,7 @@ export const FRENCHWORDS = {
 };
 export const PORTOWORDS = {
   addGrade: "Adicionar nota",
+  Name: "Nome",
   defInscriptionTax: "Taxa de inscrição padrão",
   defMonthlyPay: "Pagamento mensal padrão",
   defUniformCost: "Custo uniforme padrão",

@@ -420,20 +420,19 @@ class StudentsDistribution extends Component {
   //search students
   searchStudents = (e) => {
     const query = e.target.value.trim().toLowerCase();
-
+    this.setState({search: query});
     //get students
     let students = this.state.studentsNotDistributed.filter((student) => {
       if (
-        student.id.toLowerCase().startsWith(query) ||
-        student.firstName.toLowerCase().startsWith(query) ||
-        student.lastName.toLowerCase().startsWith(query)
+        student.id.toString().includes(query) ||
+        student.firstName.toString().toLowerCase().includes(query) ||
+        student.lastName.toString().toLowerCase().includes(query)
       ) {
         return student;
       }
     });
     this.setState({
       stNotDistAfterSearch: students,
-      search: query,
     });
   };
   //render

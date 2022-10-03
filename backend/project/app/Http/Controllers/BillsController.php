@@ -31,7 +31,7 @@ class BillsController extends Controller
        $response = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
        ->join('grades','grades.id','=','student_inscriptions.id_grade')->where('student_inscriptions.School_Year',$School_Year)
        ->where('student_inscriptions.Attending',1)
-       ->where('student_inscriptions.id_classroom',$id_classroom)->get(['student_profiles.id as id','First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
+       ->where('student_inscriptions.id_classroom',$id_classroom)->get(['student_profiles.id as id','First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books_Uniform_total']);
        return json_encode($response);
          }
          catch(\Exception $e)
@@ -41,97 +41,26 @@ class BillsController extends Controller
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-public function studentNotpayed($month,$School_Year,$search,$limit,$orderBy,$sort){
-
-
- //   try{
-  // $sub = Bills::select('id_student',\DB::raw("SUM(Amount) as total"))->where('School_Year',$School_Year)->where('Month',$month)->groupBy('id_student')->get();
-   /*DB::table(DB::raw("({$sub->toSql()}) as t1"))
-    ->mergeBindings($sub)
-    ->join('student_inscriptions','t1.id_student','student_inscriptions.id_student')->join('student_profiles','t1.id_student','student_profiles.id')->where('student_inscriptions.School_Year',$School_Year)->where('t1.total','<','student_inscriptions.Monthly_Total');*/
- /*  $student= Student_Profile::select('student_profiles.id','SUM(bills.Amount)')->join('bills','bills.id_student','student_profiles.id')->join('student_inscriptions','student_inscriptions.id_student','student_profiles.id')->where('bills.School_Year',$School_Year)->where('bills.Month',$month)
-->where('student_inscriptions.Monthly_Total','!=','sum(\'Amount\')')->groupBy('student_profiles.id')->simplePaginate(15);*/
-/*$student= Student_Profile::select('student_profiles.id')->join('bills','bills.id_student','student_profiles.id')->join('student_inscriptions','student_inscriptions.id_student','student_profiles.id')->where('bills.School_Year',$School_Year)->where('bills.Month',$month)
-->whereHas('student_inscriptions.Monthly_Total','>',\DB::raw("SUM(Amount) as total"))->groupBy('student_profiles.id')->simplePaginate(15);*/
-
-/*
-$PayedStduents= Bills::select('id_student',DB::raw("SUM(Amount)".' AS amount'))->where('bills.School_Year',$School_Year)->where('bills.Month',$month)
-             ->groupBy('id_student');
-
-
-
-
-
-$student=Student_Profile::select('student_profiles.id','student_profiles.Tel','student_inscriptions.id_grade','student_inscriptions.Monthly_Total AS amount','student_inscriptions.id_classroom')->leftjoin('student_inscriptions','student_inscriptions.id_student','student_profiles.id')
-->where( function($q) use($month) {
-
-          if($month >=9 && $month <=12){
-         $q->whereBetween('student_inscriptions.Month_Start',[9,$month]);
-         }
-         if($month >=1 && $month <=6)
-         {  
-             $q->whereBetween('student_inscriptions.Month_Start',[$month,12]);}
-         }
-             );
-
-/*
-$count = DB::table( DB::raw("({$student->toSql()}) as sub") )->mergeBindings($student->getQuery())->select('sub.id','student_profiles.First_Name','student_profiles.Last_Name','sub.Tel','classrooms.Name as className','grades.Name as gradeName')->leftjoin('classrooms','classrooms.id','sub.id_classroom')->leftjoin('grades','grades.id','sub.id_grade')->leftjoin('student_profiles','student_profiles.id','sub.id')
-   ->where(
-                function($q) use($search) { 
-                    if($search!='^'){
-          $q->where('sub.id','LIKE','%' .$search .'%')
-            ->orWhere('student_profiles.First_Name','LIKE','%' .$search .'%')
-            ->orWhere('student_profiles.Last_Name','LIKE','%' .$search .'%');}
-      })
-   ->where('sub.rest','!=',0)
-   ->orWhere(      function($q) use($School_Year,$month) {
-           /*  $tempMonths= array();
-          list($one, $two) = explode("-",$School_Year,2);
-          if($month > 8 and $month <=12){$year=$one;}
-          else{$month=$two;}
-           $start    = (new \DateTime(CONCAT($one,'student_inscriptions.Month_Start','01'))->modify('first day of this month');
-           $end      = (new \DateTime(CONCAT($two,'6','01'))->modify('first day of next month');
-           $interval = DateInterval::createFromDateString('1 month');
-           $period   = new \DatePeriod($start, $interval, $end);
-           foreach ($period as $dt) {
-         echo array_push($tempMonths,$dt->format("m"));
-           }
-          $q->where('sub.School_Year',$School_Year)
-            ->whereBetween($month,[9,10,11,12,1,2,3,4,5,6]); 
-      })->orderBy($orderBy,$sort)->paginate($limit);// }*/
-  //    catch(\Exception $e)
-  //    {
-     //     return json_encode($e);
-   //   }
- /*  return json_encode($student->get());
-}*/
-
-public function studentNotpayed($month,$School_Year,$search,$orderBy,$sort){
+public function studentNotpayed($month,$type,$School_Year,$search,$orderBy,$sort){
     try{
+        switch ($type) {
+            case 'Monthly':
+                $totalToPay="student_inscriptions.Monthly_Total";
+                break;
+            case 'Inscription':
+                $totalToPay='student_inscriptions.Inscription_Tax';
+                break;
+            default:
+                $totalToPay="student_inscriptions.Books_Uniform_total";
+                break;
+        }
 $ass=0;
-$PayedStduents= Student_Profile::select('student_profiles.id','student_inscriptions.id_grade',DB::raw('(student_inscriptions.Monthly_Total -'.\DB::raw("SUM(Amount)").') AS rest'),'student_inscriptions.id_classroom')
+$PayedStduents= Student_Profile::select('student_profiles.id','student_inscriptions.id_grade',DB::raw('('.$totalToPay.' -'.\DB::raw("SUM(Amount)").') AS rest'),'student_inscriptions.id_classroom')
 ->leftjoin('bills','bills.id_student','student_profiles.id')->join('student_inscriptions','student_inscriptions.id_student','student_profiles.id')
 ->where('student_inscriptions.School_Year',$School_Year)->where('bills.School_Year',$School_Year)
 ->where('student_inscriptions.Attending',1)
 ->where('bills.Month',$month)
-->where('bills.Type','Monthly')
+->where('bills.Type',$type)
 ->where(
                 function($q) use($search) { 
                     if($search!='^'){
@@ -139,20 +68,20 @@ $PayedStduents= Student_Profile::select('student_profiles.id','student_inscripti
             ->orWhere('student_profiles.First_Name','LIKE','%' .$search .'%')
             ->orWhere('student_profiles.Last_Name','LIKE','%' .$search .'%');}
       })
-             ->groupBy('student_profiles.id','student_inscriptions.id_grade','student_inscriptions.Monthly_Total','student_inscriptions.id_classroom');
+             ->groupBy('student_profiles.id','student_inscriptions.id_grade',$totalToPay,'student_inscriptions.id_classroom');
 
 $ass++;
 $s= DB::table( DB::raw("({$PayedStduents->toSql()}) as sub") )->mergeBindings($PayedStduents->getQuery())->where('rest','>',0);
 
 $ass++;
 
-$student=Student_Profile::select('student_profiles.id','student_inscriptions.id_grade','student_inscriptions.Monthly_Total AS rest','student_inscriptions.id_classroom')->leftjoin('bills',function ($join) use($month,$School_Year) {
+$student=Student_Profile::select('student_profiles.id','student_inscriptions.id_grade',$totalToPay.' AS rest','student_inscriptions.id_classroom')->leftjoin('bills',function ($join) use($month,$type,$School_Year) {
             $join->on('bills.id_student', '=', 'student_profiles.id')
-                 ->where('bills.Month',$month)->where('bills.Type','Monthly')->where('bills.School_Year',$School_Year);
+                 ->where('bills.Month',$month)->where('bills.Type',$type)->where('bills.School_Year',$School_Year);
         })->leftjoin('student_inscriptions','student_inscriptions.id_student','student_profiles.id')->whereNull('bills.id')
         ->where('student_inscriptions.School_Year',$School_Year)
         ->where('student_inscriptions.Attending',1)
-        ->where('student_inscriptions.Monthly_Total',"!=",0)
+        ->where($totalToPay,"!=",0)
         ->where(
                 function($q) use($search) { 
                     if($search!='^'){
@@ -162,12 +91,14 @@ $student=Student_Profile::select('student_profiles.id','student_inscriptions.id_
       })
         ->where( function($q) use($month) {
 
-          if($month >=9 && $month <=12){
-         $q->whereBetween('student_inscriptions.Month_Start',[9,$month]);
-         }
-         if($month >=1 && $month <=6)
-         {  
-            $q->whereIn('student_inscriptions.Month_Start',[9,10,11,12])->orWhere('student_inscriptions.Month_Start','<=',$month);}
+          if($month != 0 )
+          {if($month >=9 && $month <=12){
+            $q->whereBetween('student_inscriptions.Month_Start',[9,$month]);
+            }
+            if($month >=1 && $month <=6)
+            {  
+               $q->whereIn('student_inscriptions.Month_Start',[9,10,11,12])->orWhere('student_inscriptions.Month_Start','<=',$month);
+           }}
          }
              )->union($s);
 $ass++;
@@ -208,7 +139,7 @@ public function months()
        $response = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
        ->join('grades','grades.id','=','student_inscriptions.id_grade')->where('student_inscriptions.School_Year',$School_Year)
        ->where('student_inscriptions.Attending',1)
-       ->where('student_profiles.id',$id)->get(['student_profiles.id as id','First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
+       ->where('student_profiles.id',$id)->get(['student_profiles.id as id','First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books_Uniform_total']);
        return json_encode($response->first());
          }
          catch(\Exception $e)
@@ -352,9 +283,11 @@ public function months()
 		//family ID 1
 		$pdf->SetXY(50,51);
 		$pdf->Cell(0,0,self::normalize('fam_'.$invoice["id_family"]));
+        $pdf->SetFont('Arial','',11);
 		//Student Name 1
 		$pdf->SetXY(24,56.4);
-		$pdf->MultiCell(175,8.1,self::normalize('                             '.$invoice["Students"]),0,"L");
+		$pdf->MultiCell(175,8.1,self::normalize('                                     '.$invoice["Students"]),0,"L");
+        $pdf->SetFont('Arial','',14);
 		//School Year 1
 		$pdf->SetXY(52,77);
 		$pdf->Cell(0,0,self::normalize($invoice["School_Year"]));
@@ -385,9 +318,11 @@ public function months()
 		//family ID 2
 		$pdf->SetXY(50,195);
 		$pdf->Cell(0,0,self::normalize('fam_'.$invoice["id_family"]));
+        $pdf->SetFont('Arial','',11);
 		//Student Name 2
 		$pdf->SetXY(24,200.4);
-		$pdf->MultiCell(175,8.1,self::normalize('                             '.$invoice["Students"]),0,"L");
+		$pdf->MultiCell(175,8.1,self::normalize('                                     '.$invoice["Students"]),0,"L");
+        $pdf->SetFont('Arial','',14);
 		//School Year 2
 		$pdf->SetXY(52,221);
 		$pdf->Cell(0,0,self::normalize($invoice["School_Year"]));
@@ -406,6 +341,11 @@ public function months()
 		$pdf->MultiCell(153,6,self::normalize($invoice['Classes']),0,"L");
 		$pdf->SetFont('Arial','',14);
         return $pdf->Output('S');
+    }
+
+    public function invoice($id){
+        $pdf=base64_encode(self::generate_Invoice($id));
+        return response()->json(['pdf'=>$pdf],200);
     }
     public function store_family(Request $request)
     {
@@ -435,7 +375,7 @@ public function months()
         try{
         // Data validation "School_Year","Month","id_student","Amount"  
         $validation = $request->validate([
-            'Month'=>'required|numeric|min:1',
+            'Month'=>'required|numeric',
             'id_student' => 'required',
             'School_Year'=>'required',
             'Amount' => 'required|numeric|min:1',
@@ -455,7 +395,7 @@ public function months()
         // get the current month
         $currentMonth = (int)date('m');     
        // echo $currentMonth.PHP_EOL;
-    $table = Student_inscription::select('Month_Start','Monthly_total','Inscription_Tax','Books/Uniform_total')->where('id_student',$id)->
+    $table = Student_inscription::select('Month_Start','Monthly_total','Inscription_Tax','Books_Uniform_total')->where('id_student',$id)->
     where('School_Year',$School_Year)->first();
     $mybills = Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('Type','Monthly')
     ->orderBy('created_at','desc')->get();
@@ -550,13 +490,13 @@ public function months()
             $totalPayed = $mybills->where('paymentType','!=',"pardoned")->sum('Amount');
             $pardoned=$mybills->where('paymentType',"pardoned")->sum('Amount');
              //  echo $bill->sum('Amount');}//shila d8re 
-            $rest = $table['Books/Uniform_total'] - $totalPayed-$pardoned;
+            $rest = $table['Books_Uniform_total'] - $totalPayed-$pardoned;
             if($rest<=0){
                 $response['other'][]=array(
                    'type'=>"BooksUniforms",
                    'payed'=>$totalPayed,
                    'pardoned'=>$pardoned,
-                   'totalCost'=>$table['Books/Uniform_total'],
+                   'totalCost'=>$table['Books_Uniform_total'],
                    'theRest' =>$rest,
                    'status'=>'true'
                );}
@@ -565,7 +505,7 @@ public function months()
                     'type'=>"BooksUniforms",
                     'payed'=>$totalPayed,
                     'pardoned'=>$pardoned,
-                    'totalCost'=>$table['Books/Uniform_total'],
+                    'totalCost'=>$table['Books_Uniform_total'],
                     'theRest' =>$rest,
                     'status'=>'false'
                    ); }
@@ -661,16 +601,26 @@ catch(\Exception $e)
      */
     public function show($id,$month,$School_Year)
     {
-        //try{
-      $response=Bills::where('id_student',$id)->where('School_Year',$School_Year)->where('bills.Type','Monthly')->where('Month',$month)->get();//}
-      //catch(\Exception $e)
-        //{
-        // return response()->json("something went wrong",404);
-    //    }
-        if($response->count()>0){return json_encode($response); }
-        else   return response()->json(['status'=>'No data found'],204);
+
+      $response=Bills::where('id_student',$id)->where('School_Year',$School_Year)
+      ->where('bills.Type','Monthly')->where('Month',$month)->get();//}
+  
+        if($response->count()>0)
+            return json_encode($response);
+
+        return response()->json(['status'=>'No data found'],204);
     }
 
+    public function showRegDetails($id,$type,$School_Year)
+    {
+        $response=Bills::where('id_student',$id)->where('School_Year',$School_Year)
+        ->where('bills.Type',$type)->get();
+        
+        if($response->count()>0)
+            return json_encode($response);
+
+        return response()->json(['status'=>'No data found'],204);
+    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -702,6 +652,14 @@ catch(\Exception $e)
      */
     public function destroy($id)
     {
-        //
+        $bill=Bills::findOrFail($id);
+        if($bill->id_invoice != null)
+        {
+            $invoice=Invoice::findOrFail($bill->id_invoice);
+            $invoice->delete();
+        }
+        $bill->delete();
+
+        return response(['status' => 'Bill is deleted'], 204);
     }
 }

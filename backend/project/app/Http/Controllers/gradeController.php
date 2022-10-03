@@ -9,10 +9,13 @@ use App\Models\Student_Inscription;
 use App\Models\Bills;
 use App\Models\Student_Profile;
 use App\Models\Course_Info;
+use App\Models\Options;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;
 use App\Models\Score_Type;
+use App\Utils\Birthday_List;
+use DB;
 
 class gradeController extends Controller
 {
@@ -45,7 +48,24 @@ public function index()
       
 } 
 
-
+public function birthDayList($idGrade)
+{
+    $School_Year=(Options::select('option_value')->where('option_name','School_Year')->first())['option_value'];
+    try{
+        $students = Student_Profile::select(DB::raw("CONCAT(First_Name,' ',Last_Name) AS name"),'Birthday')
+        ->join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
+      ->where('student_inscriptions.School_Year',$School_Year)
+      ->where('student_inscriptions.id_grade',$idGrade)->get();
+        $title=(Grades::select("Name")->where("id",$idGrade)->first())["Name"];
+        $data=array("title"=>$title,"students"=>$students);
+        $pdf=base64_encode(Birthday_List::generateList($data));
+        }
+        catch(\Exception $e)
+        {
+            return response()->json($e,400);
+        }
+        return json_encode($pdf);
+}
 
 
 public function studentGrade($idGrade,$School_Year)
@@ -53,7 +73,7 @@ public function studentGrade($idGrade,$School_Year)
     try{
         $response = Student_Profile::join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
       ->join('grades','grades.id','=','student_inscriptions.id_grade')->where('student_inscriptions.School_Year',$School_Year)
-      ->where('student_inscriptions.id_grade',$idGrade)->get(['First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books/Uniform_total']);
+      ->where('student_inscriptions.id_grade',$idGrade)->get(['First_Name','Last_Name','grades.Name as grade','Inscription_Tax','Books_Uniform_total']);
       return json_encode($response);
         }
         catch(\Exception $e)

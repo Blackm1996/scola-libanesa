@@ -32,98 +32,127 @@ private function scoreSheet($student)
 
 	$pdf->SetXY($x+56,$y);
 
-	$x=$pdf->GetX();
-	$y=$pdf->GetY();
-	$pdf->Cell(62,23,"Nom et Prenom",1,2,'C');
-	$pdf->Cell(62,10,"Class: CP",1,0,'L');
-	$pdf->SetXY($pdf->getX(),$y);
-	$pdf->Cell(60,17,"Anne Scolaire: ",1,2,'L');
-	$pdf->Cell(60,6,"ID: ",1,2,'L');
-	$pdf->Cell(60,10,"",1,1,'C');
-	$x=$pdf->GetX();
-	$y=$pdf->GetY();
-	$pdf->MultiCell(56,5.125,"\nDispiline /\nDispilina\n ",1,'C');
-	$pdf->SetXY($x+56,$y);
-	$pdf->Cell(8,20.5,"",1,0,'J');
-	$pdf->TextWithDirection($x+61,$y+18.5,'Notation sur','U');
-	$x=$pdf->GetX();
-	$y=$pdf->GetY();
-	$pdf->Cell(33,15,"Trimestre 1",1,2,'C');
-	$pdf->Cell(16.5,5.5,RPDF::normalize("1⁰P"),1,0,'C');
-	$pdf->Cell(16.5,5.5,RPDF::normalize("2⁰P"),1,0,'C');
-	$pdf->SetXY($x+33,$y);
-	$x=$pdf->GetX();
-	$y=$pdf->GetY();
-	$pdf->Cell(33,15,"Trimestre 2",1,2,'C');
-	$pdf->Cell(16.5,5.5,RPDF::normalize("1⁰P"),1,0,'C');
-	$pdf->Cell(16.5,5.5,RPDF::normalize("2⁰P"),1,0,'C');
-	$pdf->SetXY($x+33,$y);
-	$x=$pdf->GetX();
-	$y=$pdf->GetY();
-	$pdf->Cell(33,15,"Trimestre 2",1,2,'C');
-	$pdf->Cell(16.5,5.5,RPDF::normalize("1⁰P"),1,0,'C');
-	$pdf->Cell(16.5,5.5,RPDF::normalize("2⁰P"),1,1,'C');
-	
-	for ($i=0; $i <10 ; $i++) { 
-		$pdf->Cell(56,7,"Matiere",1,0,'C');
-		$pdf->Cell(8,7,"10",1,0,'C');
-		$pdf->Cell(16.5,7,"10",1,0,'C');
-		$pdf->Cell(16.5,7,"10",1,0,'C');
-		$pdf->Cell(16.5,7,"10",1,0,'C');
-		$pdf->Cell(16.5,7,"10",1,0,'C');
-		$pdf->Cell(16.5,7,"10",1,0,'C');
-		$pdf->Cell(16.5,7,"10",1,1,'C');
-	}
-	for ($i=0; $i <10 ; $i++) { 
-		$pdf->Cell(56,7,"",1,0,'C');
-		$pdf->Cell(8,7,"",1,0,'C');
-		$pdf->Cell(16.5,7,"",1,0,'C');
-		$pdf->Cell(16.5,7,"",1,0,'C');
-		$pdf->Cell(16.5,7,"",1,0,'C');
-		$pdf->Cell(16.5,7,"",1,0,'C');
-		$pdf->Cell(16.5,7,"",1,0,'C');
-		$pdf->Cell(16.5,7,"",1,1,'C');
-	}
+        $x=$pdf->GetX();
+        $y=$pdf->GetY();
+        $pdf->Cell(62,23,"",1,2,'C');
+        $pdf->Cell(62,10,RPDF::normalize("Class: ".$student["studentDetails"]["gradeName"]." - ".$student["studentDetails"]["sectionName"]),1,0,'L');
+        $pdf->SetXY($x+10,$y);
+        $name=$student["studentDetails"]["First_Name"]." ".$student["studentDetails"]["Last_Name"];
+        $pdf->MultiCell(42,5,RPDF::normalize("Nome/Apelido\nNom et Prénom:\n".$name),0,'C');
 
-	$pdf->Cell(56,7,"Total",1,0,'C');
-	$pdf->Cell(8,7,"100",1,0,'C');
-	$pdf->Cell(16.5,7,"100",1,0,'C');
-	$pdf->Cell(16.5,7,"100",1,0,'C');
-	$pdf->Cell(16.5,7,"100",1,0,'C');
-	$pdf->Cell(16.5,7,"100",1,0,'C');
-	$pdf->Cell(16.5,7,"100",1,0,'C');
-	$pdf->Cell(16.5,7,"100",1,1,'C');
+        $pdf->SetXY($x+62,$y);
+        $x=$pdf->GetX();
+        $y=$pdf->GetY();
+        $pdf->Cell(60,17,"",1,2,'C');
+        $pdf->SetXY($x,$y);
+        $pdf->MultiCell(60,5,RPDF::normalize("Ano Letivo\nAnnée Scolaire:\n".$student["studentDetails"]["School_Year"]),0,"C");
+        $pdf->SetXY($x,$y+17);
+        $pdf->Cell(60,6,"ID: ".$student["studentDetails"]["id"],1,2,'L');
+        $pdf->Cell(60,10,"",1,1,'C');
+        $x=$pdf->GetX();
+        $y=$pdf->GetY();
+        $pdf->MultiCell(56,5.125,"\nDISCIPLINES/\nDISCIPLINA\n ",1,'C');
+        $pdf->SetXY($x+56,$y);
+        $pdf->Cell(8,20.5,"",1,0,'J');
+        $pdf->TextWithDirection($x+61,$y+18.5,'Notation sur','U');
+        $x=$pdf->GetX();
+        $y=$pdf->GetY();
+        $pdf->Cell(33,15,"Trimestre 1",1,2,'C');
+        $pdf->Cell(16.5,5.5,RPDF::normalize("1⁰P"),1,0,'C');
+        $pdf->Cell(16.5,5.5,RPDF::normalize("2⁰P"),1,0,'C');
+        $pdf->SetXY($x+33,$y);
+        $x=$pdf->GetX();
+        $y=$pdf->GetY();
+        $pdf->Cell(33,15,"Trimestre 2",1,2,'C');
+        $pdf->Cell(16.5,5.5,RPDF::normalize("1⁰P"),1,0,'C');
+        $pdf->Cell(16.5,5.5,RPDF::normalize("2⁰P"),1,0,'C');
+        $pdf->SetXY($x+33,$y);
+        $x=$pdf->GetX();
+        $y=$pdf->GetY();
+        $pdf->Cell(33,15,"Trimestre 2",1,2,'C');
+        $pdf->Cell(16.5,5.5,RPDF::normalize("1⁰P"),1,0,'C');
+        $pdf->Cell(16.5,5.5,RPDF::normalize("2⁰P"),1,1,'C');
+        
+       $present=array_fill(0, 6, false);
+        foreach ($student["langScores"] as $matiere) {
+            $pdf->Cell(56,7,RPDF::normalize($matiere["langName"]),1,0,'C');
+            $pdf->Cell(8,7,$matiere["coefficient"],1,0,'C');
+            for ($j=0;$j<count($matiere["scores"])-1;$j++) {
+                $value=$matiere["scores"][$j];
+                $present[$j]=$present[$j] || $value!=null;
+                $pdf->Cell(16.5,7,$value!=null?$value:"",1,0,'C');
+            }
+            $value=$matiere["scores"][count($matiere["scores"])-1];
+            $present[count($matiere["scores"])-1]=$present[count($matiere["scores"])-1] || $value!=null;
+            $pdf->Cell(16.5,7,$value!=null?$value:"",1,1,'C');
+            
+        }
+       
+        for ($i=20; $i >count($student["langScores"]) ; $i--) { 
+            $pdf->Cell(56,7,"",1,0,'C');
+            $pdf->Cell(8,7,"",1,0,'C');
+            $pdf->Cell(16.5,7,"",1,0,'C');
+            $pdf->Cell(16.5,7,"",1,0,'C');
+            $pdf->Cell(16.5,7,"",1,0,'C');
+            $pdf->Cell(16.5,7,"",1,0,'C');
+            $pdf->Cell(16.5,7,"",1,0,'C');
+            $pdf->Cell(16.5,7,"",1,1,'C');
+        }
 
-	$pdf->SetXY($x+33,$y);
-	$pdf->Cell(15,167.5,"",1,1,'C');
-	$x=$pdf->GetX();
-	$y=$pdf->GetY();
-	$pdf->MultiCell(56,5,"Moyenne Total\nMoyeno Totalo",1,'C');
-	$pdf->SetXY($x+56,$y);
-	$pdf->Cell(8,10,"20",1,0,'C');
-	$pdf->Cell(16.5,10,"20",1,0,'C');
-	$pdf->Cell(16.5,10,"20",1,0,'C');
-	$pdf->Cell(16.5,10,"20",1,0,'C');
-	$pdf->Cell(16.5,10,"20",1,0,'C');
-	$pdf->Cell(16.5,10,"20",1,0,'C');
-	$pdf->Cell(16.5,10,"20",1,0,'C');
-	$pdf->Cell(15,10,"20",1,1,'C');
-	$x=$pdf->GetX();
-	$y=$pdf->GetY();
-	$pdf->MultiCell(56,3.75,"\nObservation\nObservation\n ",1,'C');
-	$pdf->SetXY($x+56,$y);
-	$pdf->Cell(8,15,"20",1,0,'C');
+        $matiere=$student["total"];
+        $pdf->Cell(56,7,"Total",1,0,'C');
+        $pdf->Cell(8,7,$matiere["coefficient"],1,0,'C');
+            for ($j=0;$j<count($matiere["scores"])-1;$j++) {
+                $value=$matiere["scores"][$j];
+                $pdf->Cell(16.5,7,$present[$j]?$value:"",1,0,'C');
+            }
+            $value=$matiere["scores"][count($matiere["scores"])-1];
+            $pdf->Cell(16.5,7,$present[count($matiere["scores"])-1]?$value:"",1,1,'C');
 
-	$x=$pdf->GetX();
-	$y=$pdf->GetY();
-	$pdf->MultiCell(99,3.75,"\nPasse En classe Supe\nPassao onnno Su[er\n ",1,'C');
-	$pdf->SetXY($x+99,$y);
-	$pdf->Cell(15,15,"20",1,1,'C');
 
-	$pdf->Cell(89,20,"",1,0,'C');
-	$x=$pdf->GetX();
-	$y=$pdf->GetY();
-	$pdf->Cell(89,20,"",1,1,'C');
+        $pdf->SetXY($x+33,$y);
+        $pdf->Cell(15,167.5,"",1,1,'C');
+
+        $x=$pdf->GetX();
+        $y=$pdf->GetY();
+        $pdf->MultiCell(56,5,RPDF::normalize("Media Geral\nMoyen Général"),1,'C');
+        $pdf->SetXY($x+56,$y);
+        $matiere=$student["moyenne"];
+        $pdf->Cell(8,10,$matiere["coefficient"],1,0,'C');
+            for ($j=0;$j<count($matiere["scores"]);$j++) {
+                $value=$matiere["scores"][$j];
+                $pdf->Cell(16.5,10,$present[$j]?$value:"",1,0,'C');
+            }
+            $value=$student["Totalmoyen"];
+            $pdf->Cell(15,10,$value!=null?$value:"",1,1,'C');
+
+        $x=$pdf->GetX();
+        $y=$pdf->GetY();
+        $pdf->MultiCell(56,3.75,RPDF::normalize("\nObservação\nObservation\n "),1,'C');
+        $pdf->SetXY($x+56,$y);
+        $pdf->Cell(8,15,"",1,0,'C');
+
+        $message="\n";
+        $isLast=strcmp((Options::where("option_name","isLast")->first())->option_value , "true") ==0;
+        $currentYear=(Options::where("option_name","School_Year")->first())->option_value;
+        $lastYear=strcmp($currentYear , $student["studentDetails"]["School_Year"])==0;
+        
+        if($isLast || !$lastYear)
+        {
+            if($student["Totalmoyen"]>=10)
+                $message=RPDF::normalize("Passe en classe supérieure.\nAprovado pelo nível a seguir.");
+        }
+        $x=$pdf->GetX();
+        $y=$pdf->GetY();
+        $pdf->SetFont('Arial','B',12);
+        $pdf->MultiCell(99,3.75,"\n".$message."\n ",1,'C');
+        $pdf->SetXY($x+99,$y);
+        $pdf->Cell(15,15,"",1,1,'C');
+
+        $pdf->Cell(89,20,"",1,0,'C');
+        $x=$pdf->GetX();
+        $y=$pdf->GetY();
+        $pdf->Cell(89,20,"",1,1,'C');
 
 	$pdf->Image($path."Stamp.png",$x+45, $y-10,30);
 	$pdf->Image($path."Sign.png",$x+27, $y-1,30);
@@ -137,6 +166,7 @@ public function classScores($idSection)
     $students=Student_Inscription::where('School_Year',$School_Year[0]->option_value)
     ->where('id_classroom',$idSection)->where('Attending',1)->get(['id_student']);
     foreach($students as $student){
+    
        $content= scoresController::totalScores($student->id_student);
        //$content=file_get_contents($content);
        $array = json_decode($content, true);

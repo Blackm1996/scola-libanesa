@@ -21,20 +21,8 @@ import { LocalizationProvider, DateTimePicker } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 200,
-  },
-}));
 
 const RegistrationForm = (props) => {
-  const [value1, setValue1] = React.useState(new Date());
   const [pageLanguage, setPageLanguage] = useState(props.language);
   const [loading, setLoading] = useState(false);
   const [langKeywords, setLangKeywords] = useState({
@@ -56,6 +44,9 @@ const RegistrationForm = (props) => {
     fillMessage,
     required,
   } = langKeywords[pageLanguage];
+
+  useEffect(()=>{console.log(props)},[])
+
   useEffect(() => {
     setPageLanguage(props.language);
   }, [props.language]);

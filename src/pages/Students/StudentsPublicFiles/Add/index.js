@@ -277,7 +277,7 @@ const  InscriptionStudent=(props)=>{
                   <option value=""></option>
                   {langKeywords[pageLang].months.map(item => {
                     return (
-                      <option key={item.value} value={item.name}>
+                      <option key={item.value} value={item.value}>
                         {item.name}
                       </option>
                     );

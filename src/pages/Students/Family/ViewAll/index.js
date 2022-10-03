@@ -2,12 +2,13 @@ import { useEffect, useState,useRef } from "react";
 import { connect } from "react-redux";
 import MaterialTable from "material-table";
 import { ThemeProvider, createTheme, Checkbox } from '@mui/material';
+import { withRouter } from "react-router-dom";
 import "./shared/styles/style.css";
 const ViewAllFamilies = (props)=>
 {
     const selectTableRef= useRef();
 
-
+    useEffect(()=>{console.log("HAHA");console.log(props)},[]);
     const onRowClick = (event, rowData) => {
       window.open("/admin/students/viewFamily/" + rowData.id,'_blank');
     };
@@ -95,4 +96,4 @@ const mapStateToProps = (state) => {
     };
   };
   
-  export default connect(mapStateToProps)(ViewAllFamilies);
+  export default withRouter(connect(mapStateToProps)(ViewAllFamilies));

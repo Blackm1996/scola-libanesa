@@ -311,7 +311,7 @@ class StudentController extends Controller
         $phone_number=null;
         if($student->id_family!=null)
         {
-            $phone_number=(Family::select("Comm_Phone")->where("id",$student->id_family)->first())["Comm_Phone"];
+            $phone_number=(Family::select("Comm_Phone")->where('id',$student->id_family)->first())["Comm_Phone"];
         }
         $student["phone_number"]=$phone_number;
         $student["medical"]=$medical;
@@ -324,8 +324,17 @@ class StudentController extends Controller
     return json_encode($student);
    }
 
-
-
+   public function medicalHistory($id)
+   {
+        try {
+            $medical=Medical::select("Name","Description")->where('id_student',$id)->get();
+            $medicine=Medicine::select("Name")->where('id_student',$id)->get();
+        } catch(\Exception $e)
+        {
+            return response()->json($e,404);
+        }
+        return response()->json(["medical"=>$medical,"medicine"=>$medicine],200);
+   }
 
 
 

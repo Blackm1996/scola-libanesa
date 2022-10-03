@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MaterialTable from "material-table";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import SelectMonth from "../../../components/SelectMonth";
@@ -10,70 +10,92 @@ import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "./LangKeys";
 // import connect from react-redux
 import { connect } from "react-redux";
 import "./style.css";
+import axios from "axios";
+import  Select  from "react-select";
 
-class NotPayedStudents extends Component {
-  tableRef = React.createRef();
-  state = {
-    pageLang: this.props.language,
-    langKeywords: {
-      [ENGLISH]: ENGLISHWORDS,
-      [PORTO]: PORTOWORDS,
-      [FRENCH]: FRENCHWORDS,
-    },
-    year: "2021-2022",
-    month: "9",
-    tot: "0",
-    totst: "0",
-  };
+const NotPayedStudents =(props)=> {
+  const tableRef = useRef();
+
+  const[langKeywords,setLangKeywords]=useState({
+    [ENGLISH]: ENGLISHWORDS,
+    [PORTO]: PORTOWORDS,
+    [FRENCH]: FRENCHWORDS,
+  });
+  const[year,setYear]=useState();
+  const[month,setMonth]=useState(9);
+  const[type,setType]=useState("Monthly");
+  const[tot,setTot]=useState(0);
+  const[totst,setTotst]=useState(0);
+
+  useEffect(()=>{
+    axios
+    .get("/schoolYear")
+    .then((response)=>{
+      setYear(response.data['school_year']);
+    })
+  },[])
+
+  useEffect(()=>{
+    tableRef.current.onQueryChange();
+  },[year,month,type])
 
   //update year
-  updateYear = (year) => {
-    this.setState({
-      year,
-    });
-    this.tableRef.current.onQueryChange();
+  const updateYear = (year) => {
+    setYear(year);
   };
 
-  updateTot = (totv) => {
-    this.setState({tot : totv,});
+  const updateTot = (totv) => {
+    setTot(totv);
   };
 
-  updateTotst = (totstv) => {
-    this.setState({totst : totstv,});
+  const updateTotst = (totstv) => {
+    setTotst(totstv);
   };
 
   //update grade id
-  updateMonth = (month) => {
-    this.setState({
-      month,
-    });
-    this.tableRef.current.onQueryChange();
+  const updateMonth = (month) => {
+    setMonth(month);
+  };
+
+  const updateType = (type)=>{
+    //console.log("Type selected",type)
+    setType(type.value);
+    if(type.value !== "Monthly")
+      setMonth(0);
+    else
+      setMonth(9);
   };
 
   // on Row click
-  onRowClick = (event, rowData) => {
-    this.props.history.push("/admin/profile/" + rowData.id);
+  const onRowClick = (event, rowData) => {
+    props.history.push("/admin/profile/" + rowData.id);
   };
 
-  //onChangeRowsPerPage
-  /*onChangeRowsPerPage = (value) => {
-    this.setState({
-      limit: value,
-    });
-  };*/
-  //add Pages
-  /*pagesNumber = (total, limit) => {
-    let totalStudents = total / limit;
-    let numberOfPages;
-    if (!(totalStudents % 1 == 0))
-      // number of pages contains decimal that means we should add 1
-      return (numberOfPages = parseInt(totalStudents + 1));
-    else return (numberOfPages = parseInt(totalStudents));
-  };*/
-  //render
-  render() {
+  //custom stlyes
+  const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      borderBottom: "1px dotted pink",
+      color: state.isDisabled ? "red" : "tomato",
+      fontSize: 13,
+      color: state.isFocused ? "#fff" : "#958282",
+      backgroundColor: state.isFocused ? "tomato" : "transparent",
+      cursor: "pointer",
+    }),
+    singleValue: (provided, state) => {
+      const color = state.isDisabled ? "#958282" : "#958282";
+      const transition = "opacity 300ms";
+
+      return { ...provided, color, transition };
+    },
+    control: (base) => ({
+      ...base,
+      fontSize: 13,
+      marginBottom: 7,
+    }),
+  };
     // Page Lang
-    const pageLanguage = this.props.language;
+    const pageLanguage = props.language;
 
     // Language KEywords
     const {
@@ -88,7 +110,7 @@ class NotPayedStudents extends Component {
       grade,
       totalPay,
       totalstnb,
-    } = this.state.langKeywords[pageLanguage];
+    } =langKeywords[pageLanguage];
 
     const columns = [
       { title: studentId, field: "id" },
@@ -98,7 +120,13 @@ class NotPayedStudents extends Component {
       { title: section, field: "className" },
       { title: rest, field: "rest" },
     ];
+    const billOptions = [{label: "Monthly", value: "Monthly"},
+                            {label: "Inscription Tax", value: "Inscription"},
+                            {label: "Books and Uniforms", value: "BooksUniforms"}];
     const thema=createTheme();
+
+    
+      
     return (
       <div className="main-table">
         <div className="container-fluid">
@@ -108,20 +136,40 @@ class NotPayedStudents extends Component {
 
           <div className="d-flex col-12 mx-auto">
             {/* Start years selection */}
-            <SelectYear updateYear={this.updateYear} />
+            <SelectYear updateYear={updateYear} />
             {/* End years selection */}
+            <div style={{marginLeft : 20 , marginRight:20}}>
+                <Select
+                  style={{ fontSize: 0 }}
+                  placeholder="Select type"
+                  defaultValue={{label: type, value: type}}
+                  value={{label: type, value: type}}
+                  options={billOptions}
+                  styles={customStyles}
+                  theme={(theme) => ({
+                    ...theme,
+                    borderRadius: 0,
+                    colors: {
+                      ...theme.colors,
+                      primary25: "hotpink",
+                      primary: "#ff634766",
+                    },
+                  })}
+                  onChange={updateType}
+                />
+              </div>
             {/* Start month Selection */}
-            <SelectMonth updateMonth={this.updateMonth} />
+            {type ==="Monthly" && <SelectMonth updateMonth={updateMonth} />}
             {/* End Month Selection */}
           </div>
           {/* start table */}
           <br/>
-          <div className="d-flex col-12 mx-auto"><b>{totalPay}: {this.state.tot}</b></div><br/>
-          <div className="d-flex col-12 mx-auto"><b>{totalstnb}: {this.state.totst}</b></div><br/>
+          <div className="d-flex col-12 mx-auto"><b>{totalPay}: {tot}</b></div><br/>
+          <div className="d-flex col-12 mx-auto"><b>{totalstnb}: {totst}</b></div><br/>
           <div className="students-all col-12 mx-auto">
             <ThemeProvider theme={thema}>
             <MaterialTable
-              tableRef={this.tableRef}
+              tableRef={tableRef}
               title=""
               columns={columns}
               options={{
@@ -129,7 +177,7 @@ class NotPayedStudents extends Component {
                 padding: "dense",
                 paging: false,
               }}
-              onRowClick={this.onRowClick}
+              onRowClick={onRowClick}
               localization={{
                 toolbar: { searchPlaceholder: `${search}` },
                 body: {
@@ -161,8 +209,8 @@ class NotPayedStudents extends Component {
                   //pagination
                   /*const pageNum = query.page + 1;
                   const limit = query.pageSize;*/
-                  const stri=process.env.REACT_APP_API_URL+`notPayedstudent/${this.state.month}/${this.state.year}/${search}/${orderBy}/${orderDirection}`;
-                  console.log(stri);
+                  const stri=process.env.REACT_APP_API_URL+`notPayedstudent/${month}/${type}/${year}/${search}/${orderBy}/${orderDirection}`;
+                  //console.log(stri);
                   fetch(
                     stri
                   )
@@ -174,9 +222,9 @@ class NotPayedStudents extends Component {
                       );*/
                       //console.log(resp);
                       
-                      this.updateTot(resp[resp.length-1].tot)
+                      updateTot(resp[resp.length-1].tot)
                       resp.splice(resp.length-1,1);
-                      this.updateTotst(resp.length)
+                      updateTotst(resp.length)
                       resolve({
                         data: resp, // your data array
                         //age: query.page, // current page number
@@ -192,7 +240,7 @@ class NotPayedStudents extends Component {
         </div>
       </div>
     );
-  }
+
 }
 const mapStateToProps = (state) => {
   return {

@@ -10,7 +10,7 @@ class ViewFileYear extends Component {
   state = {
     studentFileYear: {
       Inscription_Tax: "",
-      "Books/Uniform_total": "",
+      "Books_Uniform_total": "",
       Monthly_Total: "",
       Month_Start: "",
     },
@@ -144,7 +144,7 @@ class ViewFileYear extends Component {
                 <div>Student number : {this.props.match.params.id}</div>
                 <div>Inscription tax : {studentFileYear.Inscription_Tax}</div>
                 <div>
-                  Books/Uniform total : {studentFileYear["Books/Uniform_total"]}
+                  Books/Uniform total : {studentFileYear["Books_Uniform_total"]}
                 </div>
                 <div>Month Start : {studentFileYear.Month_Start}</div>
                 <div>Monthly total : {studentFileYear.Monthly_Total}</div>

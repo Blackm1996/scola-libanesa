@@ -267,7 +267,7 @@ const AddFamilyBills = (props)=>
             case "Inscription" :{
               description="Inscrição";
               billers.forEach(biller => {
-                name+=biller.First_Name+", ";
+                name+=biller.First_Name+" "+biller.Last_Name+" ,";
                 grade+=biller.Grade_Name+", ";
                 data.push({
                   School_Year:selectedYear,
@@ -279,14 +279,19 @@ const AddFamilyBills = (props)=>
                 });
                 if(monthlyLess && biller.pardoned)
                 {
-                  data.push({
-                    School_Year:selectedYear,
-                  id_student:biller.id,
-                  Type:billType,
-                  paymentType:"pardoned",
-                  Month:0,
-                  Amount:biller.Inscription_Rest-biller.paying
-                  })
+                  let am = biller.Inscription_Rest-biller.paying;
+                  if(am > 0)
+                  {
+                    data.push({
+                      School_Year:selectedYear,
+                      id_student:biller.id,
+                      Type:billType,
+                      paymentType:"pardoned",
+                      Month:0,
+                      Amount:biller.Inscription_Rest-biller.paying
+                    })
+                  }
+                  
                 }
               });
               break;
@@ -294,7 +299,7 @@ const AddFamilyBills = (props)=>
             case "BooksUniforms" :{
               description="Livros e Uniforms";
               billers.forEach(biller => {
-                name+=biller.First_Name+", ";
+                name+=biller.First_Name+" "+biller.Last_Name+", ";
                 grade+=biller.Grade_Name+", ";
                 data.push({
                   School_Year:selectedYear,
@@ -306,14 +311,19 @@ const AddFamilyBills = (props)=>
                 });
                 if(monthlyLess && biller.pardoned)
                 {
-                  data.push({
+                  let am = biller['Books/Uniform_Rest']-biller.paying;
+                  if(am > 0)
+                  {
+                    data.push({
                     School_Year:selectedYear,
                     id_student:biller.id,
                     Type:billType,
                     paymentType:"pardoned",
                     Month:0,
                     Amount:biller['Books/Uniform_Rest']-biller.paying
-                  })
+                    })
+                  }
+                  
                 }
               });
               break;
@@ -332,7 +342,7 @@ const AddFamilyBills = (props)=>
               let fmonth=0;
               let mn=0;
               billers.forEach((biller)=>{
-                  name+=biller.First_Name+", ";
+                  name+=biller.First_Name+" "+biller.Last_Name+", ";
                   grade+=biller.Grade_Name+", ";
                   fmonth+=biller.fmpaying;
                   mn+=biller.paying;
@@ -351,14 +361,18 @@ const AddFamilyBills = (props)=>
                 });
                 if(biller.pardoned && biller.fmpaying<biller.Rest)
                 {
-                  data.push({
-                    School_Year:selectedYear,
-                    id_student:biller.id,
-                    Type:billType,
-                    paymentType:"pardoned",
-                    Month:month,
-                    Amount:biller.Monthly_Total-biller.paying
-                    });
+                  let am = biller.Monthly_Total-biller.paying;
+                  if(am > 0)
+                  {
+                    data.push({
+                      School_Year:selectedYear,
+                      id_student:biller.id,
+                      Type:billType,
+                      paymentType:"pardoned",
+                      Month:month,
+                      Amount:biller.Monthly_Total-biller.paying
+                      });
+                  } 
                 }
                 for(i=1;i<monthsNb;i++)
                 {
@@ -373,14 +387,19 @@ const AddFamilyBills = (props)=>
                   });
                   if(monthlyLess && biller.pardoned)
                   {
-                    data.push({
-                    School_Year:selectedYear,
-                    id_student:biller.id,
-                    Type:billType,
-                    paymentType:"pardoned",
-                    Month:month,
-                    Amount:biller.Monthly_Total-biller.paying
-                    });
+                    let am = biller.Monthly_Total-biller.paying;
+                    if(am > 0)
+                    {
+                      data.push({
+                        School_Year:selectedYear,
+                        id_student:biller.id,
+                        Type:billType,
+                        paymentType:"pardoned",
+                        Month:month,
+                        Amount:biller.Monthly_Total-biller.paying
+                        });
+                    }
+                    
                   }
 
                 }
@@ -396,12 +415,12 @@ const AddFamilyBills = (props)=>
           Description:description,
         };
         const body={"data":data,"fatura":fatura}
-        //console.log(body);
+        console.log(body);
         axios
             .post('/familyBill',body)
             .then((response)=>{
                 if(response.status == 201) {
-                    //console.log(response);
+                    console.log(response);
                     swal("added successfully", {
                         icon: "success",
                         buttons : {
@@ -428,24 +447,7 @@ const AddFamilyBills = (props)=>
                             let blob = new Blob([bytes], {type: "application/pdf"});
                             var blobURL = URL.createObjectURL(blob);
                             window.open(blobURL);
-                            /*let link = document.createElement('a');
                             
-                            link.href = window.URL.createObjectURL(blob);
-                            link.download = response.data.id;
-                            
-                            link.click();*/
-                            
-                           /* let iframe =  document.createElement('iframe'); //load content in an iframe to print later
-                            document.body.appendChild(iframe);
-
-                            iframe.style.display = 'none';
-                            iframe.src = blobURL;
-                            iframe.onload = function() {
-                                setTimeout(function() {
-                                    iframe.focus();
-                                    iframe.contentWindow.print();
-                                }, 1);
-                                };*/
                           }
                           window.location.reload(true);
                       })
@@ -509,6 +511,7 @@ const AddFamilyBills = (props)=>
                                 paging : false,
                                 showTextRowsSelected: false,
                                 //tableLayout: "fixed",
+                                toolbar: false
                                 }}
                     columns={[
                         { title: "studentId", field: "id", editable:'never',align: 'center' },
@@ -540,6 +543,8 @@ const AddFamilyBills = (props)=>
                                          
                                           if(columnDef.field === "paying")
                                             {
+                                              if(Number(newValue) === 0)
+                                                newValue = 1;
                                               if(Number(newValue)<Number(da["Inscription_Rest"]))
                                                 setMonthlyLess(true);
                                               else
@@ -577,11 +582,12 @@ const AddFamilyBills = (props)=>
                                 paging : false,
                                 showTextRowsSelected: false,
                                 //tableLayout: "fixed",
+                                toolbar: false
                                 }}
                     columns={[
                         { title: "studentId", field: "id", editable:'never',align: 'center' },
                         { title: "prename", field: "First_Name" , editable:'never' ,align: 'center'},
-                        { title: "Books/Uniform Tax", field: "Books/Uniform_total", editable:'never' ,align: 'center'},
+                        { title: "Books/Uniform Tax", field: "Books_Uniform_total", editable:'never' ,align: 'center'},
                         { title: "Rest", field: "Books/Uniform_Rest", type:"numeric", editable:'never',align: 'center'},
                         { title: "Pay", field: "paying", type:"numeric", align: 'center'},
                         { title: "Pardon?", field: "pardoned", type:"boolean",hidden:!monthlyLess, align: 'center',
@@ -606,6 +612,8 @@ const AddFamilyBills = (props)=>
                                       
                                       if(columnDef.field === "paying")
                                             {
+                                              if(Number(newValue) === 0)
+                                                newValue = 1;
                                               if(Number(newValue)<Number(da["Books/Uniform_Rest"]))
                                                 setMonthlyLess(true);
                                               else
@@ -643,6 +651,7 @@ const AddFamilyBills = (props)=>
                                 paging : false,
                                 showTextRowsSelected: false,
                                 //tableLayout: "fixed",
+                                toolbar: false
                                 }}
                     columns={[
                         { title: "studentId", field: "id", editable:'never',align: 'center' },
@@ -685,6 +694,8 @@ const AddFamilyBills = (props)=>
                                     if(i===rowData.tableData.id){
                                       if(columnDef.field === "paying")
                                             {
+                                              if(Number(newValue) === 0)
+                                                newValue = 1;
                                               if(Number(newValue)<Number(da["Monthly_Total"]))
                                                 setMonthlyLess(true);
                                               else
@@ -795,8 +806,10 @@ const AddFamilyBills = (props)=>
                                 selection : true,
                                 selectionProps: rowData => ({
                                     disabled: rowData.tableData.disabled
-                                })
-                                }}
+                                }),
+                                showSelectAllCheckbox: false,
+                                toolbar: false
+                              }}
                     columns={[
                         { title: "studentId", field: "id" },
                         { title: "prename", field: "First_Name" },

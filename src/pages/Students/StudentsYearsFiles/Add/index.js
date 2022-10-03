@@ -270,7 +270,7 @@ class AddStudentYearFile extends Component {
     ) {
       //file year for sending
       const fileYear = {
-        "Books/Uniform_total": values.booksUniformTotal,
+        "Books_Uniform_total": values.booksUniformTotal,
         Inscription_Tax: values.inscriptionTax,
         Month_Start: values.monthStart,
         //Monthly_Total: values.monthTotalPay,

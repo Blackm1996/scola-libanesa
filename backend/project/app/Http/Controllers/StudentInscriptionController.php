@@ -93,7 +93,7 @@ class StudentInscriptionController extends Controller
             'id_grade'=>'required|numeric',
             'School_Year'=>'required',
             'Inscription_Tax' => 'required|numeric',
-            'Books/Uniform_total'=>'required|numeric',
+            'Books_Uniform_total'=>'required|numeric',
             'Monthly_Total'=>'required|numeric',
             'Month_Start'=>'required|numeric',
             'Discount'=>'required|numeric|max:15',
@@ -149,7 +149,7 @@ class StudentInscriptionController extends Controller
     {
       try{ 
           $student = Student_Inscription::select('Inscription_Tax',
-          'Books/Uniform_total As booksUniformtotal',
+          'Books_Uniform_total As booksUniformtotal',
           'Monthly_Total',
           'id_classroom',
          'Month_Start','id_grade','Discount','Attending')->where("id_student",$id)->where("School_Year",$School_Year)->first();
@@ -162,7 +162,7 @@ class StudentInscriptionController extends Controller
          }
         // if(Empty($section->sectionId)){$sectionId=null;}else{$sectionId=$section->sectionId;}
              return response()->json(['Inscription_Tax'=> $student->Inscription_Tax,
-             'Books/Uniform_total'=>$student->booksUniformtotal,
+             'Books_Uniform_total'=>$student->booksUniformtotal,
              'Monthly_Total'=>$student->Monthly_Total,
              'Month_Start'=>$student->Month_Start,
              'gradeId'=>$student->id_grade,
@@ -199,7 +199,7 @@ class StudentInscriptionController extends Controller
      */
     public function update(Request $request, $id_student,$School_Year)
     {
-          if(Bills::where('id_student',$id_student)->where('School_Year',$School_Year)->exists()){
+          if(Bills::where('id_student',$id_student)->where('School_Year',$School_Year)->where("Type","Monthly")->exists()){
                 return response()->json(['status'=>'you can\'t edit this student'],400);
         } 
         try{
@@ -215,7 +215,7 @@ class StudentInscriptionController extends Controller
             'id_grade'=>'required|numeric',
             'School_Year' => 'required',
             'Inscription_Tax' => 'required|numeric',
-            'Books/Uniform_total'=>'required|numeric',
+            'Books_Uniform_total'=>'required|numeric',
             'Monthly_Total'=>'required|numeric',
             'Month_Start'=>'required|numeric',
             'Discount'=>'required|numeric|max:15',

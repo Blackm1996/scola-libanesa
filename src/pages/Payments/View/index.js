@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import { Formik, Field, ErrorMessage, FieldArray } from "formik";
+import React, { useEffect, useState, } from "react";
 // import languages
 import { ENGLISH, FRENCH, PORTO } from "../../../languages";
 // import language words
@@ -12,46 +11,39 @@ import { getYears, getBills } from "../../../Api/Payments";
 import "./style.css";
 import swal from "sweetalert";
 import { ThemeProvider } from "styled-components";
+import { Button } from "@mui/material";
+import axios from "axios";
 
-class View extends Component {
-  state = {
-    loading: false,
-    showTable: false,
-    modalVis: false,
-    pageLang: this.props.language,
-    langKeywords: {
-      [ENGLISH]: ENGLISHWORDS,
-      [PORTO]: PORTOWORDS,
-      [FRENCH]: FRENCHWORDS,
-    },
-    id: "",
-    monthSelected: "",
-    yearSelected: "",
-    startMonth: 9,
-    years: [],
-    bills: [],
-  };
+const View =(props)=> {
+  const[showTable,setShowTable] =useState(false);
+  const[modalVis,setModalVis] =useState(false);
+  const[langKeywords,setLangKeywords] =useState({
+    [ENGLISH]: ENGLISHWORDS,
+    [PORTO]: PORTOWORDS,
+    [FRENCH]: FRENCHWORDS,
+  });
+  const[monthSelected,setMonthSelected]=useState();
+  const[yearSelected,setYearSelected]=useState();
+  const[type,setType]=useState("Monthly");
+  const[years,SetYears]=useState([]);
+  const[bills,SetBills]=useState();
+  const[other,SetOther]=useState();
 
-  //component did mount
-  componentDidMount = () => {
-    // student id
-    const studentID = this.props.match.params.id;
 
-    //set id student in state
-    this.setState({
-      id: studentID,
-      yearSelected: this.props.schoolYear,
-    });
 
-    //get years inscripted by student
-    //get years select box
+  useEffect(()=>{
+    loadBills();
+  },[yearSelected]);
 
-    getYears(studentID)
+  useEffect(()=>{
+
+    getYears(props.match.params.id)
       .then((response) => {
-        if (response.status == 200)
-          this.setState({
-            years: response.data,
-          });
+        if (response.status === 200)
+        {
+            SetYears(response.data);
+            setYearSelected(response.data[response.data.length-1]["School_Year"]);
+        }
         else swal("there is a error, please refresh page", { icon: "error" });
       })
       .catch((error) => {
@@ -59,17 +51,19 @@ class View extends Component {
         //window.location.reload();
       });
 
-    // get bills for current year
-    // get bills
-    this.props.schoolYear &&
-      getBills(studentID, this.props.schoolYear) // e.value is year selected
+  },[]);
+
+
+
+  const loadBills = () =>{
+    yearSelected !=="" & yearSelected!== undefined &&
+    getBills(props.match.params.id, yearSelected) // e.value is year selected
         .then((response) => {
           if (response.status == 200) {
             if (response.data.startMonth != null) {
-              this.setState({
-                ...response.data,
-                showTable: true,
-              });
+              SetBills(response.data.bills);
+              SetOther(response.data.other);
+              setShowTable(true);
             }
           } else
             swal("there is a error, please try again ..", { icon: "error" });
@@ -77,18 +71,17 @@ class View extends Component {
         .catch((error) => {
           swal("there is a error, please try again ..", { icon: "error" });
         });
-  };
-
+  }
   //show bills when we click on  month
-  showBills = (month) => {
-    this.setState({
-      monthSelected: month,
-      modalVis: !this.state.modalVis,
-    });
+  const showBills = (type,month) => {
+    console.log(type);
+    setMonthSelected(month);
+    setType(type);
+    setModalVis(!modalVis);
   };
 
   //custom stlyes
-  customStyles = {
+  const customStyles = {
     option: (provided, state) => ({
       ...provided,
       borderBottom: "1px dotted pink",
@@ -112,55 +105,75 @@ class View extends Component {
   };
 
   //close modal
-  closeModal = () => {
-    this.setState({
-      modalVis: false,
-    });
+  const closeModal = () => {
+    setModalVis(false);
   };
 
   //show modal
-  toggleModalVis = () => {
-    this.setState({
-      modalVis: !this.state.modalVis,
-    });
+  const toggleModalVis = () => {
+    setModalVis(!modalVis)
+
   };
 
   //onDropdownChange
-  onDropdownChange = (e) => {
-    // id student getted from url
-    const studentID = this.props.match.params.id;
-    //set selected year in the state
-    this.setState({
-      yearSelected: e.value,
-    });
-
-    // get bills
-    getBills(studentID, e.value) // e.value is year selected
-      .then((response) => {
-        if (response.status == 200)
-          this.setState({
-            ...response.data,
-            showTable: true,
-          });
-        else swal("there is a error, please try again ..", { icon: "error" });
-      })
-      .catch((error) => {
-        swal("there is a error, please try again ..", { icon: "error" });
-      });
+  const onDropdownChange = (e) => {
+    setYearSelected(e.value);
   };
 
-  //render
-  render() {
+  const pardonRest = (bill)=>{
+    let titleo="Pardon "+ bill.theRest+" xCfa from "+(bill.month? "Month "+bill.month : bill.type);
+    swal({
+      title:titleo ,
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willUpdate) => {
+      if (willUpdate)
+      {
+        const data = {
+          School_Year:yearSelected,
+          id_student:props.match.params.id,
+          Type:bill.month? "Monthly":bill.type,
+          paymentType:"pardoned",
+          Month:bill.month? bill.month:0,
+          Amount:bill.theRest
+        };
+        console.log(data);
+        axios
+        .post('/bills',data)
+        .then((response)=>{
+          if(response.status === 201)
+          {
+            swal("successAdd", {
+              icon: "success",
+            }).then(()=>{window.location.reload(true);})
+          }
+          else
+          {
+            swal("error1Add", {
+              icon: "error",
+            })
+          }
+        })
+        .catch((error) => {
+          swal("error1Add", {
+            icon: "error",
+          })});
+      }
+    })
+    
+  };
     //years option
-    var years = [],
+    var yearsOptions = [],
       year = "";
 
-    for (var i = 0; i < this.state.years.length; i++) {
-      year = this.state.years[i]["School_Year"];
-      years.push({ value: year, label: year });
+    for (var i = 0; i < years.length; i++) {
+      year = years[i]["School_Year"];
+      yearsOptions.push({ value: year, label: year });
     }
+
     // Page Lang
-    const pageLanguage = this.props.language;
+    const pageLanguage = props.language;
 
     // Language KEywords
     const {
@@ -172,8 +185,9 @@ class View extends Component {
       status,
       completed,
       insertYear,
-    } = this.state.langKeywords[pageLanguage];
+    } = langKeywords[pageLanguage];
 
+    let btnshown=false;
     return (
       <div className="view-bills">
         <div className="container-fluid">
@@ -181,13 +195,14 @@ class View extends Component {
             <h2 className="title-of-middle">{title}</h2>
 
             {/* Start Bills Modal section */}
-            {this.state.modalVis ? (
+            {modalVis ? (
               <BillsModal
-                id={this.state.id} // id student
-                yearSelected={this.state.yearSelected} // year selected
-                monthSelected={this.state.monthSelected} // month selected
-                closeModal={this.closeModal}
-                toggleModalVis={this.toggleModalVis}
+                id={props.match.params.id} // id student
+                yearSelected={yearSelected} // year selected
+                monthSelected={monthSelected} // month selected
+                type={type}
+                closeModal={closeModal}
+                toggleModalVis={toggleModalVis}
               />
             ) : null}
             {/* End Bills Modal section */}
@@ -197,13 +212,11 @@ class View extends Component {
               <div className="select">
                 <Select
                   style={{ fontSize: 0 }}
-                  placeholder="Select class"
-                  defaultValue={{
-                    label: `${this.props.schoolYear}`,
-                    value: ` ${this.props.schoolYear} `,
-                  }}
-                  options={years}
-                  styles={this.customStyles}
+                  placeholder="Select year"
+                  defaultValue={{ value: yearSelected, label: yearSelected }}
+                  value={{ value: yearSelected, label: yearSelected }}
+                  options={yearsOptions}
+                  styles={customStyles}
                   theme={(theme) => ({
                     ...theme,
                     borderRadius: 0,
@@ -213,40 +226,43 @@ class View extends Component {
                       primary: "#ff634766",
                     },
                   })}
-                  onChange={this.onDropdownChange}
+                  onChange={onDropdownChange}
                 />
               </div>
             </div>
           </div>
           <div className="row">
             <div className="add-grade col-lg-6 col-12">
-              {/* start payments table*/}
-              {this.state.showTable ? (
-                <div style={{ "overflow-x": "auto" }}>
+
+              {/* start INscBookUni table*/}
+              {showTable ? (
+                <div style={{ "overflow-x": "auto" , marginBottom:50}}>
                   <table className="bills-table">
                     <thead>
                       <tr style={{ cursor: "pointer" }}>
-                        <th>{month}</th>
+                        <th>Type</th>
                         <th>{total}</th>
                         <th>{paidAmount}</th>
+                        <th>Pardoned</th>
                         <th>{rest}</th>
                         <th>{status}</th>
                       </tr>
                     </thead>
-                    {this.state.bills.length === 0 ? (
+                    {other.length === 0 ? (
                       <div>empty</div>
                     ) : (
-                      this.state.bills.map((bill, index) => (
+                      other.map((bill, index) => (
                         <tr
                           key={index}
-                          onClick={() => this.showBills(bill.month)}
+                          onClick={() => showBills(bill.type,bill.month)}
                         >
-                          <td>{bill.month}</td>
+                          <td>{bill.type}</td>
                           <td>{bill.totalCost}</td>
                           <td>{bill.payed}</td>
+                          <td>{bill.pardoned}</td>
                           <td>{bill.theRest}</td>
                           <td>
-                            {bill.status == "true" ? (
+                            {bill.status === "true" ? (
                               <span
                                 style={{ color: "#0f660fbd", fontSize: "13px" }}
                               >
@@ -259,6 +275,65 @@ class View extends Component {
                                 <i className="fa fa-spinner fa-lg"></i>
                               </span>
                             )}
+                          </td>
+                          <td style={{border:0}} onClick={(e)=>{e.stopPropagation();}}>
+                            {bill.status === "false" ? (<button onClick={()=>{pardonRest(bill)}}>Pardon</button>) : (<div></div>) }
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </table>
+                </div>
+              ) : (
+                <div>{insertYear}</div>
+              )}
+              {/* end INscBookUni table */}
+
+              {/* start payments table*/}
+              {showTable ? (
+                <div style={{ "overflow-x": "auto" }}>
+                  <table className="bills-table">
+                    <thead>
+                      <tr style={{ cursor: "pointer" }}>
+                        <th>{month}</th>
+                        <th>{total}</th>
+                        <th>{paidAmount}</th>
+                        <th>Pardoned</th>
+                        <th>{rest}</th>
+                        <th>{status}</th>
+                      </tr>
+                    </thead>
+                    {bills.length === 0 ? (
+                      <div>empty</div>
+                    ) : (
+                      bills.map((bill, index) => (
+                        <tr
+                          key={index}
+                          onClick={() => showBills("Monthly",bill.month)}
+                        >
+                          <td>{bill.month}</td>
+                          <td>{bill.totalCost}</td>
+                          <td>{bill.payed}</td>
+                          <td>{bill.pardoned}</td>
+                          <td>{bill.theRest}</td>
+                          <td>
+                            {bill.status === "true" ? (
+                              <span
+                                style={{ color: "#0f660fbd", fontSize: "13px" }}
+                              >
+                                <i className="fa fa-check"></i> {completed}
+                              </span>
+                            ) : (
+                              <span
+                                style={{ color: "#ff600299", fontSize: "15px" }}
+                              >
+                                <i className="fa fa-spinner fa-lg"></i>
+                              </span>
+                            )}
+                          </td>
+                          <td style={{border:0}} onClick={(e)=>{e.stopPropagation();}}>
+                            {!btnshown && bill.status === "false" ? (<button onClick={()=>{pardonRest(bill)}}>Pardon</button>) : (<div></div>) }
+                            {btnshown= btnshown || (!btnshown && bill.status === "false") ? true:false}
                           </td>
                         </tr>
                       ))
@@ -274,13 +349,13 @@ class View extends Component {
         </div>
       </div>
     );
-  }
 }
 
 const mapStateToProps = (state) => {
   return {
     language: state.language,
     schoolYear: state.schoolYear,
+    role: state.role,
   };
 };
 export default connect(mapStateToProps)(View);

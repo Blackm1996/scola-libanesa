@@ -21,6 +21,7 @@ class UpdateGradeTaxes extends Component {
       inscriptionTax: "",
       booksUniformTotal: "",
       monthTotalPay: "",
+      name: "",
     },
   };
 
@@ -44,6 +45,7 @@ class UpdateGradeTaxes extends Component {
     // Language KEywords
 
     const {
+      Name,
       defInscriptionTax,
       defMonthlyPay,
       defUniformCost,
@@ -54,6 +56,20 @@ class UpdateGradeTaxes extends Component {
       <form onSubmit={props.handleSubmit}>
         <div className="row">
           <div className="add-grade col-lg-6 col-12">
+            {/* Name */}
+            <div className="form-group">
+              <label htmlFor="name">{Name}</label>
+              <Field
+                name="name"
+                type="input"
+                className="form-control"
+                id="name"
+                placeholder=""
+              />
+              <span className="error">
+                <ErrorMessage name="name" />
+              </span>
+            </div>
             {/* default Inscription Tax */}
             <div className="form-group">
               <label htmlFor="defInscriptionTax">{defInscriptionTax}</label>
@@ -122,7 +138,7 @@ class UpdateGradeTaxes extends Component {
     const gradeID = this.props.gradeID;
     //values on json format
     const grade = {
-      Name: this.state.inscriptionDetails.name,
+      Name: values.name,
       Default_Inscription_tax: values.inscriptionTax,
       Default_Monthly_pay: values.monthTotalPay,
       Default_Books_Uniform_total: values.booksUniformTotal,
@@ -145,6 +161,7 @@ class UpdateGradeTaxes extends Component {
                 if (willUpdate)
                   this.setState({
                     inscriptionDetails: {
+                      name:values.name,
                       inscriptionTax: values.inscriptionTax,
                       monthTotalPay: values.monthTotalPay,
                       booksUniformTotal: values.booksUniformTotal,
@@ -168,6 +185,7 @@ class UpdateGradeTaxes extends Component {
     const { required } = this.state.langKeywords[pageLanguage];
 
     const schema = Yup.object().shape({
+      name: Yup.string().required(required),
       inscriptionTax: Yup.number().required(required),
       booksUniformTotal: Yup.number().required(required),
       monthTotalPay: Yup.number().required(required),
@@ -190,6 +208,7 @@ class UpdateGradeTaxes extends Component {
         <Formik
           enableReinitialize={true}
           initialValues={{
+            name:inscription.name,
             inscriptionTax: inscription.inscriptionTax,
             booksUniformTotal: inscription.booksUniformTotal,
             monthTotalPay: inscription.monthTotalPay,

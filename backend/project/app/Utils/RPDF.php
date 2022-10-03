@@ -2,7 +2,7 @@
 namespace App\Utils;
 use setasaign\Fpdi\Fpdi;
 
-class RPDF extends \setasign\FPDF {
+class RPDF extends \FPDF {
 
 function TextWithDirection($x, $y, $txt, $direction='R')
 {

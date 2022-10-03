@@ -2,6 +2,7 @@ import { useEffect, useState,useRef } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 import MaterialTable from "material-table";
+import { Link, withRouter } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material';
 import "./shared/styles/style.css";
 const ViewFamily=(props)=>
@@ -177,21 +178,21 @@ const ViewFamily=(props)=>
                               
               </div>
               
-              {/*
+              
              
               <div className="trash-and-edit">
                 <Link
-                  to={`/admin/profile/${this.props.match.params.id}/updatestudent`}
+                  to={``}
                 >
-                  <i className="fa fa-edit" onClick={this.updateStudent}></i>
+                  <i className="fa fa-edit" ></i>
                 </Link>
 
                 
-                {this.props.role == "admin" && (
-                  <i className="fa fa-trash" onClick={this.deleteStudent}></i>
+                {props.role === "admin" && (
+                  <i className="fa fa-trash" ></i>
                 )}
               </div>
-              */}
+           
             </div>
           </div>
             </div>

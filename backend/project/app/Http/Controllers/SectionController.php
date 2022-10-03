@@ -12,6 +12,8 @@ use App\Models\Course;
 use App\Models\Options;
 use App\Models\Course_Info;
 use Illuminate\Support\Arr;
+use App\Utils\Birthday_List;
+use DB;
 
 class SectionController extends Controller
 {
@@ -345,6 +347,24 @@ catch(\Exception $e){
 
 }
 
+public function birthDayList($idSection)
+{
+    try{
+        $students = Student_Profile::select(DB::raw("CONCAT(First_Name,' ',Last_Name) AS name"),'Birthday')
+        ->join('student_inscriptions','student_inscriptions.id_student','=','student_profiles.id')
+      ->where('student_inscriptions.id_classroom',$idSection)->get();
+        $section=Classroom::findOrFail($idSection);
+        $title1=(Grades::select("Name")->where("id",$section->id_grade)->first())["Name"];
+        $title=$title1."- ".$section->Name;
+        $data=array("title"=>$title,"students"=>$students);
+        $pdf=base64_encode(Birthday_List::generateList($data));
+        }
+        catch(\Exception $e)
+        {
+            return response()->json($e,400);
+        }
+        return json_encode($pdf);
+}
     /**
      * Remove the specified resource from storage.
      *

@@ -19,7 +19,7 @@ class CreateStudentInscriptionsTable extends Migration
             $table->primary(['id_student','id_grade']);
             $table->string('School_Year')->nullable();
             $table->integer('Inscription_Tax');
-            $table->integer('Books/Uniform_total');
+            $table->integer('Books_Uniform_total');
             $table->integer('Monthly_Total');
             $table->integer('Month_Start');
             $table->foreignId('id_classroom')->nullable()->constrained('classrooms')->unsigned()->onDelete('set null');

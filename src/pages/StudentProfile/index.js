@@ -1,40 +1,15 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import TeacherMenu from "../../components/LeftComponent/TeacherMenu";
 import Details from "./common/components/Details";
 import "./style.css";
 
 class StudentProfile extends Component {
+  componentDidMount = ()=>{
+    console.log("stud prof",this.props);
+  };
   render() {
     // student id passed by url
-    const studentId = this.props.match.params.id;
-    
-    //navbar links
-    const links = [
-      { linkName: " Add bill", to: `/admin/profile/${studentId}/addbill`, fontAwesome: 'fa fa-money'},
-      { linkName: " Views bill", to: `/admin/profile/${studentId}/viewbill`, fontAwesome: 'fa fa-eye' },
-      {
-        linkName: " marks",
-        to: `/admin/profile/${studentId}/details`,
-        fontAwesome: 'fa fa-graduation-cap'
-      },
-      /*
-      {
-        linkName: "edit file year",
-        to: `/admin/profile/${studentId}/editfileyear`,
-        fontAwesome: 'fa fa-address-card-o'
-      },
-      */
-      {
-        linkName: " Add inscription",
-        to: `/admin/profile/${studentId}/inscription`,
-        fontAwesome: 'fa fa-address-card-o'
-      },
-      {
-        linkName: " Inscriptions review",
-        to: `/admin/profile/${studentId}/viewinscription`,
-        fontAwesome: 'fa fa-address-card-o'
-      }
-    ];
     return (
       <div className="students row">
         {/* Start left component */}
@@ -89,4 +64,4 @@ class StudentProfile extends Component {
   }
 }
 
-export default StudentProfile;
+export default withRouter(StudentProfile);

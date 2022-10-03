@@ -191,6 +191,27 @@ class StudentsGrade extends React.Component {
       selectedTab: newValue,
     });
   };
+
+  printList = ()=>{
+    axios
+    .get(`/gradeBirthDayList/${this.props.match.params.id}`)
+    .then((response)=>{
+      let binaryString = window.atob(response.data);
+
+      let binaryLen = binaryString.length;
+      
+      let bytes = new Uint8Array(binaryLen);
+      
+      for (let i = 0; i < binaryLen; i++) {
+          let ascii = binaryString.charCodeAt(i);
+          bytes[i] = ascii;
+      }
+      
+      let blob = new Blob([bytes], {type: "application/pdf"});
+      var blobURL = URL.createObjectURL(blob);
+      window.open(blobURL);
+    });
+  }
   //render
   render() {
     // Page Lang
@@ -232,6 +253,7 @@ class StudentsGrade extends React.Component {
             gradeName={this.state.gradeName}
           />
           {/* end grade details section */}
+          
           {/* start print table */}
           <div id="table-of-section" style={{ display: "block" }}>
             <h1 className="text-center d-none d-print-block mb-4">
@@ -312,6 +334,7 @@ class StudentsGrade extends React.Component {
                     {/* end print grade button */}
                   </ThemeProvider>
                 )}
+                <button onClick={this.printList}>students Birthday</button>
               </Box>
             )}
 
@@ -325,6 +348,7 @@ class StudentsGrade extends React.Component {
             {/* end tab1 students table */}
           </div>
           {/* end */}
+          
         </div>
       </div>
     );

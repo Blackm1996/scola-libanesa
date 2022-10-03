@@ -22,6 +22,7 @@ class NotPayedStudents extends Component {
     },
     year: "2021-2022",
     month: "9",
+    type: "Monthly",
     data: [],
     dataAPI: [],
   };
@@ -29,7 +30,7 @@ class NotPayedStudents extends Component {
     this.setState({
       year: this.props.year,
     });
-    const { month, year } = this.state;
+    const { month, type, year } = this.state;
     axios.get(`/allMonthBills/${month}/${year}`).then((resp) => {
       this.setState({
         data: resp.data,

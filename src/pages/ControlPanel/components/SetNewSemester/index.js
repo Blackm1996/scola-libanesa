@@ -9,11 +9,12 @@ import {
 } from "../../SchoolYear/langKeys";
 import swal from "sweetalert";
 import axios from "axios";
-import { MenuItem, FormControl, Box, Select } from "@mui/material";
+import { MenuItem, FormControl, Box, Select, Checkbox, FormControlLabel } from "@mui/material";
 
 function SetNewSemester(props) {
-  const [selectSemester, setSelectedSemester] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
   const [semesters, setSemesters] = useState([]);
+  const [isLast,setIsLast]=useState(false);
   const [pageLanguage, setPageLanguage] = useState(props.language);
   const [langKeywords, setLangKeywords] = useState({
     [ENGLISH]: ENGLISHWORDS,
@@ -46,11 +47,24 @@ function SetNewSemester(props) {
         });
       });
     axios
+      .get("/isSemesterLast")
+      .then((response)=>{
+        if(response.status===200)
+        {
+            let st=response.data === 'true';
+            setIsLast(st);
+        }
+      })
+      .catch((error) => {
+        swal(error, {
+          icon: "error",
+        });
+      });
+    axios
       .get("/getSemsters")
       .then((response) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           let semesters = response.data;
-
           setSemesters(semesters);
         }
       })
@@ -99,6 +113,35 @@ function SetNewSemester(props) {
     });
   };
 
+  const onCheckChanged =(value)=>
+  {
+    let newValue=value.target.checked;
+      let data={isLast: newValue? "true":"false"};
+      axios
+      .post("setSemesterIsLast",data)
+      .then((response)=>{
+        console.log(response);
+        if(response.status ===200)
+        {
+          setIsLast(newValue);
+          swal(success, {
+            icon: "success",
+          });
+        }
+        else{
+          swal("Error", {
+            icon: "error",
+          });
+        }
+      })
+      .catch((error) => {
+        swal("Error", {
+          icon: "error",
+        });
+      });
+      
+  };
+
   return (
     <Box className="d-flex" style={{ marginTop: "30px", marginBottom: "30px" }}>
       <span className="d-flex align-items-end">
@@ -112,7 +155,7 @@ function SetNewSemester(props) {
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
           displayEmpty
-          value={selectSemester}
+          value={selectedSemester}
           onChange={handleChange}
           label="Age"
         >
@@ -133,6 +176,14 @@ function SetNewSemester(props) {
           */}
         </Select>
       </FormControl>
+      <FormControlLabel 
+        style={{marginLeft: 30}}
+        control={
+            <Checkbox checked={isLast}
+              onChange={onCheckChanged}/>
+          }
+          label="Last?"
+          labelPlacement="end"/>
     </Box>
   );
 }

@@ -62,7 +62,7 @@ class FamilyController extends Controller
         ->where('student_inscriptions.Attending',1)
         ->where('id_family',$id_family)
         ->get(['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name','grades.Name as Grade_Name'
-                ,'student_inscriptions.Inscription_Tax','student_inscriptions.Monthly_Total','student_inscriptions.Month_Start','student_inscriptions.Books/Uniform_total']);
+                ,'student_inscriptions.Inscription_Tax','student_inscriptions.Monthly_Total','student_inscriptions.Month_Start','student_inscriptions.Books_Uniform_total']);
         if($students->count()==0)
         {
             return response()->json([],204);
@@ -71,7 +71,7 @@ class FamilyController extends Controller
             $inscription=Bills::where('id_student',$student->id)->where('School_Year',$School_Year)->where('Type','Inscription')->sum('Amount');
             $boouni=Bills::where('id_student',$student->id)->where('School_Year',$School_Year)->where('Type','BooksUniforms')->sum('Amount');
             $student['Inscription_Rest']=(int)$student['Inscription_Tax']-$inscription;
-            $student['Books/Uniform_Rest']=(int)$student['Books/Uniform_total']-$boouni;
+            $student['Books/Uniform_Rest']=(int)$student['Books_Uniform_total']-$boouni;
             //return  response()->json(['Rest'=>(int)$total['Monthly_Total'] -$bills],200);
             $mybills = Bills::where('id_student',$student->id)->where('School_Year',$School_Year)->where('Type','Monthly')->orderBy('created_at','desc')->get();
     

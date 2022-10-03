@@ -16,7 +16,29 @@ class OptionsController extends Controller
 
         $this->middleware('auth');
     }*/
+public function isSemesterLast()
+{
+    try{
+        $response = Options::where("option_name","isLast")->first();
+        return json_encode($response->option_value);
+    }
+    catch(\Exception $e)
+    {
+        return response()->json(["status"=>$e],400);
+    }
+}
 
+public function setSemesterIsLast(Request $request)
+{
+    try{
+        $object = Options::where("option_name","isLast")->update(["option_value"=>$request->isLast]);
+        return response()->json(["status"=>"Succefull"],200);
+        }
+        catch(\Exception $e)
+        {
+        return json_encode($request);
+        }
+}
 public function startMonth()
 {
  try{

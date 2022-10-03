@@ -43,7 +43,7 @@ Route::group([
   Route::post('/student/{id}',[App\Http\Controllers\StudentController::class,'update']);
   
   Route::delete('/student/{id}',[App\Http\Controllers\StudentController::class,'destroy']);
-  
+  Route::get('/studentMedicalHistory/{id}',[App\Http\Controllers\StudentController::class,'medicalHistory']);
 
 // Student Inscription
 
@@ -68,12 +68,14 @@ Route::get("endmonth",[App\Http\Controllers\OptionsController::class,'endMonth']
 Route::get("schoolYear",[App\Http\Controllers\OptionsController::class,'schoolYear']);
 Route::get("registrationYear",[App\Http\Controllers\OptionsController::class,'registrationYear']);
 Route::get("semesterdetails",[App\Http\Controllers\OptionsController::class,"semesterdetails"]);
+Route::get("isSemesterLast",[App\Http\Controllers\OptionsController::class,"isSemesterLast"]);
 
 Route::post("startmonth",[App\Http\Controllers\OptionsController::class,"addstartmonth"]);
 Route::post("endmonth",[App\Http\Controllers\OptionsController::class,"addendmonth"]);
 Route::post("schoolYear",[App\Http\Controllers\OptionsController::class,"addSchoolYear"]);
 Route::post("registrationYear",[App\Http\Controllers\OptionsController::class,"addregistrationYear"]);
 Route::post("semesterdetails",[App\Http\Controllers\OptionsController::class,"addsemesterdetails"]);
+Route::post("setSemesterIsLast",[App\Http\Controllers\OptionsController::class,"setSemesterIsLast"]);
 
 
 //Grades
@@ -84,8 +86,8 @@ Route::get('/grade',[App\Http\Controllers\gradeController::class,'index']);
 Route::get('grade/{id}',[App\Http\Controllers\gradeController::class,'show']);
 Route::delete('grade/{id}',[App\Http\Controllers\gradeController::class,'destroy']);
 Route::get('gradeStats/{id}',[App\Http\Controllers\gradeController::class,'getstats']);
-
 Route::get('cutOut',[App\Http\Controllers\gradeController::class,'cutOut']);
+Route::get('/gradeBirthDayList/{idGrade}',[App\Http\Controllers\gradeController::class,'birthDayList']);
 
 //Expenses
 Route::post('Expenses',[App\Http\Controllers\ExpensesController::class,'addExpenses']);
@@ -96,16 +98,20 @@ Route::get('getTotalExpenses/{month}',[App\Http\Controllers\ExpensesController::
 // Bills
 
 Route::get('sectionBills/{id_classroom}/{School_Year}',[App\Http\Controllers\BillsController::class,'sectionBills']);
-Route::get('/notPayedstudent/{month}/{School_Year}/{search}/{orderBy}/{sort}',[App\Http\Controllers\BillsController::class,'studentNotpayed']);
+Route::get('/notPayedstudent/{month}/{type}/{School_Year}/{search}/{orderBy}/{sort}',[App\Http\Controllers\BillsController::class,'studentNotpayed']);
 Route::get('/billsMonth/{id}/{School_Year}',[App\Http\Controllers\BillsController::class,'allMonths']);
 Route::get('/bills/{id}/{School_Year}',[App\Http\Controllers\BillsController::class,'allBills']);
 Route::get('/billsRest/{id}/{School_Year}/{month}',[App\Http\Controllers\BillsController::class,'Rest']);
 Route::get('/bills/{id}/{month}/{School_Year}',[App\Http\Controllers\BillsController::class,'show']);
+Route::get('/billsOther/{id}/{type}/{School_Year}',[App\Http\Controllers\BillsController::class,'showRegDetails']);
 Route::post('/bills',[App\Http\Controllers\BillsController::class,'store']);
 Route::get('/billsYear/{id}',[App\Http\Controllers\BillsController::class,'showYears']);
 Route::get('printBill/{id}/{School_Year}',[App\Http\Controllers\BillsController::class,'showPrinter']);
 Route::get('/allMonthBills/{month}/{School_Year}',[App\Http\Controllers\BillsController::class,'allMonthBills']);
 Route::post('/familyBill',[App\Http\Controllers\BillsController::class,'store_family']);
+Route::get('/invoice/{id}',[App\Http\Controllers\BillsController::class,'invoice']);
+Route::delete('bills/{id}',[App\Http\Controllers\BillsController::class,'destroy'] );
+
 // Books
 Route::delete('books/{id}',[App\Http\Controllers\BooksController::class,'destroy']);
 Route::get('book/{id}',[App\Http\Controllers\BooksController::class,'show']);
@@ -140,6 +146,8 @@ Route::get('classStats/{id_section}',[App\Http\Controllers\SectionController::cl
 Route::get('classInfos/{id_section}',[App\Http\Controllers\SectionController::class,'classinfos']);
 
 Route::get('sectionCourses/{idSection}',[App\Http\Controllers\SectionController::class,'coursesForadmin']);
+
+Route::get('/sectionBirthDayList/{idSection}',[App\Http\Controllers\SectionController::class,'birthDayList']);
 
 // Users
 
@@ -179,7 +187,6 @@ Route::post('privelegeScore',[App\Http\Controllers\scoresController::class,'admi
 Route::get('totalScores/{idStudent}',[App\Http\Controllers\scoresController::class,'totalScores']);
 Route::get('classScores/{idSection}',[App\Http\Controllers\scoresController::class,'classScores']);
 Route::get('studentScores/{idStudent}/{School_Year}',[App\Http\Controllers\scoresController::class,'studentScores']);
-
 
 //family
 Route::post('addfamily',[App\Http\Controllers\FamilyController::class,'store']);

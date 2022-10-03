@@ -92,7 +92,7 @@ class EditInscription extends Component {
                 inscriptionDetails: {
                   ...this.state.inscriptionDetails,
                   inscriptionTax: inscription.Inscription_Tax,
-                  booksUniformTotal: inscription["Books/Uniform_total"],
+                  booksUniformTotal: inscription["Books_Uniform_total"],
                   monthTotalPay: inscription.Monthly_Total,
                   monthStart: inscription.Month_Start,
                   gradeId: inscription.gradeId,
@@ -141,7 +141,7 @@ class EditInscription extends Component {
                   inscriptionDetails: {
                     ...this.state.inscriptionDetails,
                     inscriptionTax: inscription.Inscription_Tax,
-                    booksUniformTotal: inscription["Books/Uniform_total"],
+                    booksUniformTotal: inscription["Books_Uniform_total"],
                     monthTotalPay: inscription.Monthly_Total,
                     monthStart: inscription.Month_Start,
                     gradeId: inscription.gradeId,
@@ -206,7 +206,7 @@ class EditInscription extends Component {
         inscriptionDetails: {
           ...this.state.inscriptionDetails,
           inscriptionTax: inscription.Inscription_Tax,
-          booksUniformTotal: inscription["Books/Uniform_total"],
+          booksUniformTotal: inscription["Books_Uniform_total"],
           monthTotalPay: inscription.Monthly_Total,
           monthStart: inscription.Month_Start,
           gradeId: inscription.gradeId,
@@ -365,13 +365,13 @@ class EditInscription extends Component {
         id_grade: this.state.gradeSelected,
         School_Year: values.year,
         Inscription_Tax: values.inscriptionTax,
-        "Books/Uniform_total": values.booksUniformTotal,
+        Books_Uniform_total: values.booksUniformTotal,
         Monthly_Total: monthTotalPay,
         Month_Start: values.monthStart,
         id_classroom: this.state.sectionSelected,
         Discount: this.state.discount,
         /*
-        "Books/Uniform_total": values.booksUniformTotal,
+        Books_Uniform_total: values.booksUniformTotal,
         Inscription_Tax: values.inscriptionTax,
         Month_Start: values.monthStart,
         //Monthly_Total: values.monthTotalPay,

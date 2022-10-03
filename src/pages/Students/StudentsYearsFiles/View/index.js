@@ -8,7 +8,7 @@ import { ENGLISH, FRENCH, PORTO } from "../../../../languages";
 import { ENGLISHWORDS, FRENCHWORDS, PORTOWORDS } from "../Add/LangKeys";
 // import connect from react-redux
 import { connect } from "react-redux";
-import { Formik, Field, ErrorMessage, FieldArray } from "formik";
+import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { getYears } from "../../../../Api/Payments";
@@ -56,7 +56,7 @@ class ViewInscription extends Component {
     /* start get years select box */
     getYears(studentID)
       .then((response) => {
-        if (response.status == 200)
+        if (response.status === 200)
           this.setState({
             inscriptionYears: response.data,
             loading: false,
@@ -94,7 +94,7 @@ class ViewInscription extends Component {
                 inscriptionDetails: {
                   ...this.state.inscriptionDetails,
                   inscriptionTax: inscription.Inscription_Tax,
-                  booksUniformTotal: inscription["Books/Uniform_total"],
+                  booksUniformTotal: inscription["Books_Uniform_total"],
                   monthTotalPay: inscription.Monthly_Total,
                   monthStart: inscription.Month_Start,
                   gradeId: inscription.gradeId,
@@ -109,7 +109,7 @@ class ViewInscription extends Component {
               });
               this.setState({
                 sections: this.state.DDL1.find(
-                  (item) => item.id == inscription.gradeId
+                  (item) => item.id === inscription.gradeId
                 ).sections,
               });
             });
@@ -122,7 +122,7 @@ class ViewInscription extends Component {
       /* start get years select box */
       getYears(studentID)
         .then((response) => {
-          if (response.status == 200)
+          if (response.status === 200)
             this.setState({
               inscriptionYears: response.data,
               loading: false,
@@ -163,7 +163,7 @@ class ViewInscription extends Component {
                   inscriptionDetails: {
                     ...this.state.inscriptionDetails,
                     inscriptionTax: inscription.Inscription_Tax,
-                    booksUniformTotal: inscription["Books/Uniform_total"],
+                    booksUniformTotal: inscription["Books_Uniform_total"],
                     monthTotalPay: inscription.Monthly_Total,
                     monthStart: inscription.Month_Start,
                     
@@ -181,7 +181,7 @@ class ViewInscription extends Component {
                 });
                 this.setState({
                   sections: this.state.DDL1.find(
-                    (item) => item.id == inscription.gradeId
+                    (item) => item.id === inscription.gradeId
                   ).sections,
                 });
               });
@@ -227,7 +227,7 @@ class ViewInscription extends Component {
         inscriptionDetails: {
           ...this.state.inscriptionDetails,
           inscriptionTax: inscription.Inscription_Tax,
-          booksUniformTotal: inscription["Books/Uniform_total"],
+          booksUniformTotal: inscription["Books_Uniform_total"],
           monthTotalPay: inscription.Monthly_Total,
           monthStart: inscription.Month_Start,
           
@@ -246,7 +246,7 @@ class ViewInscription extends Component {
   selectGradeChange(e) {
     this.setState({ gradeSelected: e.target.value });
     this.setState({
-      sections: this.state.DDL1.find((item) => item.id == e.target.value)
+      sections: this.state.DDL1.find((item) => item.id === e.target.value)
         .sections,
     });
   }
@@ -261,7 +261,7 @@ class ViewInscription extends Component {
   // on blur even
   onBlur = () => {
     // show required warning on select grade when it is empty
-    if (this.state.gradeSelected == "") {
+    if (this.state.gradeSelected === "") {
       this.setState({
         gradeErrorMessage: "Required",
       });
@@ -292,7 +292,7 @@ class ViewInscription extends Component {
       discount,
     });
 
-    if (defMonthTotal != "" && discount >= 0 && discount <= 15) {
+    if (defMonthTotal !== "" && discount >= 0 && discount <= 15) {
       newMonthTotal = defMonthTotal - defMonthTotal * (discount / 100);
       this.setState({
         newMonthTotal,
@@ -322,9 +322,9 @@ class ViewInscription extends Component {
         axios
           .delete(`/studentFileYear/${studentID}/${yearSelected}`)
           .then((response) => {
-            if (response.status == 200) {
+            if (response.status === 200) {
               const items = this.state.inscriptionYears.filter(
-                (item) => item.School_Year != yearSelected
+                (item) => item.School_Year !== yearSelected
               );
               this.setState({ inscriptionYears: items });
               swal("succes", {
@@ -353,8 +353,7 @@ class ViewInscription extends Component {
     const { success, error: errorMsg } = this.state.langKeywords[pageLanguage];
 
     const studentID = this.props.match.params.id;
-    var grade = this.state.gradeSelected,
-      section = this.state.sectionSelected.trim();
+    var grade = this.state.gradeSelected;
     // month total pay
     var monthTotalPay = this.state.newMonthTotal;
 
@@ -365,7 +364,7 @@ class ViewInscription extends Component {
       grade !== "" &&
       discount >= 0 &&
       discount <= 15 &&
-      monthTotalPay != ""
+      monthTotalPay !== ""
     ) {
       //file year for sending
 
@@ -374,7 +373,7 @@ class ViewInscription extends Component {
         id_grade: this.state.gradeSelected,
         School_Year: values.year,
         Inscription_Tax: values.inscriptionTax,
-        "Books/Uniform_total": values.booksUniformTotal,
+        Books_Uniform_total: values.booksUniformTotal,
         Monthly_Total: monthTotalPay,
         Month_Start: values.monthStart,
         id_classroom: this.state.sectionSelected,
@@ -395,7 +394,7 @@ class ViewInscription extends Component {
               fileYear
             )
             .then((response) => {
-              if (response.status == 200) {
+              if (response.status === 200) {
                 swal(success, {
                   icon: "success",
                 }).then((response) => {
@@ -442,16 +441,11 @@ class ViewInscription extends Component {
 
     // Language KEywords
     const {
-      grade,
-      section,
-      year,
       inscriptionTax,
       booksUniformTotal,
       monthTotalPay,
       discount,
       startOfPayment,
-      add,
-      update,
     } = this.state.langKeywords[pageLanguage];
     return (
       <form onSubmit={props.handleSubmit}>
@@ -563,7 +557,7 @@ class ViewInscription extends Component {
   };
   kikckout_resume = () =>{
     swal({
-      title: this.state.attending == 1 ?"Are you sure you want to kick this student out?":"Are you sure you want to bring this student back?",
+      title: this.state.attending === 1 ?"Are you sure you want to kick this student out?":"Are you sure you want to bring this student back?",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -572,15 +566,15 @@ class ViewInscription extends Component {
       {
         const data={
           id_student: this.props.match.params.id,
-          attendance:this.state.attending== 1 ? 0:1,
+          attendance:this.state.attending=== 1 ? 0:1,
         };
         console.log(data);
         axios
         .post('/attendanceChange',data)
         .then((response) => {
-          if (response.status == 200) {
-            this.setState({attending : this.state.attending == 1 ? 0:1});
-            swal(this.state.attending == 1? "Student Rejoined class":"Student kicked out of class", {
+          if (response.status === 200) {
+            this.setState({attending : this.state.attending === 1 ? 0:1});
+            swal(this.state.attending === 1? "Student Rejoined class":"Student kicked out of class", {
               icon: "success",
             });
           }
@@ -601,7 +595,7 @@ class ViewInscription extends Component {
 
     // page language
     const pageLanguage = this.props.language;
-    const { grade, section, optional, remove, inscriptionTitle } =
+    const { grade, section, inscriptionTitle } =
       this.state.langKeywords[pageLanguage];
 
     // years of select
@@ -656,9 +650,9 @@ class ViewInscription extends Component {
                         
           {/* start add grade and section */}
           {this.state.attending>=0 && <div className="form-group text-center mx-auto col-lg-6 col-12 pl-2 m-b-20">
-          <div className={this.state.attending==1?"p-2 bg-success text-white":
+          <div className={this.state.attending===1?"p-2 bg-success text-white":
                                 "p-2 bg-danger text-white"}>
-                                  {this.state.attending==1? "Attending":"OUT"}
+                                  {this.state.attending===1? "Attending":"OUT"}
           </div>
           </div>}
           {/* end add grade and section */}
@@ -732,8 +726,8 @@ class ViewInscription extends Component {
           
         </div>
         {this.state.attending>=0 && <div className="mx-auto col-lg-6 col-12 pl-2">
-            <button style={this.state.attending==1? {backgroundColor:'#F93154',color:'#FBFBFB'}:{backgroundColor:'#00B74A',color:'#FBFBFB'}}
-                  onClick={this.kikckout_resume}>{this.state.attending==1? 'Kick out':'Attend Again'} </button>
+            <button style={this.state.attending===1? {backgroundColor:'#F93154',color:'#FBFBFB'}:{backgroundColor:'#00B74A',color:'#FBFBFB'}}
+                  onClick={this.kikckout_resume}>{this.state.attending===1? 'Kick out':'Attend Again'} </button>
           </div>}
       </div>
     );

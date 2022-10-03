@@ -127,7 +127,7 @@ class StudentsSection extends React.Component {
             bill.name = `${student.First_Name} ${student.Last_Name} `;
             bill.grade = student.grade === null ? "" : student.grade;
             bill.inscriptionTax = student.Inscription_Tax;
-            bill.booksUniform = student["Books/Uniform_total"];
+            bill.booksUniform = student["Books_Uniform_total"];
             studentsBills.push(bill);
           });
           this.setState({
@@ -136,6 +136,26 @@ class StudentsSection extends React.Component {
         });
   };
 
+  printBirthday = ()=>{
+    axios
+    .get(`/sectionBirthDayList/${this.props.match.params.id}`)
+    .then((response)=>{
+      let binaryString = window.atob(response.data);
+
+      let binaryLen = binaryString.length;
+      
+      let bytes = new Uint8Array(binaryLen);
+      
+      for (let i = 0; i < binaryLen; i++) {
+          let ascii = binaryString.charCodeAt(i);
+          bytes[i] = ascii;
+      }
+      
+      let blob = new Blob([bytes], {type: "application/pdf"});
+      var blobURL = URL.createObjectURL(blob);
+      window.open(blobURL);
+    });
+  }
   //handle tabs change
   handle = (event, newValue) => {
     console.log(newValue);
@@ -195,7 +215,7 @@ class StudentsSection extends React.Component {
           bill.name = `${student.First_Name} ${student.Last_Name} `;
           bill.grade = student.grade === null ? "" : student.grade;
           bill.inscriptionTax = student.Inscription_Tax;
-          bill.booksUniform = student["Books/Uniform_total"];
+          bill.booksUniform = student["Books_Uniform_total"];
           studentsBills.push(bill);
         });
         console.log(studentsBills);
@@ -577,6 +597,14 @@ class StudentsSection extends React.Component {
                 
                 */}
 
+                <div className="form-group col-12">
+                    <button
+                    className={` ${styles.button} btn btn-primary btn-block mx-auto mt-4 `}
+                    onClick={this.printBirthday}
+                    ><i className="fa fa-print"></i>{" "}
+                    <span>Birthday</span></button>
+                </div>
+
                 {/* start print button section */}
                 {this.state.dataAPI.length > 0 ? (
                   <div className="form-group col-12">
@@ -649,6 +677,7 @@ class StudentsSection extends React.Component {
                 </div>
 
                 {/* end print marks button section */}
+                
               </Box>
             )}
             {this.state.selectedTab === 1 && (

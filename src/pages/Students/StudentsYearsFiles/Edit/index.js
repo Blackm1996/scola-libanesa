@@ -223,11 +223,43 @@ class EditInscription extends Component {
   };
   // select DDl1
   selectGradeChange(e) {
+    const pageLanguage = this.props.language;
+    const { error1 } = this.state.langKeywords[pageLanguage];
     this.setState({ gradeSelected: e.target.value });
     this.setState({
       sections: this.state.DDL1.find((item) => item.id == e.target.value)
         .sections,
     });
+
+    axios
+      .get(`/grade/${e.target.value}`)
+      .then((response) => {
+        if (response.status == 200) {
+          const inscription = response.data;
+          // discount value
+          const discount = this.state.discount;
+          // default month total
+          const monthTotalPay = inscription.Default_Monthly_pay;
+
+          this.setState({
+            inscriptionDetails: {
+              inscriptionTax: inscription.Default_Inscription_tax,
+              booksUniformTotal: inscription.Default_Books_Uniform_total,
+              monthTotalPay: inscription.Default_Monthly_pay,
+            },
+            newMonthTotal: monthTotalPay - monthTotalPay * (discount / 100),
+          });
+        } else {
+          swal(error1, {
+            icon: "error",
+          });
+        }
+      })
+      .catch((error) => {
+        swal(error1, {
+          icon: "error",
+        });
+      });
   }
 
   // when we select ddl2

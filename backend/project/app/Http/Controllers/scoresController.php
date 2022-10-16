@@ -10,6 +10,7 @@ use App\Models\Score;
 use App\Models\Course_Info;
 use App\Models\Course;
 use App\Models\Options;
+use App\Models\Bills;
 use App\Models\Classroom;
 use App\Models\Student_Inscription;
 use App\Utils\RPDF;
@@ -35,17 +36,17 @@ private function scoreSheet($student)
         $x=$pdf->GetX();
         $y=$pdf->GetY();
         $pdf->Cell(62,23,"",1,2,'C');
-        $pdf->Cell(62,10,RPDF::normalize("Class: ".$student["studentDetails"]["gradeName"]." - ".$student["studentDetails"]["sectionName"]),1,0,'L');
+        $pdf->Cell(62,10,"Class: ".RPDF::normalize($student["studentDetails"]["gradeName"]." - ".$student["studentDetails"]["sectionName"]),1,0,'L');
         $pdf->SetXY($x+10,$y);
         $name=$student["studentDetails"]["First_Name"]." ".$student["studentDetails"]["Last_Name"];
-        $pdf->MultiCell(42,5,RPDF::normalize("Nome/Apelido\nNom et Prénom:\n".$name),0,'C');
+        $pdf->MultiCell(42,5,"Nome/Apelido\nNom et Prénom:\n".RPDF::normalize($name),0,'C');
 
         $pdf->SetXY($x+62,$y);
         $x=$pdf->GetX();
         $y=$pdf->GetY();
         $pdf->Cell(60,17,"",1,2,'C');
         $pdf->SetXY($x,$y);
-        $pdf->MultiCell(60,5,RPDF::normalize("Ano Letivo\nAnnée Scolaire:\n".$student["studentDetails"]["School_Year"]),0,"C");
+        $pdf->MultiCell(60,5,"Ano Letivo\nAnnée Scolaire:\n".RPDF::normalize($student["studentDetails"]["School_Year"]),0,"C");
         $pdf->SetXY($x,$y+17);
         $pdf->Cell(60,6,"ID: ".$student["studentDetails"]["id"],1,2,'L');
         $pdf->Cell(60,10,"",1,1,'C');
@@ -166,15 +167,25 @@ public function classScores($idSection)
     $students=Student_Inscription::where('School_Year',$School_Year[0]->option_value)
     ->where('id_classroom',$idSection)->where('Attending',1)->get(['id_student']);
     foreach($students as $student){
-    
-       $content= scoresController::totalScores($student->id_student);
-       //$content=file_get_contents($content);
-       $array = json_decode($content, true);
-       //$id= $array['Status'];
-       if(isset($array['Status'])){
-      array_push($response,null);     
-       }
-      array_push($response,$array);
+        $month = date('m');
+        $day = date('d');
+        if($day<20)
+            $month-=1;
+        $rest = Bills::where('id_student',$student->id_student)->where('School_Year',$School_Year[0]->option_value)
+            ->where('Type','Monthly')->where("Month",$month)->sum("Amount");
+        $total = (int)((Student_Inscription::where('School_Year',$School_Year[0]->option_value)
+                    ->where('id_student',$student->id_student)->get("Monthly_Total"))[0]->Monthly_Total);
+        if($total - $rest <=0)
+        {
+            $content= scoresController::totalScores($student->id_student);
+            //$content=file_get_contents($content);
+            $array = json_decode($content, true);
+            //$id= $array['Status'];
+            if(isset($array['Status'])){
+                array_push($response,null);     
+            }
+            array_push($response,$array);
+        }
     }
     usort($response,function ($a,$b){
             if ( $a['Totalmoyen'] == $b['Totalmoyen'])

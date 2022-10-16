@@ -6,7 +6,7 @@ export const ENGLISHWORDS = {
   amount: "amount",
   date: "Date",
   description: "Description",
-  type: "Transaction type",
+  categorys: "Category",
 };
 export const FRENCHWORDS = {
   //done
@@ -16,7 +16,7 @@ export const FRENCHWORDS = {
   amount: "montant",
   date: "Date",
   description: "Description",
-  type: "Type de transaction",
+  categorys: "Catégorie",
 };
 export const PORTOWORDS = {
   titlePage: "Despesas",
@@ -25,5 +25,5 @@ export const PORTOWORDS = {
   amount: "Quantidade",
   date: "Data",
   description: "Descrição",
-  type: "TransaçãoTipo",
+  categorys: "Categoria",
 };

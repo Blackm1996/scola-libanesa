@@ -154,12 +154,15 @@ class StudentInscriptionController extends Controller
           'id_classroom',
          'Month_Start','id_grade','Discount','Attending')->where("id_student",$id)->where("School_Year",$School_Year)->first();
 
-         //$grade = Grades::select('Name as gradeName')->where('id',$student->id_grade)->first();
-         $sectionID=null;
+         $grade = (Grades::select('Name as gradeName')->where('id',$student->id_grade)->first())->gradeName;
+         $sectionName='';
+         if($student->id_classroom != null)
+            $sectionName=(Classroom::select('Name')->where('id_grade',$student->id_grade)->where('School_year',$School_Year)->first())->Name;
+         /*$sectionID=null;
          if(Classroom::select('id as sectionId')->where('id_grade',$student->id_grade)->where('School_year',$School_Year)->exists()){
          $section = Classroom::select('id as sectionId')->where('id_grade',$student->id_grade)->where('School_year',$School_Year)->first();
          $sectionID=$section->sectionId;
-         }
+         }*/
         // if(Empty($section->sectionId)){$sectionId=null;}else{$sectionId=$section->sectionId;}
              return response()->json(['Inscription_Tax'=> $student->Inscription_Tax,
              'Books_Uniform_total'=>$student->booksUniformtotal,
@@ -167,6 +170,8 @@ class StudentInscriptionController extends Controller
              'Month_Start'=>$student->Month_Start,
              'gradeId'=>$student->id_grade,
              'sectionId'=>$student->id_classroom,
+             'gradeName'=>$grade,
+             'sectionName'=>$sectionName,
              'Discount'=>$student->Discount,
              'attending'=>$student->Attending,
              ],200);

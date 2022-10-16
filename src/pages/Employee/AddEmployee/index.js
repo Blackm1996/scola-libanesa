@@ -13,9 +13,9 @@ const Wrapper = styled.div`
 const SubmitButton = styled.button``;
 export const AddEmployee = () => {
   const onSubmit = (values) => {
-    console.log('values', values)
+    
     const obj = {...values};
-
+    console.log('values', obj)
     // axios.post(`url`, obj)
     // .then(resp => {})
     // .catch(err => {})
@@ -68,9 +68,8 @@ export const AddEmployee = () => {
             confirmPass: "",
           }}
           onSubmit={onSubmit}
-          render={form}
           // validationSchema={this.schema()}
-        />
+        >{form}</Formik>
       </div>
     </Wrapper>
   );

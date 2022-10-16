@@ -91,7 +91,7 @@ Route::get('/gradeBirthDayList/{idGrade}',[App\Http\Controllers\gradeController:
 
 //Expenses
 Route::post('Expenses',[App\Http\Controllers\ExpensesController::class,'addExpenses']);
-Route::get('Expenses/{month}',[App\Http\Controllers\ExpensesController::class,'getExpenses']);
+Route::get('Expenses/{from}/{to}/{transaction}/{category}/{limit}',[App\Http\Controllers\ExpensesController::class,'getExpenses']);
 Route::get('getTotalExpenses/{month}',[App\Http\Controllers\ExpensesController::class,'getTotalExpenses']);
 
 
@@ -107,7 +107,7 @@ Route::get('/billsOther/{id}/{type}/{School_Year}',[App\Http\Controllers\BillsCo
 Route::post('/bills',[App\Http\Controllers\BillsController::class,'store']);
 Route::get('/billsYear/{id}',[App\Http\Controllers\BillsController::class,'showYears']);
 Route::get('printBill/{id}/{School_Year}',[App\Http\Controllers\BillsController::class,'showPrinter']);
-Route::get('/allMonthBills/{month}/{School_Year}',[App\Http\Controllers\BillsController::class,'allMonthBills']);
+Route::get('/allMonthBills/{from}/{to}/{transaction}/{category}/{limit}',[App\Http\Controllers\BillsController::class,'allMonthBills']);
 Route::post('/familyBill',[App\Http\Controllers\BillsController::class,'store_family']);
 Route::get('/invoice/{id}',[App\Http\Controllers\BillsController::class,'invoice']);
 Route::delete('bills/{id}',[App\Http\Controllers\BillsController::class,'destroy'] );

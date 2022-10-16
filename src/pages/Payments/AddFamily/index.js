@@ -2,10 +2,7 @@ import { useEffect, useState,useRef } from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
 import swal from "sweetalert";
-import { Formik, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import axios from "axios";
-import { addPayment, getYears, getStudent } from "../../../Api/Payments";
 import MaterialTable from "material-table";
 import { ThemeProvider, createTheme, Checkbox } from '@mui/material';
 import NumberFormat from 'react-number-format';
@@ -377,6 +374,8 @@ const AddFamilyBills = (props)=>
                 for(i=1;i<monthsNb;i++)
                 {
                   month++;
+                  if(month>12)
+                    month-=12;
                   data.push({
                     School_Year:selectedYear,
                     id_student:biller.id,

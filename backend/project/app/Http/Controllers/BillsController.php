@@ -205,7 +205,7 @@ public function months()
             $word = str_replace("Ê","%CA",$word);
             $word = str_replace("Ë","%CB",$word);
             $word = str_replace("Ì","%CC",$word);
-            $word = str_replace("Í","%CD",$word);
+            $word = str_replace("ĺ","%CD",$word);
             $word = str_replace("Î","%CE",$word);
             $word = str_replace("Ï","%CF",$word);
             $word = str_replace("Ð","%D0",$word);
@@ -276,17 +276,17 @@ public function months()
 		$pdf->SetFont('Arial','',14);
 		//Recpnb 1
 		$pdf->SetXY(161,33);
-		$pdf->Cell(0,0,self::normalize('ELI_'.$invoice["id"]));
+		$pdf->Cell(0,0,'ELI_'.self::normalize($invoice["id"]));
 		//Date
 		$pdf->SetXY(148,47);
 		$pdf->Cell(0,0,date("d/m/Y"));
 		//family ID 1
 		$pdf->SetXY(50,51);
-		$pdf->Cell(0,0,self::normalize('fam_'.$invoice["id_family"]));
+		$pdf->Cell(0,0,'fam_'.self::normalize($invoice["id_family"]));
         $pdf->SetFont('Arial','',11);
 		//Student Name 1
 		$pdf->SetXY(24,56.4);
-		$pdf->MultiCell(175,8.1,self::normalize('                                     '.$invoice["Students"]),0,"L");
+		$pdf->MultiCell(175,8.1,'                                     '.self::normalize($invoice["Students"]),0,"L");
         $pdf->SetFont('Arial','',14);
 		//School Year 1
 		$pdf->SetXY(52,77);
@@ -298,7 +298,7 @@ public function months()
 
 		//Description 1
 		$pdf->SetXY(24,81.5);
-		$pdf->MultiCell(175,8.1,self::normalize('                      '.$invoice['Description']),0,"L");
+		$pdf->MultiCell(175,8.1,'                      '.self::normalize($invoice['Description']),0,"L");
 
 		$pdf->SetFont('Arial','',11);
 		//Class
@@ -311,17 +311,17 @@ public function months()
 
 		//Recpnb 2
 		$pdf->SetXY(161,177);
-		$pdf->Cell(0,0,self::normalize('ELI_'.$invoice["id"]));
+		$pdf->Cell(0,0,'ELI_'.self::normalize($invoice["id"]));
 		//Date
 		$pdf->SetXY(148,191);
 		$pdf->Cell(0,0,date("d/m/Y"));
 		//family ID 2
 		$pdf->SetXY(50,195);
-		$pdf->Cell(0,0,self::normalize('fam_'.$invoice["id_family"]));
+		$pdf->Cell(0,0,'fam_'.self::normalize($invoice["id_family"]));
         $pdf->SetFont('Arial','',11);
 		//Student Name 2
 		$pdf->SetXY(24,200.4);
-		$pdf->MultiCell(175,8.1,self::normalize('                                     '.$invoice["Students"]),0,"L");
+		$pdf->MultiCell(175,8.1,'                                     '.self::normalize($invoice["Students"]),0,"L");
         $pdf->SetFont('Arial','',14);
 		//School Year 2
 		$pdf->SetXY(52,221);
@@ -333,7 +333,7 @@ public function months()
 
 		//Description 2
 		$pdf->SetXY(24,225.5);
-		$pdf->MultiCell(175,8.1,self::normalize('                      '.$invoice['Description']),0,"L");
+		$pdf->MultiCell(175,8.1,'                      '.self::normalize($invoice['Description']),0,"L");
 
 		$pdf->SetFont('Arial','',11);
 		//Class 2
@@ -563,17 +563,32 @@ catch(\Exception $e)
   }
 
 
- public function allMonthBills($month,$School_Year)
+ public function allMonthBills($from,$to,$transaction,$category,$limit)
  {
-//try{
-  $response=Bills::join('student_profiles','student_profiles.id','bills.id_student')->where(db::raw("Month(created_at)"),$month)->where('School_Year',$School_Year)->where('Type','Monthly')->
-  get(["student_profiles.id",db::raw("CONCAT(student_profiles.First_Name,' ',student_profiles.Last_Name) AS name"),"Amount","bills.Month","bills.paymentType as type"]);
-  return json_encode($response);
- //}
-//catch(\Exception $e)
-//{
-//return response()->json(["status"=>"false"],400);
-//}
+    try{
+        $response=Bills::select("student_profiles.id",db::raw("CONCAT(student_profiles.First_Name,' ',student_profiles.Last_Name) AS name"),"Amount","bills.Month","bills.paymentType","bills.Type","bills.School_Year")
+        ->join('student_profiles','student_profiles.id','bills.id_student');
+        if($to=="null"){
+            $response=$response->where(DB::raw('DATE(created_at)'),$from);
+           }
+         else{
+            $response=$response->whereBetween(DB::raw('DATE(created_at)'),[$from,$to]);
+           }
+           if($transaction!='^')
+            $response=$response->where("paymentType",$transaction);
+            else
+            $response=$response->whereNot("paymentType",'pardoned');
+           if($category!='^')
+            $response=$response->where('Type',$category);
+            $response=$response->orderBy('created_at','desc');
+           $total=$response->sum("Amount");
+           $data=$response->paginate($limit);
+           return response()->json(['data'=>$data,"total"=>$total],200);
+    }
+    catch(\Exception $e)
+    {
+        return response()->json(["status"=>"false"],400);
+    }
 }
 
 

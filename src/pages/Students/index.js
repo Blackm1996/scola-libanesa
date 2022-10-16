@@ -24,7 +24,7 @@ import SchoolYear from "../ControlPanel/SchoolYear";
 import AddTrimester from "../ControlPanel/AddTrimester";
 import TeachersList from "../Teachers/TeachersList";
 import AddExpense from "../Expenses/Add";
-import ViewExpenses from "../Expenses/View";
+import ExpensesList from "../Expenses/View";
 import ViewBillsPerMonth from "../Payments/ViewPerMonth";
 import SpecialPage from "../SpecialPage";
 import addFamilyBills from "../Payments/AddFamily";
@@ -160,7 +160,7 @@ class Students extends Component {
           <Route
             exact
             path="/admin/students/viewexpenses"
-            component={ViewExpenses}
+            component={ExpensesList}
           />
           <Route
             exact

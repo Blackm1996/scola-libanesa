@@ -10,7 +10,11 @@ class Expenses extends Model
     use HasFactory;
     protected $table ="expenses";
     protected $connection = 'mysql';
-      public $timestamps = false;
-    protected $fillable = ['Amount','Description','transaction_type','Date','School_Year'];
+    protected $fillable = ['Amount','Description','Transaction_type','Category'];
+
+    public function setCsetConnection($connection)
+    {
+        $this->$connection =$connection ;
+    }
 
 }

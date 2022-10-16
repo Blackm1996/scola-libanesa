@@ -24,6 +24,7 @@ export const Employment = (props) => {
                 id="baseSalary"
                 placeholder=""
                 autoComplete="off"
+                onWheel={(e) => e.target.blur()}
               />
               <span className="error">
                 <ErrorMessage name="baseSalary" />

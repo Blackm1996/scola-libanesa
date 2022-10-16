@@ -1,9 +1,10 @@
 export const ENGLISHWORDS = {
   //done
-  bills: "Bills",
+  bills: "Income",
   search: "Search",
   noRecords: "No records to display",
   id: "ID",
+  year: "School year",
   name: "name",
   amount: "Amount",
   date: "Date",
@@ -17,6 +18,7 @@ export const FRENCHWORDS = {
   search: "chercher",
   noRecords: "Aucune page trouvée",
   id: "ID",
+  year: "Année scolaire",
   name: "Nom",
   amount: "Montant",
   date: "Date",
@@ -29,6 +31,7 @@ export const PORTOWORDS = {
   search: "procurar",
   noRecords: "nenhuma página encontrada",
   id: "ID",
+  year: "Ano letivo",
   name: "Apelido",
   amount: "Montante",
   date: "Data",

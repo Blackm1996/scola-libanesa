@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Field, ErrorMessage } from "formik";
 import { Fieldset } from "../../../../../Utils/Common/style/GlobalStyles.style";
 import styled from "styled-components";
+import Select from "react-select";
 const Wrapper = styled.div`
   margin-top: 30px;
 `;
 export const Account = (props) => {
   const { values } = props.obj;
-
+  const {role} = props;
   const validate = (val, formikValues) => {
     const { userName, password } = formikValues;
     if (userName !== "" && password === "") return "password field is required";
@@ -17,6 +18,10 @@ export const Account = (props) => {
 
     if (userName && password !== confirmPass) return "Password doesn't match";
   };
+
+  const choose=!values.withTeacher;
+
+  useEffect(()=>{console.log("ACCO",props)},[])
 
   return (
     <Wrapper>
@@ -69,6 +74,34 @@ export const Account = (props) => {
                 <ErrorMessage name="confirmPass" />
               </span>
             </div>
+
+            {choose && (
+              <div className="form-group">
+              <label htmlFor="role">Role</label>
+              <Field
+                name="role"
+                component="select"
+                className="form-control"
+                id="role"
+                defaultValue="employee">
+                  {role === "admin" && (
+                    <option value="manager">manager</option>
+                  )}
+                  {role === "admin" && (
+                    <option value="supervisor">supervisor</option>
+                  )}
+
+                  {(role === "admin" ||
+                    role === "co-admin") && (
+                    <option value="employee">employee</option>
+                  )}
+              </Field>
+              <span className="error">
+                <ErrorMessage name="role" />
+              </span>
+            </div>
+            )}
+
           </div>
         </div>{" "}
       </Fieldset>

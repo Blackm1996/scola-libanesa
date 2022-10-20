@@ -31,7 +31,7 @@ import addFamilyBills from "../Payments/AddFamily";
 import viewFamily from "../Students/Family/View";
 import ViewAllFamilies from "../Students/Family/ViewAll";
 import AllStudentsTable from "./AllStudentsTable";
-import { AddEmployee } from "../Employee/AddEmployee";
+import AddEmployee  from "../Employee/AddEmployee";
 class Students extends Component {
   render() {
     //navbar links

@@ -13,16 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('invoice', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('id_family')->constrained('family')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('School_Year');
-            $table->string('Students');
-            $table->string('Classes');
-            $table->integer('Amount');
-            $table->string('Description');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('invoice'))
+        {
+            Schema::create('invoice', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('id_family')->constrained('family')->onUpdate('cascade')->onDelete('cascade');
+                $table->string('School_Year');
+                $table->string('Students');
+                $table->string('Classes');
+                $table->integer('Amount');
+                $table->string('Description');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

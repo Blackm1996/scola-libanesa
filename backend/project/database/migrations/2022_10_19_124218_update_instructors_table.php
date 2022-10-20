@@ -13,19 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('instructors');
+        Schema::dropIfExists("instructors");
         if (!Schema::hasTable('instructors'))
         {
             Schema::create('instructors', function (Blueprint $table) {
-                $table->id()->autoIncrement();
-                $table->string('First_Name',50);
-                $table->string('Last_Name',50);
-                $table->string('Adress',50);
-                $table->string('Major',50);
-                $table->string('Nationality',50);
-                $table->string('Tel',50);
-                $table->string('Birthday',50);
-                $table->timestamps();
+                $table->foreignId('id_employee')->constrained('employees')->onUpdate('cascade')->onDelete('cascade');
+                $table->string('Major',100);
             });
         }
     }
@@ -37,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('instructors');
+        //
     }
 };

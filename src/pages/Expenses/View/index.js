@@ -64,6 +64,7 @@ const defaultPaymentValue = {label:"All", value:"^"};
  {label:"Idrissa", value:"Idrissa"},
  {label:"Papelaria Bah", value:"Papelaria_Bah"},
  {label:"Salaire Prof", value:"Salaire_Prof"},
+ {label:"Salaire Menor", value:"Salaire_Menor"},
  {label:"Courant", value:"Courant"},
  {label:"Segurança/Imposto", value:"Segurança_Imposto"},
  {label:"Internet/orange", value:"Internet_orange"},

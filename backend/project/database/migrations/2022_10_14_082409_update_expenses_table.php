@@ -21,7 +21,7 @@ return new class extends Migration
                 $table->integer('Amount');
                 $table->string('Description',100)->nullable();
                 $table->enum('Transaction_type',['cash','bank_transfer','check','orange_money'])->default('cash');
-                $table->enum('Category',['Autre','Idrissa','Papelaria_Bah','Salaire_Prof','Courant','Segurança_Imposto','Internet_orange','Produit_Hygiènique','Batiment'])->default('Autre');
+                $table->enum('Category',['Autre','Idrissa','Papelaria_Bah','Salaire_Prof','Salaire_Menor','Salaire_Autre','Courant','Segurança_Imposto','Internet_orange','Produit_Hygiènique','Batiment'])->default('Autre');
                 $table->timestamps();
             });
         }

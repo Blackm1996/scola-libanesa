@@ -12,7 +12,7 @@ export const Employment = (props) => {
   return (
     <Wrapper>
       <Fieldset>
-        <legend>Employee</legend>{" "}
+        <legend>Employement Informations</legend>{" "}
         <div className="row">
           <div className="col-lg-6 col-12">
             <div className="form-group">
@@ -40,8 +40,8 @@ export const Employment = (props) => {
                 className="form-control"
                 component="select"
               >
-                <option value="full-time">Full Time</option>
-                <option value="half-time">Half Time</option>
+                <option value="full_time">Full Time</option>
+                <option value="hourly">Per Hour</option>
               </Field>
               <span className="error">
                 <ErrorMessage name="monthStart" />
@@ -65,8 +65,30 @@ export const Employment = (props) => {
               </span>
             </div>
           </div>
+          <div className="col-lg-6 col-12">
+            <div className="form-group">
+              <label htmlFor="job">Job</label>
+              <Field
+                name="job"
+                id="job"
+                className="form-control"
+                component="select"
+              >
+                <option value="prof">Prof</option>
+                <option value="menor">Menor</option>
+                <option value="stagiere">Stagiere</option>
+                <option value="superviseur">Superviseur</option>
+                
+              </Field>
+              <span className="error">
+                <ErrorMessage name="monthStart" />
+              </span>
+            </div>
+          </div>
+          </div>{" "}
           {withTeacher && (
-            <div className="col-lg-6 col-12">
+            <div className="row">
+              <div className="col-lg-6 col-12">
               <div className="form-group">
                 <label htmlFor="major">Major</label>
                 <Field
@@ -82,8 +104,9 @@ export const Employment = (props) => {
                 </span>
               </div>
             </div>
+            </div>
           )}
-        </div>{" "}
+        {" "}
         <div className="row"></div>
       </Fieldset>
     </Wrapper>

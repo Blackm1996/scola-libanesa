@@ -202,6 +202,10 @@ Route::post('addguardian',[App\Http\Controllers\GuardianController::class,'store
 Route::get('guardians',[App\Http\Controllers\GuardianController::class,'getAll']);
 Route::get('guardian/{id}',[App\Http\Controllers\GuardianController::class,'get']);
 
+
+//Employees
+Route::post('addEmployee',[App\Http\Controllers\EmployeeController::class,'store']);
+
 Route::post('avatar', function(Request $request) {
    //echo 'omak ar3a'; 
  //  $path = $request->file('file')->store('public/files');

@@ -9,7 +9,8 @@ class Instructor extends Model
 {
     use HasFactory;
     protected $connection = 'mysql';
-    protected $fillable = ["First_Name","Last_Name","Tel","Email","Type","id_user"];
+    protected $table ="instructors";
+    protected $fillable = ["id_employee","Major"];
     public $timestamps = false;
     public function setCsetConnection($connection)
     {

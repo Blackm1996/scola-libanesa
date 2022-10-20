@@ -183,25 +183,18 @@ class Navbar extends Component {
                   </div>
                 </div>
                 {/* start users section */}
-                {(this.props.role == "admin" ||
-                  this.props.role == "manager") && (
+                {(this.props.role !== 'employee'&&this.props.role !== 'instructor' ) && (
                   <div className="subnav">
                     <button className="subnavbtn">
-                      {users} <i className="fa fa-caret-down"></i>
+                      Employees <i className="fa fa-caret-down"></i>
                     </button>
                     <div className="subnav-content">
-                      <Link to="/admin/students/adduser">
-                        <i className="fa fa-user-plus"></i> {newUser}
+                      <Link to="/admin/students/add-employee">
+                        <i className="fa fa-user-plus"></i> Add Employee
                       </Link>
-                      <Link to="/admin/students/addteacher">
-                        <i className="fa fa-user-plus"></i> {newTeacher}
-                      </Link>
-                      <Link to="/admin/students/teachers">
-                        <i className="fa fa-users"></i> {allTeachers}
-                      </Link>
-                      <Link to="/admin/students/users">
+                      {/*<Link to="/admin/students/users">
                         <i className="fa fa-users"></i> {allUsers}
-                      </Link>
+                      </Link>*/}
                     </div>
                   </div>
                 )}

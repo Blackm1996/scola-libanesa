@@ -32,6 +32,7 @@ import viewFamily from "../Students/Family/View";
 import ViewAllFamilies from "../Students/Family/ViewAll";
 import AllStudentsTable from "./AllStudentsTable";
 import AddEmployee  from "../Employee/AddEmployee";
+import EmployeesList from "../Employee/EmployeesList";
 class Students extends Component {
   render() {
     //navbar links
@@ -191,6 +192,11 @@ class Students extends Component {
            exact
            path="/admin/students/add-employee"
            component={AddEmployee}
+          />
+          <Route
+           exact
+           path="/admin/students/employees"
+           component={EmployeesList}
           />
         </div>
 

@@ -22,8 +22,12 @@ return new class extends Migration
             $table->string('Address',100)->nullable();
             $table->string("Nationality",50)->nullable();
             $table->enum("Type",['full_time','hourly','stage'])->default('full_time');
-            $table->integer("base_salary")->default(0);
+            $table->bigInteger("base_salary")->default(0);
+            $table->integer("debt_pay_perMonth")->default(0);
             $table->enum("position",['prof','menor','stagiere','superviseur'])->default('prof');
+            $table->date("start_position");
+            $table->date("end_position")->nullable();
+            $table->tinyInteger('is_Working')->default(1);
             
         });
     }

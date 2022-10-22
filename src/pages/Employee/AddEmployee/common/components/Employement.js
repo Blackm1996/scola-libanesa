@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Field, ErrorMessage } from "formik";
 import { Fieldset } from "../../../../../Utils/Common/style/GlobalStyles.style";
 import styled from "styled-components";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import TextField from '@mui/material/TextField';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 const Wrapper = styled.div`
   margin-top: 30px;
 `;
 export const Employment = (props) => {
-  const { values } = props.obj;
+  const { values,setFieldValue } = props.obj;
   const { withTeacher } = values;
+  useEffect(()=>{console.log("haha",props.obj)},[])
   return (
     <Wrapper>
       <Fieldset>
@@ -49,6 +55,47 @@ export const Employment = (props) => {
             </div>
           </div>
         </div>{" "}
+
+        <div className="row">
+          <div className="col-lg-6 col-12">
+            <div className="form-group">
+              <label htmlFor="startPosition">Start Position</label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  name="startPosition"
+                  id="startPosition"
+                  //label="Start Position"
+                  inputFormat="DD-MM-YYYY"
+                  value={props.obj.values.startPosition}
+                  onChange={value=>{setFieldValue('startPosition',value)}}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+              
+              <span className="error">
+                <ErrorMessage name="startPosition" />
+              </span>
+            </div>
+          </div>
+          <div className="col-lg-6 col-12">
+            <div className="form-group">
+              <label htmlFor="debtPerMonth">Debt paying rate ( 0 to pay all at once )</label>
+              <Field
+                name="debtPerMonth"
+                type="number"
+                className="form-control"
+                id="debtPerMonth"
+                placeholder=""
+                autoComplete="off"
+                onWheel={(e) => e.target.blur()}
+              />
+              <span className="error">
+                <ErrorMessage name="debtPerMonth" />
+              </span>
+            </div>
+          </div>
+        </div>{" "}
+
         <div className="row">
           <div className="col-lg-6 col-12">
             <div class="form-check">

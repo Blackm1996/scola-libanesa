@@ -21,9 +21,10 @@ return new class extends Migration
                 $table->string('email')->unique();
                 $table->timestamp('email_verified_at')->nullable();
                 $table->string('password');
-                $role->enum("role",['admin','manager','supervisor','employee','instructor']);
+                $table->enum("role",['admin','manager','supervisor','employee','instructor']);
                 $table->rememberToken();
                 $table->timestamps();
+                $table->primary('id_employee');
             });
         }
     }
@@ -35,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists("users");
     }
 };

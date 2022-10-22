@@ -202,9 +202,13 @@ Route::post('addguardian',[App\Http\Controllers\GuardianController::class,'store
 Route::get('guardians',[App\Http\Controllers\GuardianController::class,'getAll']);
 Route::get('guardian/{id}',[App\Http\Controllers\GuardianController::class,'get']);
 
-
 //Employees
 Route::post('addEmployee',[App\Http\Controllers\EmployeeController::class,'store']);
+Route::get('allEmployees/{limit}/{search}/{type}/{position}/{orderBy}/{sort}',[App\Http\Controllers\EmployeeController::class,'index']);
+Route::get('employee/{id}',[App\Http\Controllers\EmployeeController::class,'show']);
+Route::get('employeeAll/{id}',[App\Http\Controllers\EmployeeController::class,'allInfo']);
+Route::put('employee/{id}',[App\Http\Controllers\EmployeeController::class,'update']);
+Route::delete('employee/{id}',[App\Http\Controllers\EmployeeController::class,'delete']);
 
 Route::post('avatar', function(Request $request) {
    //echo 'omak ar3a'; 

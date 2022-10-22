@@ -243,6 +243,7 @@ class EditInscription extends Component {
 
           this.setState({
             inscriptionDetails: {
+              ...this.state.inscriptionDetails,
               inscriptionTax: inscription.Default_Inscription_tax,
               booksUniformTotal: inscription.Default_Books_Uniform_total,
               monthTotalPay: inscription.Default_Monthly_pay,

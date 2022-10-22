@@ -14,7 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('employees_finance', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('id_employee')->constrained('employees')->onDelete('cascade')->onUpdate('cascade');
+            $table->bigInteger('Amount')->default(0);
+            $table->enum('Type', ['debt', 'debt_pay','salary','penalty','reward'])->default('debt');
+            $table->string('description', 250)->nullable();
             $table->timestamps();
         });
     }

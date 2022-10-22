@@ -131,6 +131,8 @@ const defaultCategoryValue = {label:"All", value:"^"};
           <DesktopDatePicker
             label="from"
             inputFormat="DD-MM-YYYY"
+            minDate={dayjs('2022-09-01')}
+            maxDate={new Date()}
             value={fromDate}
             onChange={fromChange}
             renderInput={(params) => <TextField {...params} />}

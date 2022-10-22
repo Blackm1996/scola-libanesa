@@ -19,6 +19,7 @@ return new class extends Migration
             Schema::create('instructors', function (Blueprint $table) {
                 $table->foreignId('id_employee')->constrained('employees')->onUpdate('cascade')->onDelete('cascade');
                 $table->string('Major',100);
+                $table->primary('id_employee');
             });
         }
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists("instructors");
     }
 };

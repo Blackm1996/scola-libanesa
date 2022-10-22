@@ -7,6 +7,8 @@ import { PersonalInformation } from "./common/components/PersonalInformation";
 import { connect } from "react-redux";
 import axios from "axios";
 import swal from "sweetalert";
+import dayjs from 'dayjs';
+
 
 const Wrapper = styled.div`
   min-height: calc(100vh - 60px);
@@ -34,6 +36,8 @@ const AddEmployee = (props) => {
       Type: obj.typeOfEmployment,
       position: obj.job,
       base_salary: obj.baseSalary,
+      debt_pay_perMonth:obj.debtPerMonth,
+      start_position:dayjs(obj.startPosition).format('YYYY-MM-DD'),
       isInstructor: obj.withTeacher,
       Major: obj.major,
       userName: obj.userName,
@@ -107,6 +111,8 @@ const AddEmployee = (props) => {
             nationality: "",
             phoneNumber: "",
             baseSalary: 0,
+            debtPerMonth: 0,
+            startPosition:dayjs(),
             typeOfEmployment: "full_time",
             job:"prof",
             withTeacher: false,

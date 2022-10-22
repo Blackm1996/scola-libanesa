@@ -49,19 +49,19 @@ class StudentController extends Controller
             else{
              $q->where('student_profiles.id','>',0);    
             }
-      })
-      ->where(
-           function($q) use($gradeId) {
-               if($gradeId>0){
-             $q->where('student_inscriptions.id_grade',$gradeId);
-             }
-    })->where(
+        })
+        ->where(
+             function($q) use($gradeId) {
+                 if($gradeId>0){
+                $q->where('student_inscriptions.id_grade',$gradeId);
+                }
+        })->where(
            function($q) use($sectionId) {
                if($sectionId>0){
              $q->where('student_inscriptions.id_classroom',$sectionId);
              }
-    })
-    ->orderBy('student_profiles.'.$orderBy,$sort)->paginate($limit);
+        })
+        ->orderBy('student_profiles.'.$orderBy,$sort)->paginate($limit);
        
         } catch (\Exception $e) {
             return response()->json('something went wrong', 404);
@@ -83,9 +83,9 @@ class StudentController extends Controller
             else{
              $q->where('student_profiles.id','>',0);    
             }
-      })
+        })
       
-    ->orderBy('student_profiles.'.$orderBy,$sort)->paginate($limit);
+         ->orderBy('student_profiles.'.$orderBy,$sort)->paginate($limit);
        
         } catch (\Exception $e) {
             return response()->json('something went wrong', 404);
@@ -195,7 +195,7 @@ class StudentController extends Controller
 
       //  } catch (\Exception $e) {
        //     return response()->json(['status' => 'data is not found']);
-    //    }
+        //    }
         return  response()->json(['id'=> $student[0]['id'],
              'First_Name'=>$student[0]['First_Name'],
              'Monthly_Total'=>$student[0]['Monthly_Total'],

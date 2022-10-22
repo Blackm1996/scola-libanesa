@@ -192,9 +192,9 @@ class Navbar extends Component {
                       <Link to="/admin/students/add-employee">
                         <i className="fa fa-user-plus"></i> Add Employee
                       </Link>
-                      {/*<Link to="/admin/students/users">
-                        <i className="fa fa-users"></i> {allUsers}
-                      </Link>*/}
+                      <Link to="/admin/students/employees">
+                        <i className="fa fa-users"></i> Employees List
+                      </Link>
                     </div>
                   </div>
                 )}

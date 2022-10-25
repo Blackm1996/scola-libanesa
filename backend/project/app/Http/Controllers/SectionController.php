@@ -324,14 +324,15 @@ $response['sectionStudent']=array();
 $response['studentsNotDistributed']=array();
 
 $studentIn= Student_Inscription::leftjoin('student_profiles','student_profiles.id','=','student_inscriptions.id_student')
-->where('student_inscriptions.id_classroom',$id)->get([
+->where('student_inscriptions.id_classroom',$id)->orderBy('student_profiles.First_Name')->get([
     'student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name']);
 
   
 
 $studentOut=Student_Inscription::leftjoin('student_profiles','student_profiles.id','=','student_inscriptions.id_student')
-->where('student_inscriptions.School_Year',$class->School_Year)->where('student_inscriptions.id_grade',$class->id_grade)->where('id_classroom',null)->get([
-    'student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name']);
+->where('student_inscriptions.School_Year',$class->School_Year)->where('student_inscriptions.id_grade',$class->id_grade)->where('id_classroom',null)
+->orderBy('student_profiles.First_Name')
+->get(['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name']);
 
 
 

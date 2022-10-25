@@ -189,11 +189,14 @@ class Navbar extends Component {
                       Employees <i className="fa fa-caret-down"></i>
                     </button>
                     <div className="subnav-content">
-                      <Link to="/admin/students/add-employee">
+                      <Link to="/admin/students/addEmployee">
                         <i className="fa fa-user-plus"></i> Add Employee
                       </Link>
                       <Link to="/admin/students/employees">
                         <i className="fa fa-users"></i> Employees List
+                      </Link>
+                      <Link to="/admin/students/hourlyAttendance">
+                        <i className="fa fa-users"></i> Attendance
                       </Link>
                     </div>
                   </div>

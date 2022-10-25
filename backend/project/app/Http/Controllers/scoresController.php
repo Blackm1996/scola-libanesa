@@ -39,14 +39,14 @@ private function scoreSheet($student)
         $pdf->Cell(62,10,"Class: ".RPDF::normalize($student["studentDetails"]["gradeName"]." - ".$student["studentDetails"]["sectionName"]),1,0,'L');
         $pdf->SetXY($x+10,$y);
         $name=$student["studentDetails"]["First_Name"]." ".$student["studentDetails"]["Last_Name"];
-        $pdf->MultiCell(42,5,"Nome/Apelido\nNom et Prénom:\n".RPDF::normalize($name),0,'C');
+        $pdf->MultiCell(42,5,RPDF::normalize("Nome/Apelido\nNom et Prénom:\n").RPDF::normalize($name),0,'C');
 
         $pdf->SetXY($x+62,$y);
         $x=$pdf->GetX();
         $y=$pdf->GetY();
         $pdf->Cell(60,17,"",1,2,'C');
         $pdf->SetXY($x,$y);
-        $pdf->MultiCell(60,5,"Ano Letivo\nAnnée Scolaire:\n".RPDF::normalize($student["studentDetails"]["School_Year"]),0,"C");
+        $pdf->MultiCell(60,5,RPDF::normalize("Ano Letivo\nAnnée Scolaire:\n").RPDF::normalize($student["studentDetails"]["School_Year"]),0,"C");
         $pdf->SetXY($x,$y+17);
         $pdf->Cell(60,6,"ID: ".$student["studentDetails"]["id"],1,2,'L');
         $pdf->Cell(60,10,"",1,1,'C');

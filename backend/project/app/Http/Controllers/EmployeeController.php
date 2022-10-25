@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Employees;
 use App\Models\Instructor;
 use App\Models\User;
+use App\Models\EmployeeHourlyAttendance;
 use Illuminate\Support\Facades\Hash;
 
 use DB;
@@ -64,10 +65,9 @@ class EmployeeController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            return response()->json(["Message"=>$e,"HAHA"=>date('YY"-"MM"-"DD',strtotime($request->input('start_position')))], 404);
+            return response()->json($e, 404);
         }
         return response()->json(['status' => 'data insereted successflly', 'id' => $employee->id], 201);
-        
     }
 
     public function index($limit,$search,$type,$position,$orderBy,$sort)
@@ -224,5 +224,57 @@ class EmployeeController extends Controller
         } catch (\Exception $e) {
             return response()->json($e, 404);
        }
+       return response(['status' => 'employee deleted'], 204);
+    }
+
+    public function HourlyAttendanceDaily($date)
+    {
+        try {
+            $hourly=Employees::leftJoin('attendance_hourly',function ($join) use($date){
+                $join->on('attendance_hourly.id_employee','=','employees.id')
+                ->where('attendance_hourly.for_day',$date);
+            })
+        ->where('employees.start_position','<=',$date)
+        ->where( function ($q) use($date){
+            $q->whereNull('employees.end_position')
+                ->orWhere('employees.end_position','>=',$date);
+        })
+        ->where('employees.Type','hourly')
+        ->get(['employees.id',DB::raw("CONCAT(employees.First_Name,' ',employees.Last_Name) AS name"),
+        DB::raw('IFNULL(attendance_hourly.hours,0) as hours'),DB::raw('IFNULL(attendance_hourly.minutes,0) as minutes')]);
+        } catch (\Exception $e) {
+            return response()->json($e, 404);
+       }
+       return json_encode($hourly);
+    }
+
+    public function updateDailyAttendance(Request $request)
+    {
+        try {
+            $date=$request->input('date');
+            $data=$request->input('data');
+            foreach ($data as $input) {
+                if(EmployeeHourlyAttendance::where('id_employee',$input['id'])
+                    ->where('for_day',$date)->exists())
+                    {
+                        EmployeeHourlyAttendance::where('id_employee',$input['id'])
+                        ->where('for_day',$date)
+                        ->update(['hours'=>$input['hours'],'minutes'=>$input['minutes']]);
+                    }
+                    else
+                    {
+                        $temp= new EmployeeHourlyAttendance;
+                        $temp->id_employee=$input['id'];
+                        $temp->for_day=$date;
+                        $temp->hours=$input['hours'];
+                        $temp->minutes=$input['minutes'];
+                        $temp=EmployeeHourlyAttendance::create($temp->toArray());
+                    }
+            }
+            
+        }  catch (\Exception $e) {
+            return response()->json($e, 404);
+       }
+       return response(['status' => 'saved succefully'], 201);
     }
 }

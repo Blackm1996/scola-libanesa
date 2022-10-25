@@ -209,6 +209,8 @@ Route::get('employee/{id}',[App\Http\Controllers\EmployeeController::class,'show
 Route::get('employeeAll/{id}',[App\Http\Controllers\EmployeeController::class,'allInfo']);
 Route::put('employee/{id}',[App\Http\Controllers\EmployeeController::class,'update']);
 Route::delete('employee/{id}',[App\Http\Controllers\EmployeeController::class,'delete']);
+Route::get('HourlyAttendanceDaily/{input}',[App\Http\Controllers\EmployeeController::class,'HourlyAttendanceDaily']);
+Route::post('updateDailyAttendance',[App\Http\Controllers\EmployeeController::class,'updateDailyAttendance']);
 
 Route::post('avatar', function(Request $request) {
    //echo 'omak ar3a'; 

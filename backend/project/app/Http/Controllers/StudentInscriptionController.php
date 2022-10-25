@@ -157,7 +157,7 @@ class StudentInscriptionController extends Controller
          $grade = (Grades::select('Name as gradeName')->where('id',$student->id_grade)->first())->gradeName;
          $sectionName='';
          if($student->id_classroom != null)
-            $sectionName=(Classroom::select('Name')->where('id_grade',$student->id_grade)->where('School_year',$School_Year)->first())->Name;
+            $sectionName=(Classroom::select('Name')->where('id',$student->id_classroom)->where('School_year',$School_Year)->first())->Name;
          /*$sectionID=null;
          if(Classroom::select('id as sectionId')->where('id_grade',$student->id_grade)->where('School_year',$School_Year)->exists()){
          $section = Classroom::select('id as sectionId')->where('id_grade',$student->id_grade)->where('School_year',$School_Year)->first();
@@ -268,6 +268,7 @@ class StudentInscriptionController extends Controller
         ->where('student_inscriptions.id_grade',$id_grade)
         ->where('student_inscriptions.School_Year',$School_Year)
         ->where('student_inscriptions.id_classroom',null)
+        ->orderBy('student_profiles.First_Name')
         ->get(['student_profiles.id','student_profiles.First_Name','student_profiles.Last_Name']);
     }catch(\Exception $e){return json_encode($e);}
         return json_encode($students_id);

@@ -3,6 +3,7 @@ import Navbar from "../../../components/Navbar";
 import Students from "../../Students";
 import Grades from "../../Grades";
 import StudentProfile from "../../StudentProfile";
+import  EmployeeProfile from "../../Employee/EmployeeProfile";
 import Payments from "../../Payments";
 import { Route, Switch, Redirect } from "react-router-dom";
 import axios from "axios";
@@ -73,6 +74,7 @@ class AdminDashboard extends Component {
           <Route path="/admin/grades" component={Grades} />
           <Route path="/admin/payments" component={Payments} />
           <Route path="/admin/profile/:id" component={StudentProfile} />
+          <Route path="/admin/profile-employee/:id" component={EmployeeProfile} />
         </>
       );
     } else {

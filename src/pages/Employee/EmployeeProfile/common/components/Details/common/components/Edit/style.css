@@ -1,0 +1,77 @@
+.inscription-student {
+  padding-bottom: 80px;
+}
+
+.inscription-student .inscription-title {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.inscription-student .inscription-title:after {
+  content: "";
+  position: absolute;
+  height: 1px;
+  background-color: tomato;
+  width: 100px;
+  text-align: center;
+  position: absolute;
+  bottom: -23px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/*
+.inscription-student .form-group {
+  position: relative;
+}
+
+.inscription-student div.birth-date {
+  overflow: hidden;
+  clear: both;
+}
+
+.inscription-student .form-control:focus {
+  border-color: #ff6347;
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px hsl(9deg 100% 64% / 56%);
+}
+
+.inscription-student .error {
+  color: var(--main-color-1);
+  font-size: 14px;
+  position: absolute;
+  top: 57%;
+  right: 8px;
+}
+*/
+.inscription-student .birth-date {
+  overflow: hidden;
+  clear: both;
+}
+.inscription-student .btn-primary {
+  color: #fff;
+  background-color: tomato;
+  border-color: tomato;
+  outline: none;
+}
+
+.inscription-student .btn-primary:focus {
+  border-color: #ff6347;
+  background-color: tomato;
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px hsl(9deg 100% 64% / 56%);
+}
+
+.btn-primary:not(:disabled):not(.disabled):active {
+  color: #fff;
+  background-color: tomato;
+  border-color: tomato;
+}
+
+
+.inscription-student .form-group .upload-img {
+  width: 50px;
+  height: 50px;
+}

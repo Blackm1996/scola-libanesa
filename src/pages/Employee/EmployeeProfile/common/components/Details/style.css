@@ -1,0 +1,151 @@
+@media print {
+  .student-profile {
+    height: 1vh
+  }
+}
+/* start profile navigation middle bar */
+.student-profile .nav-item:hover .dropdown .dropdown-toggle {
+  font-weight: lighter
+}
+.student-profile .nav-item:hover .dropdown-menu {
+  display: block
+}
+
+.student-profile ul.nav .dropdown {
+  position: unset
+}
+.student-profile ul.nav .dropdown-menu {
+  top: unset;
+  left: unset;
+}
+/* end profile navigation middle bar */
+/* Start marks section style */
+
+.student-profile .profile-routes-section {
+  height: 1000px;
+  background-color: var(--main-color-2)
+} 
+.student-profile .profile-routes-section h2 {
+  padding-top: 27px;
+  padding-bottom: 1px;
+}
+
+.marks .student-details {
+  background-color: #fff;
+}
+.marks div {
+  text-align: center;
+}
+
+.marks .first-section {
+  width: 68%;
+}
+
+.marks .first-section .name {
+  width: 47%;
+  margin-right: 1%
+}
+
+.marks .first-section .year {
+  width: 20%;
+  margin-right: 1%
+}
+
+.marks .first-section .grade-details {
+  width: 31%;
+}
+
+.marks .first-section .grade-details>div {
+  width: 33.333%;
+}
+
+.marks .marks-table .table-header {
+  height: 100px;
+}
+
+.marks .marks-table .table-header>div:first-child {
+  width: 20%;
+}
+
+.marks .marks-table .table-header>div:nth-child(2) {
+  width: 7%;
+  writing-mode: vertical-rl;
+}
+
+.marks .marks-table .table-header>div:last-child {
+  width: 73%;
+}
+
+.marks .marks-table .table-header .semester div:nth-child(2),
+.marks .marks-table .table-header .semester div:nth-child(3),
+.marks .marks-table .table-header .semester div:nth-child(4) {
+  width: 33.3333%
+}
+
+.marks .marks-table .table-body .table-row>div:first-child,
+.marks .marks-table .total-marks-row div:first-child {
+  width: 20%;
+}
+
+.marks .marks-table .table-body .table-row>div:nth-child(2),
+.marks .marks-table .total-marks-row div:nth-child(2) {
+  width: 7%;
+}
+
+.marks .marks-table .table-body .table-row>div:last-child,
+.marks .marks-table .total-marks-row div:last-child {
+  width: 73%;
+}
+
+.marks .marks-table .table-body .table-row .mark-item {
+  width: 33.3333%
+}
+
+/* start semester moyenne section */
+.semester-moyenne-row div:first-child {
+  width: 27%;
+}
+
+.semester-moyenne-row div:nth-child(2) {
+  width: 73%;
+}
+
+.marks .marks-table .total-marks-row {
+  height: 36px;
+}
+
+/* end semester moyenne section */
+.marks .second-section {
+  float: left;
+  width: 31%;
+}
+
+.second-section .student-rate {
+  padding-top: 37px;
+}
+
+.second-section .student-rate>div:first-child {
+  height: 48px;
+}
+
+.second-section .student-rate>div:not(first-child) {
+  height: 124px;
+}
+
+.second-section .student-rate>div:not(first-child)>div:first-child {
+  height: 100%;
+  width: 152px;
+}
+
+.second-section .student-rate>div:not(first-child)>div:last-child {
+  height: 100%;
+  width: calc(100% - 152px);
+}
+
+.second-section .student-decision {
+  margin-top: 22px
+}
+
+.second-section .student-decision .signature {
+  height: 140px
+}
